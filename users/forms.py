@@ -5,9 +5,8 @@ from django import forms
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-    phone = forms.IntegerField()
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']
     

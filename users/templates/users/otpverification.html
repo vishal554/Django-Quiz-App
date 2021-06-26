@@ -1,0 +1,16 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container-fluid border p-5" style="max-width:max-content">
+        <form method="POST" action="#">
+            {% csrf_token %}
+            <fieldset class="form-group text-center">
+                <legend class="border-bottom mb-4 text-center">Enter OTP sent to your Email - {{ email }}</legend>
+                <input type="text" name="otp" ></input>
+            </fieldset>
+            <div class="form-group text-center">
+                <button class="btn btn-outline-info m-3" type="submit">Verify</button>
+            </div> 
+        </form>
+    </div>
+{% endblock content %}
