@@ -1,0 +1,2 @@
+
+GMAIL_PASSWORD = "Vishal554&pan"

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from Quiz import variables 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -142,4 +143,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465 
 EMAIL_USE_TLS = False 
 EMAIL_USE_SSL = True 
-EMAIL_HOST_PASSWORD = "vishal-pan554"
+EMAIL_HOST_PASSWORD = variables.GMAIL_PASSWORD
