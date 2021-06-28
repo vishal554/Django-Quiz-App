@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 # Create your models here.
 
 class Question(models.Model):
-    question_id = models.UUIDField()
+    question_id = models.AutoField
     question = models.CharField(max_length=300)
     choice1 = models.CharField(max_length=200)
     choice2 = models.CharField(max_length=200)
@@ -27,7 +27,7 @@ class Question(models.Model):
     
 
 class Quiz(models.Model):
-    quiz_id = models.UUIDField()
+    quiz_id = models.AutoField
     quiz_name = models.CharField(max_length=50)
     question_set = models.JSONField(default=dict)
     total_marks = models.IntegerField()
@@ -37,7 +37,7 @@ class Quiz(models.Model):
 
 
 class Ongoing(models.Model):
-    ongoing_id = models.UUIDField()
+    ongoing_id = models.AutoField
     quiz_id = models.ForeignKey('Quiz', on_delete=models.CASCADE)
     answered = models.JSONField(default=dict)
 
