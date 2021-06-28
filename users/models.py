@@ -1,5 +1,9 @@
 
 from django.db import models
+from Quiz import settings
+from django.contrib.auth.models import User
+
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -47,9 +51,16 @@ class Taken(models.Model):
 
 
 class my_user(models.Model):
-    username = models.CharField(max_length=100, primary_key=True)
+    username = models.ForeignKey( get_user_model(),verbose_name=("User"), on_delete=models.CASCADE)
+    taken_id = models.ForeignKey('Taken', on_delete=models.CASCADE)
+    ongoint_id = models.ForeignKey('Ongoing', on_delete=models.CASCADE)
     
 
+
+
+
+
+    
 
 
 
