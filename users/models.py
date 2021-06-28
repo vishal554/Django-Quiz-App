@@ -46,9 +46,10 @@ class Taken(models.Model):
         return self.taken_id
 
 
-class user(models.Model):
-    username = models.ForeignKey('User', on_delete=models.CASCADE)
-    taken_id = models.ForeignKey('Taken', on_delete=models.CASCADE)
-    ongoing_id = models.ForeignKey('Ongoing', on_delete=models.CASCADE)
+class my_user(models.Model):
+    username = models.CharField(max_length=100, primary_key=True)
+    
+
+
 
 

@@ -3,7 +3,6 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(user)
 admin.site.register(Taken)
 admin.site.register(Ongoing)
 admin.site.register(Question)
