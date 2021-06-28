@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'Quiz.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'C:/Users/home/Desktop/git/db.sqlite3',
+        'NAME': 'C:/Users/home/Documents/GitHub/Django-Quiz-App/db.sqlite3',
     }
 }
 
