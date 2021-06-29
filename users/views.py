@@ -7,9 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import random
 from django.views import View
+from .models import *
+
 # Create your views here.
-
-
 
 # def register(request):
 #     if request.method == "POST":
@@ -50,8 +50,15 @@ class Register(View):
 
 class Home(View):
     def get(self, request):
-        return render(request, 'users/index.html')
+        Quizes = Quiz.objects.all()
+        user = request.user.username
+        if user==None:
+            return render(request, 'users/index.html', {"Quizes": Quizes})
+        else:
+            return render(request, 'users/index.html', {"Quizes": Quizes, "user": user})
 
+    def check_if_login(self, request):
+        print("inside Login")
 
 # def home(request):
 #     return render(request, 'users/index.html')
