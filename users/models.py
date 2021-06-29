@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 # Create your models here.
 
 class Question(models.Model):
-    question_id = models.AutoField
+    question_id = models.UUIDField(primary_key=True)
     question = models.CharField(max_length=300)
     choice1 = models.CharField(max_length=200)
     choice2 = models.CharField(max_length=200)
@@ -21,13 +21,12 @@ class Question(models.Model):
     weightage = models.IntegerField()
 
     def __str__(self):
-        return f'{Question.pk}'
-    
+        return f'{self.question_id}'
 
     
 
 class Quiz(models.Model):
-    quiz_id = models.AutoField
+    quiz_id = models.UUIDField(primary_key=True)
     quiz_name = models.CharField(max_length=50)
     question_set = models.JSONField(default=dict)
     total_marks = models.IntegerField()
@@ -37,7 +36,7 @@ class Quiz(models.Model):
 
 
 class Ongoing(models.Model):
-    ongoing_id = models.AutoField
+    ongoing_id = models.UUIDField(primary_key=True)
     quiz_id = models.ForeignKey('Quiz', on_delete=models.CASCADE)
     answered = models.JSONField(default=dict)
 
@@ -48,8 +47,8 @@ class Ongoing(models.Model):
 
 
 class my_user(models.Model):
-    username = models.ForeignKey( get_user_model(),verbose_name=("User"), on_delete=models.CASCADE)
-    ongoing_id = models.ForeignKey('Ongoing', on_delete=models.CASCADE, default=0)
+    username = models.ForeignKey( get_user_model(), on_delete=models.CASCADE)
+    ongoing_id = models.ForeignKey('Ongoing', on_delete=models.CASCADE, default='nothing', blank=True, null=True)
     
 
 
