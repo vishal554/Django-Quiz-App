@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
 import uuid
 
-from django.contrib.auth import default_app_config, get_user_model
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
@@ -40,7 +42,7 @@ class Ongoing(models.Model):
     quiz_id = models.ForeignKey('Quiz', on_delete=models.CASCADE)
     question_id = models.ForeignKey('Question', on_delete=models.CASCADE)
     time_used = models.FloatField()
-    saved_choices = models.CharField(max_length=50, null=True)
+    saved_choice = models.CharField(max_length=50, null=True)
 
 
 class Taken(models.Model):
