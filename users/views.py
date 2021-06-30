@@ -1,4 +1,5 @@
 from django.contrib.auth import forms
+from django.db.models.query_utils import Q
 from django.http import request
 from users.forms import UserRegisterForm
 from django.shortcuts import redirect, render
@@ -8,6 +9,7 @@ from django.core.mail import send_mail
 import random
 from django.views import View
 from .models import *
+import uuid
 
 # Create your views here.
 
@@ -51,19 +53,30 @@ class Register(View):
 class Home(View):
     def get(self, request):
         Quizes = Quiz.objects.all()
-        user = request.user.username
-        if user==None:
-            return render(request, 'users/index.html', {"Quizes": Quizes})
-        else:
-            return render(request, 'users/index.html', {"Quizes": Quizes, "user": user})
+        return render(request, 'users/index.html', {"Quizes": Quizes})
+    
+    def post(self, request):
+        quiz_id = request.POST['quiz_id']
+        
+        
 
     def check_if_login(self, request):
         print("inside Login")
 
-# def home(request):
-#     return render(request, 'users/index.html')
-
-
+class TakeQuiz(View):
+    def get(self, request):
+        quiz_id = request.GET['quiz_id']
+        question_set = Question.objects.filter(quiz_id=quiz_id)
+        question_choice_set = {}
+        for i in question_set:
+            if i.type=="MCQ":
+                question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
+            elif i.type=="FIB":
+                question_choice_set[i] = "FIB"
+        
+        print(question_set)
+        print(question_choice_set[question_set[0]].choice1)
+        return render(request, 'users/take_quiz.html', {'question_set':question_set, 'question_choice_set':question_choice_set})
 
 class OtpVerification(View):
     
