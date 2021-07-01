@@ -74,8 +74,6 @@ class TakeQuiz(View):
             elif i.type=="FIB":
                 question_choice_set[i] = "FIB"
         
-        print(question_set)
-        print(question_choice_set[].choice1)
         return render(request, 'users/take_quiz.html', {'question_set':question_set, 'question_choice_set':question_choice_set})
 
 class OtpVerification(View):

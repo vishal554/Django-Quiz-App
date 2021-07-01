@@ -1,37 +1,44 @@
 {% extends "users/base.html" %}
 
 {% block content %}
+    <form action="#" method="POST">
+        <div class="container border m-3 p-2">
+            {% for question_id, mcqs in question_choice_set.items %}
+                {% if question_id.type == "MCQ" %}
+                    <div class="row p-4 border m-4">
+                        <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
+                        <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
+                            {% if mcqs.choice1 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="choice1"  id="choice1{{forloop.counter}}" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice1{{forloop.counter}}">{{mcqs.choice1}}
+                                </label>
+                            {% endif %}
+                            
+                            {% if mcqs.choice2 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="choice2"  id="choice2{{forloop.counter}}" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice2{{forloop.counter}}">{{mcqs.choice2}}</label>
+                            {% endif %}
 
-    <div class="container border m-3 p-2">
-        {% for question_id, mcqs in question_choice_set.items %}
-            {% if question_id.type == "MCQ" %}
-                <div class="row">
-                    <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
-                    
-                    {% if mcqs.choice1 != "__none" %}
-                        <h5> {{mcqs.choice1}} </h5>  
-                    {% endif %}
-                    
-                    {% if mcqs.choice2 != "__none" %}
-                        <h5> {{mcqs.choice2}} </h5>
-                    {% endif %}
+                            {% if mcqs.choice3 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="choice3" id="choice3{{forloop.counter}}" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice3{{forloop.counter}}">{{mcqs.choice3}}</label>
+                            {% endif %}
 
-                    {% if mcqs.choice3 != "__none" %}
-                        <h5> {{mcqs.choice3}} </h5>
-                    {% endif %}
-
-                    {% if mcqs.choice4 != "__none" %}
-                        <h5> {{mcqs.choice4}} </h5>
-                    {% endif %}
-                </div>   
-            {% else %}
-                <div class="row">
-                    <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
-                    <input type="text" max-width=auto class="p-2 m-1"></input>
-                </div>   
-                
-            {% endif %}
-            
-        {% endfor %}
-    </div>
+                            {% if mcqs.choice4 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="choice4" id="choice4{{forloop.counter}}" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2" for="choice4{{forloop.counter}}" >{{mcqs.choice4}}</label>
+                            {% endif %}
+                        </div>
+                    </div>   
+                {% else %}
+                    <div class="row p-4 border m-4">
+                        <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
+                        <div class="col-3">
+                            <input type="text" class="p-2 m-1" name="fib_answer{{forloop.counter}}"></input>
+                        </div>
+                    </div>   
+                {% endif %}
+            {% endfor %}
+        </div>
+    </form>
 {% endblock content %}
