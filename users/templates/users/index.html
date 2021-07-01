@@ -12,7 +12,7 @@
                         {% if user.is_authenticated %}
                             <form action="{% url 'take_quiz' %}" method="GET">
                                 
-                                <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id}}"></input>
+                                <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
                                 <button class="btn btn-outline-info m-3 w-auto" type="submit"> Take Quiz </button>
                             </form>
                         {% else %}
