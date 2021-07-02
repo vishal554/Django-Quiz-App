@@ -68,13 +68,17 @@ class TakeQuiz(View):
         quiz_id = request.GET['quiz_id']
         question_set = Question.objects.filter(quiz_id=quiz_id)
         question_choice_set = {}
+        time_limit = 0
         for i in question_set:
+            time_limit += i.time_weightage
             if i.type=="MCQ":
                 question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
             elif i.type=="FIB":
                 question_choice_set[i] = 'FIB'
         
-        return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question_choice_set':question_choice_set})
+        print(time_limit)
+        
+        return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question_choice_set':question_choice_set, 'time_limit':time_limit})
 
     def post(self, request):
         quiz_id = request.POST['quiz_id']
@@ -99,7 +103,7 @@ class TakeQuiz(View):
         print(user_answers)
         print(correct_answers)
         
-        return render(request, 'users/take_quiz.html')
+        return render(request, 'users/profile.html')
 
 
 class OtpVerification(View):

@@ -1,10 +1,29 @@
 {% extends "users/base.html" %}
 
+{% load static %}
+
+{% block scripts %}
+    <script src={% static 'main.js' %} defer > </script>
+{% endblock scripts %}
+
 {% block content %}
     <form action="#" method="POST">
         {% csrf_token %}
         <input type="text" hidden="true" name="quiz_id" value="{{quiz_id}}"/>  
         <div class="container border m-3 p-2">
+            {% if question_choice_set %}
+                <div class="row">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-6">
+                        <input type="hidden" id="time_limit" name="time_limit" value="{{ time_limit }}">
+                        <h5 id="time_limit_holder" value> {{ time_limit }}</h5>
+                    </div>
+                    <div class="col-3">
+                        <h5 id="timer_box"></h5>
+                    </div>
+                </div>
+            {% endif %}
             {% for question_id, mcqs in question_choice_set.items %}
                 {% if question_id.type == "MCQ" %}
                     <div class="row p-4 border m-4">
