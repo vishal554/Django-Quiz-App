@@ -33,9 +33,11 @@
       {% endfor%}
     {% endif %}
 
-    <form action="#" method="POST">
+    <form id="post_answer">
         {% csrf_token %}
-        <input type="text" hidden="true" name="quiz_id" value="{{quiz_id}}"/>  
+        <input type="text" hidden="true" id="quiz_id" value="{{quiz_id}}"/>
+        <input type="text" hidden="true" id="question_id" value="{{question.question_id}}"/>
+        <input type="text" hidden="true" id="question_type" value="{{question.type}}"/>
         <div class="container-100 border m-3 p-2">
             {% if question %}
                 <div class="row p-4 border m-2">
@@ -79,62 +81,86 @@
                     <div class="row p-4 border m-4">
                         <h4> {{ question.question }} </h4>
                         <div class="col-3">
-                            <input type="text" class="p-2 m-1" name="fib_answer"></input>
+                            <input type="text" class="p-2 m-1" id="fib_answer" name="fib_answer"></input>
                         </div>
                     </div>   
                 {% endif %}
 
                     <div class="row p-2 m-2">
                         <div class="col-3">
-                            <button id="next" class="btn btn-primary"> Next </button>
+                            <button type="submit" id="next" class="btn btn-primary"> Next </button>
                         </div>
                     </div>
                 
             {% endif %}
 
-
-
-            {% comment %} {% for question_id, mcqs in question_choice_set.items %}
-                {% if question_id.type == "MCQ" %}
-                    <div class="row p-4 border m-4">
-                        <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
-                        <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
-                            {% if mcqs.choice1 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="{{mcqs.choice1}}"  id="choice1{{forloop.counter}}" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2"  for="choice1{{forloop.counter}}">{{mcqs.choice1}}</label>
-                            {% endif %}
-                            
-                            {% if mcqs.choice2 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="{{mcqs.choice2}}"  id="choice2{{forloop.counter}}" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2"  for="choice2{{forloop.counter}}">{{mcqs.choice2}}</label>
-                            {% endif %}
-
-                            {% if mcqs.choice3 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="{{mcqs.choice3}}" id="choice3{{forloop.counter}}" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2"  for="choice3{{forloop.counter}}">{{mcqs.choice3}}</label>
-                            {% endif %}
-
-                            {% if mcqs.choice4 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio{{forloop.counter}}" value="{{mcqs.choice4}}" id="choice4{{forloop.counter}}" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2" for="choice4{{forloop.counter}}" >{{mcqs.choice4}}</label>
-                            {% endif %}
-                        </div>
-                    </div>   
-                {% else %}
-                    <div class="row p-4 border m-4">
-                        <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
-                        <div class="col-3">
-                            <input type="text" class="p-2 m-1" name="fib_answer{{forloop.counter}}"></input>
-                        </div>
-                    </div>   
-                {% endif %}
-            {% endfor %} {% endcomment %}
         </div>
 
-        <div class="row">
-            <button class="btn btn-primary" type="submit" value="submit" name="submit" > Submit </button>
-        </div>
     </form>
 
   </body>
+
+
+  <script type="text/javascript" src="{% static 'js/jquery.min.js'  %}"></script>
+
+  <script type="text/javascript">
+    
+    $(document).on('submit', '#post_answer', function(e){
+
+        e.preventDefault();
+
+        if ($('#question_type')=='MCQ'){
+            $.ajax({
+            type:'post',
+            url:'#',
+            data:{
+                quiz_id:$('#quiz_id').val(),
+                question_id:$('#question_id').val(),
+                choice:$('input:radio[name=btnradio]: selected').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response){
+                    alert("Added data");
+                }
+            })}
+        else{
+            $.ajax({
+            type:'post',
+            url:'#',
+            data:{
+                quiz_id:$('#quiz_id').val(),
+                question_id:$('#question_id').val(),
+                choice:$('#fib_answer').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response){
+                    alert("Added data");
+                }
+            })
+        }
+
+        $.ajax({
+            type:'GET',
+            url:'#',
+            datatype:'json',
+            success: function(response){
+                alert("got data");
+            }
+
+        })
+
+    })
+    
+  </script>
+
 </html>
+
+
+
+
+
+
+
+
+
+
