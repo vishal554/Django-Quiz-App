@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 import random
 from django.views import View
 from .models import *
+from json import dumps
 
 
 class Register(View):
@@ -95,10 +96,21 @@ class TakeQuiz(View):
                 question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
             elif i.type=="FIB":
                 question_choice_set[i] = 'FIB'
-        
-        print(time_limit)
-        
-        return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question_choice_set':question_choice_set, 'time_limit':time_limit})
+        try:
+            username = request.user
+            attempted_questions = users_answer.objects.filter(username=username)
+            for i in question_choice_set:
+                if i.question_id == attempted_questions.question_id:
+                    del(question_choice_set[i])
+            time_limit = 0
+            for i in question_choice_set:
+                time_limit+=i.time_weightage
+    
+            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question_choice_set': question_choice_set, 'time_limit':time_limit})
+            
+        except:
+            question_choice_set = next(iter((question_choice_set.items())))
+            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question_choice_set': question_choice_set, 'time_limit':time_limit})
 
     def post(self, request):
         quiz_id = request.POST['quiz_id']
@@ -109,21 +121,46 @@ class TakeQuiz(View):
                 question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
             elif i.type=="FIB":
                 question_choice_set[i] = FIB_Question.objects.get(question_id=i.question_id)
-        print(len(question_choice_set))
         user_answers = []
         correct_answers = []
+        marks_weightage = []
         for (ques,mcq),counter in zip(question_choice_set.items(), range(1, len(question_choice_set)+1)):
             if ques.type == "MCQ":
-                user_answers.append(request.POST[f'btnradio{counter}'])
+                if f'btnradio{counter}' in request.POST.keys(): 
+                    user_answers.append(request.POST[f'btnradio{counter}'])
+                else:
+                    user_answers.append('__none')
                 correct_answers.append(mcq.answer)
+                
             else:
-                user_answers.append(request.POST[f'fib_answer{counter}'])
+                if request.POST[f'fib_answer{counter}'] != '': 
+                    user_answers.append(request.POST[f'fib_answer{counter}'])
+                else:
+                    user_answers.append('__none')
                 correct_answers.append(mcq.answer)
+            marks_weightage.append(ques.marks_weightage)
         
         print(user_answers)
         print(correct_answers)
-        
-        return render(request, 'users/profile.html')
+        print(marks_weightage)
+
+
+
+        if request.POST['submit']=='save':
+
+            try:
+                taken = Taken.objects.get(username=request.user, quiz_id=quiz_id)
+                taken.time_taken = request.POST['time_remaining']
+                print(request.POST['time_remaining'])
+
+            except:
+                Taken.objects.create(username=request.user, quiz_id=quiz_id, submitted=False, marks_obtained=0, time_taken=request.POST['time_remaining'])
+                print('Taken object created!')
+                
+            return render(request, 'users/profile.html')
+        elif request.POST['submit']=='submit':
+            print('submit')
+            return render(request, 'users/results.html')
 
 
 

@@ -1,30 +1,100 @@
-{% extends "base.html" %}
+<!doctype html>
 
 {% load static %}
 
-{% block scripts %}
-    <script src={% static 'main.js' %} defer > </script>
-{% endblock scripts %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% block content %}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Quiz App</title>
+  </head> 
+  <body>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+    <script src={% static 'main.js' %} defer > </script>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{message}}
+        </div>
+      {% endfor%}
+    {% endif %}
+
     <form action="#" method="POST">
         {% csrf_token %}
         <input type="text" hidden="true" name="quiz_id" value="{{quiz_id}}"/>  
-        <div class="container border m-3 p-2">
-            {% if question_choice_set %}
-                <div class="row">
+        <div class="container-100 border m-3 p-2">
+            {% if question %}
+                <div class="row p-4 border m-2">
                     <div class="col-3">
+                        <button class="btn btn-primary" type="submit" name="submit" value="save"> Save and Continue later </button>
                     </div>
                     <div class="col-6">
-                        <input type="hidden" id="time_limit" name="time_limit" value="{{ time_limit }}">
-                        <h5 id="time_limit_holder" value> {{ time_limit }}</h5>
+                       <input type="hidden" class="hide" id="time_limit" name="time_limit" value="{{ time_limit }}">
+                       <input id="time_remaining" name="time_remaining"></input> 
                     </div>
                     <div class="col-3">
                         <h5 id="timer_box"></h5>
                     </div>
                 </div>
+                {% if question.type == "MCQ" %}
+                    <div class="row p-4 border m-4">
+                        <h4> {{ question.question }} </h4>
+                        <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
+                            {% if choices.choice1 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice1">{{choices.choice1}}</label>
+                            {% endif %}
+                            
+                            {% if choices.choice2 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice2">{{choices.choice2}}</label>
+                            {% endif %}
+
+                            {% if choices.choice3 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2"  for="choice3">{{choices.choice3}}</label>
+                            {% endif %}
+
+                            {% if choices.choice4 != "__none" %}
+                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
+                                <label class="btn btn-outline-primary m-2" for="choice4" >{{choices.choice4}}</label>
+                            {% endif %}
+                        </div>
+                    </div>   
+                {% else %}
+                    <div class="row p-4 border m-4">
+                        <h4> {{ question.question }} </h4>
+                        <div class="col-3">
+                            <input type="text" class="p-2 m-1" name="fib_answer"></input>
+                        </div>
+                    </div>   
+                {% endif %}
+
+                    <div class="row p-2 m-2">
+                        <div class="col-3">
+                            <button id="next" class="btn btn-primary"> Next </button>
+                        </div>
+                    </div>
+                
             {% endif %}
-            {% for question_id, mcqs in question_choice_set.items %}
+
+
+
+            {% comment %} {% for question_id, mcqs in question_choice_set.items %}
                 {% if question_id.type == "MCQ" %}
                     <div class="row p-4 border m-4">
                         <h4> {{ forloop.counter }}. {{ question_id.question }} </h4>
@@ -58,11 +128,13 @@
                         </div>
                     </div>   
                 {% endif %}
-            {% endfor %}
+            {% endfor %} {% endcomment %}
         </div>
 
         <div class="row">
-            <button class="btn btn-primary" type="submit" > Submit </button>
+            <button class="btn btn-primary" type="submit" value="submit" name="submit" > Submit </button>
         </div>
     </form>
-{% endblock content %}
+
+  </body>
+</html>

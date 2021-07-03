@@ -1,6 +1,6 @@
 
 
-function startTimer(duration, display) {
+function startTimer(duration, display, display1) {
     var timer = duration, minutes, seconds
     setInterval(function () {
         minutes = parseInt(timer / 60, 10)
@@ -10,16 +10,19 @@ function startTimer(duration, display) {
         seconds = seconds < 10 ? "0" + seconds : seconds
 
         display.textContent = minutes + ":" + seconds
+        display1.textContent = timer
 
         if (--timer < 0) {
-            timer = duration
+            // submit the form
         }
     }, 1000)
 }
 
 window.onload = function () {
     var time_limit = document.getElementById('time_limit').value
-    var fiveMinutes = Number(time_limit),
-        display = document.querySelector('#timer_box')
-    startTimer(fiveMinutes, display)
+    var time = Number(time_limit),
+        display = document.querySelector('#timer_box'),
+        display1 = document.querySelector('#time_remaining')
+    startTimer(time, display, display1)
 };
+

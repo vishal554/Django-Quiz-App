@@ -1,4 +1,6 @@
 
+
+{% load crispy_forms_tags %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -30,11 +32,6 @@
       {% endfor%}
     {% endif %}
 
-  </body>
-</html>
-
-{% load crispy_forms_tags %}
-{% block content %}
     <div class="container-fluid border p-5" style="max-width:max-content">
         <form method="POST" action="#">
             {% csrf_token %}
@@ -47,4 +44,6 @@
             </div> 
         </form>
     </div>
-{% endblock content %}
+
+  </body>
+</html>
