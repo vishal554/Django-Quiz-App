@@ -12,7 +12,7 @@ function startTimer(duration, display, display2, display3) {
         display.textContent = minutes + ":" + seconds
 
         display2.textContent = timer
-        display3.textContent = (timer-5)
+        display3.textContent = (timer-duration)
 
         if (--timer < 0) {
             // submit the form

@@ -201,16 +201,18 @@ def results(request):
         question_instance = Question.objects.filter(question_id=question_id).get()
         users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
         question_ids = Question.objects.filter(quiz_id=quiz_id)
-        
+
         for i in question_ids:
             u_a = users_answer.objects.get(username=username, question_id=i.question_id)
-            u_answer.append(u_a)
+            u_answer.append(u_a.answer)
             marks_weightage.append(i.marks_weightage)
             if i.type=="MCQ":
-                correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id))
+                correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id).answer)
             else:
-                correct_answer.append(FIB_Question.objects.get(question_id=i.question_id))
+                correct_answer.append(FIB_Question.objects.get(question_id=i.question_id).answer)
         print('user answer: ', u_answer)
+        print('questions: ', question_ids)
+        
         marks_obt = 0
         for i in range(len(u_answer)):
             if u_answer[i]==correct_answer[i]:
@@ -223,7 +225,7 @@ def results(request):
             'marks_obtained': marks_obt,
             'total_marks': total_marks,
             'percentage': perct,
-            'questions': question_id,
+            'questions': question_ids,
             'users_answer': u_answer,
             'correct_answer': correct_answer,
             'time_taken': time_taken
