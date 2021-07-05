@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}     
+
+    <div class="container">
+        {% for question in questions %}
+            <div class="row">
+                <div class="col">
+                    <h5>{{ question.question }}</h5>
+
+                </div>
+                <div class="col">
+                    <h5>{{ users_answer }}</h5>
+
+                </div>
+                <div class="col">
+                    <h5>{{ correct_answer }}</h5>
+
+                </div>
+                
+
+            </div>
+        {% endfor %}
+        
+    </div>
+
+{% endblock content %}      
+
+

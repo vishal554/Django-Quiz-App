@@ -35,9 +35,9 @@
 
     <form method="POST" action="{% url 'results' %}">
         {% csrf_token %}
-        <input type="text" hidden="true" id="quiz_id1" value="{{quiz_id}}"/>
-        <input type="text" hidden="true" id="question_id" value="{{question.question_id}}"/>
-        <input type="text" hidden="true" id="question_type" value="{{question.type}}"/>
+        <input type="text" hidden="true" id="quiz_id1" name="quiz_id" value="{{quiz_id}}"/>
+        <input type="text" hidden="true" id="question_id" name="question_id" value="{{question.question_id}}"/>
+        <input type="text" hidden="true" id="question_type" name="question_type" value="{{question.type}}"/>
         <div class="container-100 border m-3 p-2">
             {% if question %}
                 <div class="row p-4 border m-2">
@@ -45,8 +45,9 @@
                         <button class="btn btn-primary" type="submit" name="submit" value="save"> Save and Continue later </button>
                     </div>
                     <div class="col-6">
-                       <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}">
-                       <input id="time_remaining"> </input>
+                       <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
+                       <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
+                       <h5 id="time_remaining" name="time_remaining" ></h5>
                     </div>
                     <div class="col-3">
                         <h5 id="timer_box"></h5>
@@ -80,13 +81,20 @@
                                 <label class="btn btn-outline-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
                             {% endif %}
                         </div>
-                    </div>   
-                {% else %}
-                    <div id="fib_box"class="row p-4 border m-4">
+                    </div>  
+
+                    <div id="fib_box" class="row p-4 border m-4">
                         <div class="col-3">
                             <input type="text" class="p-2 m-1" id="fib_answer" name="fib_answer"></input>
                         </div>
                     </div>   
+
+                {% else %}
+                    <div id="fib_box" class="row p-4 border m-4">
+                        <div class="col-3">
+                            <input type="text" class="p-2 m-1" id="fib_answer1" name="fib_answe1r"></input>
+                        </div>
+                    </div>
                 {% endif %}
 
                     <div class="row p-2 m-2">
@@ -106,96 +114,77 @@
     crossorigin="anonymous"></script>
     <script>
 
+        $('#submit').hide();
+
+        $('#fib_box').hide();
+
+        $('#submit').click(function(e){
+            var time_rem = $('#time_remaining').text();
+            alert(time_rem);
+            $('#time_remaining_input').val(time_rem);
+        });
+
         $('#next').click(function(e){
             e.preventDefault();
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
             if ($('#question_type').val()=='MCQ'){
-                let ch = $('input:radio[name=btnradio]:checked').val();
-                let mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
-                $.ajax({
-                    url: '{% url "save_data" %}',
-                    method: 'POST',
-                    data: mydata,
-                    datatype: 'json',
-                        success: function(response){
-                            if response.last == true{
-                                $('#next').hide();
-                                $('#submit').show();
-                            }
-                            var question_obj = response.question;
-                            console.log(question_obj)
-                            var choices_obj = response.choices;
-                            $('#question_id').val(question_obj.question_id);
-                            if (question_obj.type == 'MCQ'){
-                                $('#fib_box').hide();
-
-                                $('#question_box').text(question_obj.question);
-                                $('#choice1').val(choices_obj.choice1);
-                                $('#choice2').val(choices_obj.choice2);
-                                $('#choice3').val(choices_obj.choice3);
-                                $('#choice4').val(choices_obj.choice4);
-
-                                $('#label1').text(choices_obj.choice1);
-                                $('#label2').text(choices_obj.choice2);
-                                $('#label3').text(choices_obj.choice3);
-                                $('#label4').text(choices_obj.choice4);
-
-                                
-                            }
-                            else
-                            {
-                                $('#mcq_box').hide();
-                                $('#question_box').text(question_obj.question);
-                            };
-
-                        },
-                    });
+                var ch = $('input:radio[name=btnradio]:checked').val();
                 }
             else{
-                let ans = $('#fib_answer').val();
-                let mydata = {quiz_id: q_id, question_id: ques_id, choice:ans, csrfmiddlewaretoken:csrf};
-                $.ajax({
-                method:'POST',
-                url:'{% url "save_data" %}',
-                data:mydata,
-                datatype: 'json',
-                    success: function(response){
-                        if response.last == true{
-                            $('#next').hide();
-                            $('#submit').show();
-                        }
-                    
-
-                        var question_obj = response.question;
-                        var choices_obj = response.choices;
-                        $('#question_id').val(question_obj.question_id);
-                        if (question_obj.type == 'MCQ'){
-                            $('#fib_box').hide();
-                            $('#mcq_box').show();
-
-                            $('#question_box').text(question_obj.question);
-                            $('#choice1').val(choices_obj.choice1);
-                            $('#choice2').val(choices_obj.choice2);
-                            $('#choice3').val(choices_obj.choice3);
-                            $('#choice4').val(choices_obj.choice4);
-
-                            $('#label1').text(choices_obj.choice1);
-                            $('#label2').text(choices_obj.choice2);
-                            $('#label3').text(choices_obj.choice3);
-                            $('#label4').text(choices_obj.choice4);     
-                        }
-                        else{
-                            $('#fib_box').show();
-                            $('#mcq_box').hide();
-                            $('#question_box').text(question_obj.question);
-                        };
-                        
-                    },
-                });
-            };
+                var ch = $('#fib_answer').val();
+                alert('fib answer '+$('#fib_answer').val());
+            }
+            var mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
             
+            $.ajax({
+            url: '{% url "save_data" %}',
+            method: 'POST',
+            data: mydata,
+            datatype: 'json',
+                success: function(response){
+                    $('#next').show();
+                    $('#submit').hide();
+                    var question_obj = response.question;
+                    console.log(question_obj);
+                    var choices_obj = response.choices;
+                    console.log(choices_obj);       
+                    $('#question_id').val(question_obj.question_id);
+                    $('#question_type').val(question_obj.type);
+                    if (question_obj.type == 'MCQ'){
+                        $('#fib_box').hide();
+                        $('#mcq_box').show();
+
+                        $('#question_box').text(question_obj.question);
+                        $('#choice1').val(choices_obj.choice1);
+                        $('#choice2').val(choices_obj.choice2);
+                        $('#choice3').val(choices_obj.choice3);
+                        $('#choice4').val(choices_obj.choice4);
+
+                        $('#label1').text(choices_obj.choice1);
+                        $('#label2').text(choices_obj.choice2);
+                        $('#label3').text(choices_obj.choice3);
+                        $('#label4').text(choices_obj.choice4);
+                    }
+                    else
+                    {
+                        $('#fib_box').show();
+                        $('#mcq_box').hide();
+                        $('#question_box').text(question_obj.question);
+                    }
+
+                    if (response.last === true){
+                        $('#next').hide();
+                        $('#submit').show();
+                    }
+                    
+                },
+                error: function(xhr, error){
+                        console.log(xhr); 
+                        console.log(error);
+                }
+            });
         });
 
     

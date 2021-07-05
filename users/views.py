@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models.query_utils import Q
 from django.forms.models import model_to_dict
 from django.http.response import HttpResponse, JsonResponse
 from users.forms import UserRegisterForm
@@ -89,6 +90,7 @@ class Home(View):
 class TakeQuiz(View):
     
     def get(self, request):
+        continuing = False
         if (not request.session.get('quiz_id')):
             request.session['quiz_id'] = request.GET['quiz_id']
         quiz_id = request.session['quiz_id']
@@ -101,6 +103,27 @@ class TakeQuiz(View):
                 question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
             elif i.type=="FIB":
                 question_choice_set[i] = 'FIB'
+            
+        username = request.user
+        user_answers = users_answer.objects.filter(username=username)
+        question_ids = Question.objects.filter(quiz_id=quiz_id)
+        q_id_list = []
+
+        for i in question_ids:
+            q_id_list.append(str(i.question_id))
+
+        print(q_id_list)
+
+        for i in user_answers:
+            if str(i.question_id.question_id) in q_id_list:
+                del question_choice_set[i.question_id]
+                continuing = True
+
+        print(question_choice_set)
+
+        if continuing:
+            taken = Taken.objects.get(username=username, quiz_id=quiz_id)
+            time_limit = int(taken.time_limit)
             
         #return JsonResponse({'status': 'save'})
         #return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question':question, 'choices':choices})
@@ -146,25 +169,71 @@ def save_data(request):
         question_obj = model_to_dict(question)
         question_obj['question_id'] = question.question_id
 
+        print('list of ques_choice_set: ',list(question_choice_set))
+
         if len(list(question_choice_set)) > 1:
-            if question.type == 'MCQ':
+            if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
                 return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':False})
             else:
-                return JsonResponse({'question': question_obj, 'last':False})
+                return JsonResponse({'question': question_obj, 'choices':'__none','last':False})
 
         else:
-            if question.type == 'MCQ':
+            if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
                 return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':True})
             else:
-                return JsonResponse({'question': question_obj, 'last':True})
+                return JsonResponse({'question': question_obj,'choices':'__none', 'last':True})
             
 
 def results(request):
     if request.method=='POST':
+        marks_weightage = []
+        u_answer = []
+        correct_answer = []
+
         quiz_id = request.POST.get('quiz_id')
-        return render(request, 'results.html')
+        username = request.user
+        question_id = request.POST['question_id']
+        answer = request.POST['btnradio']
+        time_taken = request.POST['time_remaining_input']
+
+        question_instance = Question.objects.filter(question_id=question_id).get()
+        users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
+        question_ids = Question.objects.filter(quiz_id=quiz_id)
+        
+        for i in question_ids:
+            u_a = users_answer.objects.get(username=username, question_id=i.question_id)
+            u_answer.append(u_a)
+            marks_weightage.append(i.marks_weightage)
+            if i.type=="MCQ":
+                correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id))
+            else:
+                correct_answer.append(FIB_Question.objects.get(question_id=i.question_id))
+        print('user answer: ', u_answer)
+        marks_obt = 0
+        for i in range(len(u_answer)):
+            if u_answer[i]==correct_answer[i]:
+                marks_obt += marks_weightage[i]
+
+        total_marks = sum(marks_weightage)
+        perct = ((marks_obt//total_marks) * 100)
+
+        context = {
+            'marks_obtained': marks_obt,
+            'total_marks': total_marks,
+            'percentage': perct,
+            'questions': question_id,
+            'users_answer': u_answer,
+            'correct_answer': correct_answer,
+            'time_taken': time_taken
+        }
+
+        quiz_ins = Quiz.objects.get(quiz_id=quiz_id)
+        Taken.objects.create(username=username, quiz_id=quiz_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_taken)
+
+        return render(request, 'users/results.html',context)
+
         # push to Taken table
 
         # when the user takes remaining quiz
