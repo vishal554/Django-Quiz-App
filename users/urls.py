@@ -12,5 +12,8 @@ urlpatterns = [
     path('otpVerification/', views.OtpVerification.as_view(), name="otp_verification"),
     path('login/', auth_views.LoginView.as_view(template_name="users/login.html"), name="login"),
     path('logout/', auth_views.LogoutView.as_view(template_name="users/logout.html"), name="logout"),
-    path('take_quiz/', views.TakeQuiz.as_view(), name="take_quiz")
+    path('take_quiz/', views.TakeQuiz.as_view(), name="take_quiz"),
+    path('save_data/', views.save_data, name="save_data"),
+    path('results/', views.results, name="results")
+    
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

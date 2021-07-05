@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth.forms import UserCreationForm
+from django.forms.models import model_to_dict
 from django.http.response import HttpResponse, JsonResponse
 from users.forms import UserRegisterForm
 from django.shortcuts import redirect, render
@@ -86,9 +87,11 @@ class Home(View):
 
 
 class TakeQuiz(View):
-
+    
     def get(self, request):
-        quiz_id = request.GET['quiz_id']
+        if (not request.session.get('quiz_id')):
+            request.session['quiz_id'] = request.GET['quiz_id']
+        quiz_id = request.session['quiz_id']
         question_set = Question.objects.filter(quiz_id=quiz_id)
         question_choice_set = {}
         time_limit = 0
@@ -99,97 +102,96 @@ class TakeQuiz(View):
             elif i.type=="FIB":
                 question_choice_set[i] = 'FIB'
             
-        if request.is_ajax():
-            try:
-                username = request.user
-                attempted_questions = users_answer.objects.filter(username=username)
-                for i in question_choice_set:
-                    if i in attempted_questions:
-                        del(question_choice_set[i])
-
-                print('inside try ajax get')
-                (question, choices) = next(iter((question_choice_set.items())))
-                json_ques = json.dumps(question)
-                json_choice = json.dumps(choices)
-                return HttpResponse( json.dumps({'question':json_ques, 'choices':json_choice}), content_type="application/json")
-                #return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices})
-                
-            except:
-                print('inside except ajax get')
-                (question, choices) = next(iter((question_choice_set.items())))
-
-                #return JsonResponse({'question': question, 'choices':choices}, safe=False)
-                #return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question':question, 'choices':choices})
+        #return JsonResponse({'status': 'save'})
+        #return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question':question, 'choices':choices})
         
         (question, choices) = next(iter(question_choice_set.items()))
-        print(question)
-        print(choices)
 
         return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit})
 
-    def post(self, request):
+    
+def save_data(request):
+    if (not request.session.get('quiz_id')):
+        request.session['quiz_id'] = request.GET['quiz_id']
+    quiz_id = request.session['quiz_id']
+    question_set = Question.objects.filter(quiz_id=quiz_id)
+    question_choice_set = {}
+    for i in question_set:
+        if i.type=="MCQ":
+            question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
+        elif i.type=="FIB":
+            question_choice_set[i] = 'FIB'
 
-        username = request.user 
-        
-        question_id = request.POST.get('question_id')
-        choice = request.POST.get('choice')
-        print(question_id, choice)
+    if request.method=="POST":
+        username = request.user
+        question_id = request.POST['question_id']
+        answer = request.POST['choice']
+        question_instance = Question.objects.filter(question_id=question_id).get()
+        users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
 
+        u_answers = users_answer.objects.filter(username=username)
+        q_id_list = []
+        for i in u_answers:
+            q_id_list.append(str(i.question_id.question_id))
 
+        print('Q_id_list: ', q_id_list)
 
-        #users_answer.objects.create(username=username, question_id=question_id, answer=choice)
+        question_choice_set_copy = question_choice_set
+        for i in list(question_choice_set_copy):
+            if str(i.question_id) in q_id_list:
+                del question_choice_set[i]
 
-        print('User answer submitted successfully')
-
+        (question, choices) = next(iter(question_choice_set.items()))
             
-        # quiz_id = request.POST['quiz_id']
-        # question_set = Question.objects.filter(quiz_id=quiz_id)
-        # question_choice_set = {}
-        # for i in question_set:
-        #     if i.type=="MCQ":
-        #         question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
-        #     elif i.type=="FIB":
-        #         question_choice_set[i] = FIB_Question.objects.get(question_id=i.question_id)
-        # user_answers = []
-        # correct_answers = []
-        # marks_weightage = []
-        # for (ques,mcq),counter in zip(question_choice_set.items(), range(1, len(question_choice_set)+1)):
-        #     if ques.type == "MCQ":
-        #         if f'btnradio{counter}' in request.POST.keys(): 
-        #             user_answers.append(request.POST[f'btnradio{counter}'])
-        #         else:
-        #             user_answers.append('__none')
-        #         correct_answers.append(mcq.answer)
+        question_obj = model_to_dict(question)
+        question_obj['question_id'] = question.question_id
+
+        if len(list(question_choice_set)) > 1:
+            if question.type == 'MCQ':
+                choices_obj = model_to_dict(choices)
+                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':False})
+            else:
+                return JsonResponse({'question': question_obj, 'last':False})
+
+        else:
+            if question.type == 'MCQ':
+                choices_obj = model_to_dict(choices)
+                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':True})
+            else:
+                return JsonResponse({'question': question_obj, 'last':True})
+            
+
+def results(request):
+    if request.method=='POST':
+        quiz_id = request.POST.get('quiz_id')
+        return render(request, 'results.html')
+        # push to Taken table
+
+        # when the user takes remaining quiz
+        # try:
+        #     attempted_questions = users_answer.objects.filter(username=username)
+
+        #     for i in question_choice_set:
+        #         if i.question_id in attempted_questions:
+        #             del(question_choice_set[i])
+
+        #     print(question_choice_set)
+        #     print(attempted_questions.question_id)
+            
+        #     print('inside try ajax get')
+        #     (question, choices) = next(iter((question_choice_set.items())))
+
+        #     print(question)
+        #     print(choices)
+
+        #     return JsonResponse( {'question': question, 'choices':choices})
+        #     #return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices})
                 
-        #     else:
-        #         if request.POST[f'fib_answer{counter}'] != '': 
-        #             user_answers.append(request.POST[f'fib_answer{counter}'])
-        #         else:
-        #             user_answers.append('__none')
-        #         correct_answers.append(mcq.answer)
-        #     marks_weightage.append(ques.marks_weightage)
+        # except:
+        #     print('inside except ajax get')
+        #     (question, choices) = next(iter((question_choice_set.items())))
+
         
-        # print(user_answers)
-        # print(correct_answers)
-        # print(marks_weightage)
-
-
-
-        # if request.POST['submit']=='save':
-
-        #     try:
-        #         taken = Taken.objects.get(username=request.user, quiz_id=quiz_id)
-        #         taken.time_taken = request.POST['time_remaining']
-        #         print(request.POST['time_remaining'])
-
-        #     except:
-        #         Taken.objects.create(username=request.user, quiz_id=quiz_id, submitted=False, marks_obtained=0, time_taken=request.POST['time_remaining'])
-        #         print('Taken object created!')
-                
-        #     return render(request, 'users/profile.html')
-        # elif request.POST['submit']=='submit':
-        #     print('submit')
-        #     return render(request, 'users/results.html')
 
 
 
