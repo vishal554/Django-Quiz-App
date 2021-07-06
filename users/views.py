@@ -225,11 +225,36 @@ def save_and_cont_later(request):
         answer = request.POST['choice']
         time_rem = int(request.POST['time_remaining'])
         quiz_id = request.POST['quiz_id']
+
+        last = request.POST.get('last', False)
         
         question_instance = Question.objects.filter(question_id=question_id).get()
         users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
 
         quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
+
+        if last:
+            marks_weightage = []
+            u_answer = []
+            correct_answer = []
+            question_ids = Question.objects.filter(quiz_id=quiz_id)
+
+            for i in question_ids:
+                u_a = users_answer.objects.get(username=username, question_id=i.question_id)
+                u_answer.append(u_a.answer)
+                marks_weightage.append(i.marks_weightage)
+                if i.type=="MCQ":
+                    correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id).answer)
+                else:
+                    correct_answer.append(FIB_Question.objects.get(question_id=i.question_id).answer)
+            
+            marks_obt = 0
+            for i in range(len(u_answer)):
+                if u_answer[i]==correct_answer[i]:
+                    marks_obt += marks_weightage[i]
+
+            Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+
         Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=False, marks_obtained=0, time_taken=time_rem)
         print('taken created')
 

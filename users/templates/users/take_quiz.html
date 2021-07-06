@@ -43,7 +43,7 @@
         <input type="text" hidden="true" id="choices2" value="{{choices.choice2}}"/>
         <input type="text" hidden="true" id="choices3" value="{{choices.choice3}}"/>
         <input type="text" hidden="true" id="choices4" value="{{choices.choice4}}"/>
-        <input type="text" hidden="true" id="last" value="{{last}}"/>
+        <input type="text" hidden="true" id="last" name="last" value="{{last}}"/>
         <div class="container-100 border m-3 p-2">
             
             <div class="row p-4 border m-2">
@@ -144,23 +144,32 @@
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            if ($('#question_type').val()=='MCQ'){
-                var ch = $('input:radio[name=btnradio]:checked').val();
+            var last = $('#last').val();
+            alert(last);
+            if (last == 'False'){
+                if ($('#question_type').val()=='MCQ'){
+                    var ch = $('input:radio[name=btnradio]:checked').val();
+                    }
+                else{
+                    var ch = $('#fib_answer').val();
                 }
-            else{
-                var ch = $('#fib_answer').val();
+                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
+                
+                $.ajax({
+                url: '{% url "save_and_cont_later" %}',
+                method: 'POST',
+                data: mydata,
+                datatype: 'json',
+                success: function(resp){
+                        top.location.href="{% url 'logout' %}"
+                    }
+                });
+                
             }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
-            
-            $.ajax({
-            url: '{% url "save_and_cont_later" %}',
-            method: 'POST',
-            data: mydata,
-            datatype: 'json',
-            success: function(resp){
-                    top.location.href="{% url 'logout' %}"
-                }
-            });
+            else{
+                alert('inside True');
+                $('#submit').click();
+            }
         });
 
         $('#next').click(function(e){

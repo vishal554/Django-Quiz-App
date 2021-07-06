@@ -15,6 +15,7 @@ function startTimer(duration, display, display2) {
 
         if (--timer < 0) {
             // submit the form
+            document.getElementById('submit').click();
         }
     }, 1000)
 }
