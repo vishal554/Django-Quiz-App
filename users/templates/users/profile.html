@@ -16,13 +16,14 @@
                     <h5>Marks Obtained : {{quiz.marks_obtained}}</h5>
                 </div>
 
-                {% comment %} <div class="row m-2 p-1">
-                    <form action="" method="GET">
-                        <input type="text" id="quiz_id" value="{{quiz.quiz_id.quiz_id}}"/>
+                <div class="row m-2 p-1">
+                    <form action="{% url 'profile' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="text" name="quiz_id" value="{{quiz.quiz_id.quiz_id}}"/>
                         <button id="show_details" class="btn btn-primary"> Show Details </button>
                     </form>
-                </div> {% endcomment %}
-                
+                </div> 
+
             </div>
         {% endfor %}
     </div>
