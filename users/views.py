@@ -156,9 +156,9 @@ class TakeQuiz(View):
         (question, choices) = next(iter(question_choice_set.items()))
 
         if len(list(question_choice_set)) > 1:
-            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':False})
+            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':'no'})
         else:
-            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':True})
+            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':'yes'})
 
     
 def save_data(request):
@@ -205,16 +205,16 @@ def save_data(request):
         if len(list(question_choice_set)) > 1:
             if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':False})
+                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':'no'})
             else:
-                return JsonResponse({'question': question_obj, 'choices':'__none','last':False})
+                return JsonResponse({'question': question_obj, 'choices':'__none','last':'no'})
 
         else:
             if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':True})
+                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':'yes'})
             else:
-                return JsonResponse({'question': question_obj,'choices':'__none', 'last':True})
+                return JsonResponse({'question': question_obj,'choices':'__none', 'last':'yes'})
 
 def save_and_cont_later(request):
 
@@ -226,14 +226,14 @@ def save_and_cont_later(request):
         time_rem = int(request.POST['time_remaining'])
         quiz_id = request.POST['quiz_id']
 
-        last = request.POST.get('last', False)
+        last = request.POST.get('last', 'no')
         
         question_instance = Question.objects.filter(question_id=question_id).get()
         users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
 
         quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
 
-        if last:
+        if last == 'yes':
             marks_weightage = []
             u_answer = []
             correct_answer = []
@@ -252,12 +252,19 @@ def save_and_cont_later(request):
             for i in range(len(u_answer)):
                 if u_answer[i]==correct_answer[i]:
                     marks_obt += marks_weightage[i]
-
-            Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
-
-        Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=False, marks_obtained=0, time_taken=time_rem)
-        print('taken created')
-
+                    
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+        else:
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(time_taken=time_rem)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=False, marks_obtained=0, time_taken=time_rem)
+            
         return render(request, 'users/logout.html')
 
 

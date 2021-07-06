@@ -43,7 +43,7 @@
         <input type="text" hidden="true" id="choices2" value="{{choices.choice2}}"/>
         <input type="text" hidden="true" id="choices3" value="{{choices.choice3}}"/>
         <input type="text" hidden="true" id="choices4" value="{{choices.choice4}}"/>
-        <input type="text" hidden="true" id="last" name="last" value="{{last}}"/>
+        <input type="text" id="last" name="last" value="{{last}}"/>
         <div class="container-100 border m-3 p-2">
             
             <div class="row p-4 border m-2">
@@ -122,7 +122,7 @@
                 $('#mcq_box').hide();
             }
 
-            if (last == true){
+            if (last == 'yes'){
                 $('#next').hide();
                 $('#submit').show();
             }
@@ -146,7 +146,7 @@
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
             var last = $('#last').val();
             alert(last);
-            if (last == 'False'){
+            if (last == 'no'){
                 if ($('#question_type').val()=='MCQ'){
                     var ch = $('input:radio[name=btnradio]:checked').val();
                     }
@@ -199,6 +199,7 @@
                     console.log(choices_obj);       
                     $('#question_id').val(question_obj.question_id);
                     $('#question_type').val(question_obj.type);
+                    $('#last').val(response.last);
                     if (question_obj.type == 'MCQ'){
                         $('#fib_box').hide();
                         $('#mcq_box').show();
@@ -221,7 +222,7 @@
                         $('#question_box').text(question_obj.question);
                     }
 
-                    if (response.last === true){
+                    if (response.last === 'yes'){
                         $('#next').hide();
                         $('#submit').show();
                     }
