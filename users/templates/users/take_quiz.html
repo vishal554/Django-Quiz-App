@@ -38,73 +38,66 @@
         <input type="text" hidden="true" id="quiz_id1" name="quiz_id" value="{{quiz_id}}"/>
         <input type="text" hidden="true" id="question_id" name="question_id" value="{{question.question_id}}"/>
         <input type="text" hidden="true" id="question_type" name="question_type" value="{{question.type}}"/>
+        <input type="text" hidden="true" id="question" value="{{question.question}}"/>
+        <input type="text" hidden="true" id="choices1" value="{{choices.choice1}}"/>
+        <input type="text" hidden="true" id="choices2" value="{{choices.choice2}}"/>
+        <input type="text" hidden="true" id="choices3" value="{{choices.choice3}}"/>
+        <input type="text" hidden="true" id="choices4" value="{{choices.choice4}}"/>
+        <input type="text" hidden="true" id="last" value="{{last}}"/>
         <div class="container-100 border m-3 p-2">
-            {% if question %}
-                <div class="row p-4 border m-2">
-                    <div class="col-3">
-                        <button class="btn btn-primary" type="submit" name="submit" value="save"> Save and Continue later </button>
-                    </div>
-                    <div class="col-6">
-                       <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
-                       <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
-                       <h5 id="time_remaining" name="time_remaining" ></h5>
-                    </div>
-                    <div class="col-3">
-                        <h5 id="timer_box"></h5>
-                    </div>
+            
+            <div class="row p-4 border m-2">
+                <div class="col-3">
+                    <button class="btn btn-primary" id="save" > Save and Continue later </button>
                 </div>
-
-                <div class="row">
-                <h4 id="question_box"> {{ question.question }} </h4>
+                <div class="col-6">
+                    <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
+                    <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
+                    <h5 id="time_remaining" class="hide" name="time_remaining" ></h5>
                 </div>
-                
-                {% if question.type == "MCQ" %}
-                    <div id="mcq_box" class="row p-4 border m-4">
-                        <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
-                            {% if choices.choice1 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2" id="label1" for="choice1">{{choices.choice1}}</label>
-                            {% endif %}
-                            
-                            {% if choices.choice2 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2" id="label2" for="choice2">{{choices.choice2}}</label>
-                            {% endif %}
+                <div class="col-3">
+                    <h5 id="timer_box"></h5>
+                </div>
+            </div>
 
-                            {% if choices.choice3 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2" id="label3" for="choice3">{{choices.choice3}}</label>
-                            {% endif %}
+            <div class="row">
+            <h4 id="question_box"> {{ question.question }} </h4>
+            </div>
 
-                            {% if choices.choice4 != "__none" %}
-                                <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
-                                <label class="btn btn-outline-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
-                            {% endif %}
-                        </div>
-                    </div>  
+            <div id="mcq_box" class="row p-4 border m-4">
+                <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
+                    {% if choices.choice1 != "__none" %}
+                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
+                        <label class="btn btn-outline-primary m-2" id="label1" for="choice1">{{choices.choice1}}</label>
+                    {% endif %}
+                    
+                    {% if choices.choice2 != "__none" %}
+                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
+                        <label class="btn btn-outline-primary m-2" id="label2" for="choice2">{{choices.choice2}}</label>
+                    {% endif %}
 
-                    <div id="fib_box" class="row p-4 border m-4">
-                        <div class="col-3">
-                            <input type="text" class="p-2 m-1" id="fib_answer" name="fib_answer"></input>
-                        </div>
-                    </div>   
+                    {% if choices.choice3 != "__none" %}
+                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
+                        <label class="btn btn-outline-primary m-2" id="label3" for="choice3">{{choices.choice3}}</label>
+                    {% endif %}
 
-                {% else %}
-                    <div id="fib_box" class="row p-4 border m-4">
-                        <div class="col-3">
-                            <input type="text" class="p-2 m-1" id="fib_answer1" name="fib_answe1r"></input>
-                        </div>
-                    </div>
-                {% endif %}
-
-                    <div class="row p-2 m-2">
-                        <div class="col-3">
-                            <button id="next" type="submit" class="btn btn-primary"> Next </button>
-                            <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
-                        </div>
-                    </div>
-                
-            {% endif %}
+                    {% if choices.choice4 != "__none" %}
+                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
+                        <label class="btn btn-outline-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
+                    {% endif %}
+                </div>
+            </div>  
+            <div id="fib_box" class="row p-4 border m-4">
+                <div class="col-3">
+                    <input type="text" class="p-2 m-1" id="fib_answer" name="fib_answer"></input>
+                </div>
+            </div>   
+            <div class="row p-2 m-2">
+                <div class="col-3">
+                    <button id="next" type="submit" class="btn btn-primary"> Next </button>
+                    <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
+                </div>
+            </div>
         </div>
     </form>
   </body>
@@ -113,15 +106,61 @@
     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
     crossorigin="anonymous"></script>
     <script>
+    
+        $(document).ready(function() {
+            $('#submit').show();
+            $('#next').hide();
+            var last = $('#last').val();
+            var q_type = $('#question_type').val();
+            if (q_type == 'MCQ'){
+                $('#fib_box').hide();
+                $('#mcq_box').show();
+            }
+            else
+            {
+                $('#fib_box').show();
+                $('#mcq_box').hide();
+            }
 
-        $('#submit').hide();
+            if (last == true){
+                $('#next').hide();
+                $('#submit').show();
+            }
+            else{
+                $('#next').show();
+                $('#submit').hide();
+            }
+        });
 
-        $('#fib_box').hide();
 
         $('#submit').click(function(e){
             var time_rem = $('#time_remaining').text();
-            alert(time_rem);
             $('#time_remaining_input').val(time_rem);
+        });
+
+        $('#save').click(function(e){
+            e.preventDefault();
+            var time_rem = $('#time_remaining').text();
+            let q_id = $('#quiz_id1').val();
+            let ques_id = $('#question_id').val();
+            let csrf = $('input[name=csrfmiddlewaretoken]').val();
+            if ($('#question_type').val()=='MCQ'){
+                var ch = $('input:radio[name=btnradio]:checked').val();
+                }
+            else{
+                var ch = $('#fib_answer').val();
+            }
+            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
+            
+            $.ajax({
+            url: '{% url "save_and_cont_later" %}',
+            method: 'POST',
+            data: mydata,
+            datatype: 'json',
+            success: function(resp){
+                    top.location.href="{% url 'logout' %}"
+                }
+            });
         });
 
         $('#next').click(function(e){
@@ -134,7 +173,6 @@
                 }
             else{
                 var ch = $('#fib_answer').val();
-                alert('fib answer '+$('#fib_answer').val());
             }
             var mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
             
@@ -186,15 +224,9 @@
                 }
             });
         });
-
-    
   </script>
-
-        
 </html>
 
-{% comment %} 
-             {% endcomment %}
 
 
 

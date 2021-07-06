@@ -14,6 +14,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name="users/logout.html"), name="logout"),
     path('take_quiz/', views.TakeQuiz.as_view(), name="take_quiz"),
     path('save_data/', views.save_data, name="save_data"),
-    path('results/', views.results, name="results")
+    path('results/', views.Results.as_view(), name="results"),
+    path('save_and_cont_later/', views.save_and_cont_later, name="save_and_cont_later"),
+    path('get_data/', views.get_data, name="get_data"),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
