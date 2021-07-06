@@ -29,9 +29,10 @@ class Register(View):
 
     """
     template_name = 'users/register.html'
+
     def get(self, request):
         form = UserRegisterForm()
-        return render(request,self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         # check if the form is valid or not
@@ -57,25 +58,28 @@ class OtpVerification(View):
 
     """
     template_name = 'users/otpverification.html'
+
     def get(self, request):
         sent = False
         try:
             email = request.session['email']
         except:
             return redirect('register')
-        if sent==False:
+        if sent == False:
             otp = random.randint(11111, 99999)
             request.session['otp'] = otp
-            send_mail('OTP Verification', f'Your OTP is: {otp}', 'vishalpanchal338@gmail.com', [email], fail_silently=False)
-            messages.success(request, f"OTP Successfully sent to {email}. Please check your email!")
+            send_mail('OTP Verification',
+                      f'Your OTP is: {otp}', 'vishalpanchal338@gmail.com', [email], fail_silently=False)
+            messages.success(
+                request, f"OTP Successfully sent to {email}. Please check your email!")
             sent = True
         else:
             messages.warning(request, f'Already sent email with OTP')
-        
+
         return render(request, self.template_name)
-        
+
     def post(self, request):
-        # check the entered OTP and redirect to respective page  
+        # check the entered OTP and redirect to respective page
         # depending on whether OTP is correct or not
         entered_otp = request.POST["otp"]
         otp = request.session['otp']
@@ -84,15 +88,18 @@ class OtpVerification(View):
             form = UserCreationForm(form_data)
             if form.is_valid():
                 print("Valid Form")
-                User.objects.create(username=form_data['username'], password=form_data['password1'], email=form_data['email'])
+                User.objects.create(
+                    username=form_data['username'], password=form_data['password1'], email=form_data['email'])
                 username = request.session['username']
-                messages.success(request, f"Account successfully created for {username}! You can login Now")
-                return redirect('login') 
+                messages.success(
+                    request, f"Account successfully created for {username}! You can login Now")
+                return redirect('login')
             else:
                 print("not valid form")
-                messages.warning(request, f"Invalid username or password. Please Register again")
-                return redirect('register') 
-            
+                messages.warning(
+                    request, f"Invalid username or password. Please Register again")
+                return redirect('register')
+
         else:
             messages.error(request, "Invalid OTP! Please try again")
         return render(request, self.template_name)
@@ -112,6 +119,7 @@ class Home(View):
     :template:`users/register.html`
 
     """
+
     def get(self, request):
         username = request.user
         Quizes = Quiz.objects.all()
@@ -132,18 +140,14 @@ class Home(View):
         for i in taken:
             taken_quizes.append(str(i.quiz_id.quiz_id))
 
-        
         for i in Quizes:
             quiz_id_list.append(str(i.quiz_id))
-
 
         for i in list(quiz_id_list):
             if i in ongoing_quizes:
                 quiz_id_list.remove(i)
             if i in taken_quizes:
                 quiz_id_list.remove(i)
-
-
 
         quizes = []
         for i in quiz_id_list:
@@ -153,7 +157,8 @@ class Home(View):
         for i in ongoing_quizes:
             ongoings.append(Quiz.objects.get(quiz_id=i))
 
-        return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes":ongoings})
+        return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes": ongoings})
+
 
 class TakeQuiz(View):
     """
@@ -169,6 +174,7 @@ class TakeQuiz(View):
     :template:`users/register.html`
 
     """
+
     def get(self, request):
         continuing = False
         quiz_id = request.GET['quiz_id']
@@ -177,11 +183,12 @@ class TakeQuiz(View):
         time_limit = 0
         for i in question_set:
             time_limit += i.time_weightage
-            if i.type=="MCQ":
-                question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
-            elif i.type=="FIB":
+            if i.type == "MCQ":
+                question_choice_set[i] = MCQ_Question.objects.get(
+                    question_id=i.question_id)
+            elif i.type == "FIB":
                 question_choice_set[i] = 'FIB'
-            
+
         # check if the user is continuing the quiz
 
         username = request.user
@@ -200,15 +207,15 @@ class TakeQuiz(View):
         if continuing:
             taken = Taken.objects.get(username=username, quiz_id=quiz_id)
             time_limit = int(taken.time_taken)
-        
+
         (question, choices) = next(iter(question_choice_set.items()))
 
         if len(list(question_choice_set)) > 1:
-            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':'no'})
+            return render(request, 'users/take_quiz.html', {'quiz_id': quiz_id, 'question': question, 'choices': choices, 'time_limit': time_limit, 'last': 'no'})
         else:
-            return render(request, 'users/take_quiz.html', {'quiz_id':quiz_id, 'question': question, 'choices':choices , 'time_limit':time_limit, 'last':'yes'})
+            return render(request, 'users/take_quiz.html', {'quiz_id': quiz_id, 'question': question, 'choices': choices, 'time_limit': time_limit, 'last': 'yes'})
 
-    
+
 def save_data(request):
     """
     Saves the data to the users_answer Model
@@ -219,23 +226,26 @@ def save_data(request):
 
     """
     # Get the questions and choice set
-    
+
     quiz_id = request.POST['quiz_id']
     question_set = Question.objects.filter(quiz_id=quiz_id)
     question_choice_set = {}
     for i in question_set:
-        if i.type=="MCQ":
-            question_choice_set[i] = MCQ_Question.objects.get(question_id=i.question_id)
-        elif i.type=="FIB":
+        if i.type == "MCQ":
+            question_choice_set[i] = MCQ_Question.objects.get(
+                question_id=i.question_id)
+        elif i.type == "FIB":
             question_choice_set[i] = 'FIB'
 
-    if request.method=="POST":
+    if request.method == "POST":
         # Add the answer to the users_answers model
         username = request.user
         question_id = request.POST['question_id']
         answer = request.POST['choice']
-        question_instance = Question.objects.filter(question_id=question_id).get()
-        users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        users_answer.objects.create(
+            username=username, question_id=question_instance, answer=answer)
 
         # Get Attempted Questions
         u_answers = users_answer.objects.filter(username=username)
@@ -251,7 +261,7 @@ def save_data(request):
 
         # get the first Key-value pair
         (question, choices) = next(iter(question_choice_set.items()))
-            
+
         #convert the model to Dictionary
         question_obj = model_to_dict(question)
         question_obj['question_id'] = question.question_id
@@ -260,16 +270,17 @@ def save_data(request):
         if len(list(question_choice_set)) > 1:
             if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':'no'})
+                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'no'})
             else:
-                return JsonResponse({'question': question_obj, 'choices':'__none','last':'no'})
+                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'no'})
 
         else:
             if str(question.type) == 'MCQ':
                 choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices':choices_obj, 'last':'yes'})
+                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'yes'})
             else:
-                return JsonResponse({'question': question_obj,'choices':'__none', 'last':'yes'})
+                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'yes'})
+
 
 def save_and_cont_later(request):
     """
@@ -278,8 +289,8 @@ def save_and_cont_later(request):
     later and continue with the quiz.
 
     """
-    
-    if request.method=="POST":
+
+    if request.method == "POST":
 
         # Getting post data
         username = request.user
@@ -290,12 +301,14 @@ def save_and_cont_later(request):
         last = request.POST.get('last', 'no')
 
         # Add the answer to the users_answer model
-        question_instance = Question.objects.filter(question_id=question_id).get()
-        users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        users_answer.objects.create(
+            username=username, question_id=question_instance, answer=answer)
 
         quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
 
-        # check if the question is the last question of the quiz. 
+        # check if the question is the last question of the quiz.
         # If it is then submit the quiz
         if last == 'yes':
             marks_weightage = []
@@ -304,34 +317,41 @@ def save_and_cont_later(request):
             question_ids = Question.objects.filter(quiz_id=quiz_id)
 
             for i in question_ids:
-                u_a = users_answer.objects.get(username=username, question_id=i.question_id)
+                u_a = users_answer.objects.get(
+                    username=username, question_id=i.question_id)
                 u_answer.append(u_a.answer)
                 marks_weightage.append(i.marks_weightage)
-                if i.type=="MCQ":
-                    correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id).answer)
+                if i.type == "MCQ":
+                    correct_answer.append(MCQ_Question.objects.get(
+                        question_id=i.question_id).answer)
                 else:
-                    correct_answer.append(FIB_Question.objects.get(question_id=i.question_id).answer)
-            
+                    correct_answer.append(FIB_Question.objects.get(
+                        question_id=i.question_id).answer)
+
             marks_obt = 0
             for i in range(len(u_answer)):
-                if u_answer[i]==correct_answer[i]:
+                if u_answer[i] == correct_answer[i]:
                     marks_obt += marks_weightage[i]
-                
+
             # check if the user has already saved this quiz before or not
             try:
                 if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
-                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(
+                        submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
             except:
-                Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
         else:
 
             # check if the user has already saved this quiz before or not
             try:
                 if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
-                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(time_taken=time_rem)
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(
+                        time_taken=time_rem)
             except:
-                Taken.objects.create(username=username, quiz_id=quiz_id_ins, submitted=False, marks_obtained=0, time_taken=time_rem)
-            
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=False, marks_obtained=0, time_taken=time_rem)
+
         return render(request, 'users/logout.html')
 
 
@@ -357,7 +377,7 @@ class Results(View):
 
     """
 
-    template_name= 'users/results.html'
+    template_name = 'users/results.html'
 
     def post(self, request):
         marks_weightage = []
@@ -371,29 +391,33 @@ class Results(View):
         time_taken = request.POST['time_remaining_input']
 
         # add the last question to the users_answer Model
-        question_instance = Question.objects.filter(question_id=question_id).get()
-        users_answer.objects.create(username=username, question_id=question_instance, answer=answer)
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        users_answer.objects.create(
+            username=username, question_id=question_instance, answer=answer)
         question_ids = Question.objects.filter(quiz_id=quiz_id)
 
         # Fetch the correct answers answer the user has given
         for i in question_ids:
-            u_a = users_answer.objects.get(username=username, question_id=i.question_id)
+            u_a = users_answer.objects.get(
+                username=username, question_id=i.question_id)
             u_answer.append(u_a.answer)
             marks_weightage.append(i.marks_weightage)
-            if i.type=="MCQ":
-                correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id).answer)
+            if i.type == "MCQ":
+                correct_answer.append(MCQ_Question.objects.get(
+                    question_id=i.question_id).answer)
             else:
-                correct_answer.append(FIB_Question.objects.get(question_id=i.question_id).answer)
-        
+                correct_answer.append(FIB_Question.objects.get(
+                    question_id=i.question_id).answer)
+
         # calculate marks obtained and the percentage
         marks_obt = 0
         for i in range(len(u_answer)):
-            if u_answer[i]==correct_answer[i]:
+            if u_answer[i] == correct_answer[i]:
                 marks_obt += marks_weightage[i]
 
         total_marks = sum(marks_weightage)
         perct = ((marks_obt/total_marks) * 100)
-
 
         context = {
             'marks_obtained': marks_obt,
@@ -409,11 +433,13 @@ class Results(View):
 
         # check if the Taken object already exists or not
         try:
-            if Taken.objects.get(username=username, quiz_id=quiz_ins):   
-                Taken.objects.filter(username=username, quiz_id=quiz_ins).update(marks_obtained=marks_obt, time_taken=time_taken, submitted=True)
+            if Taken.objects.get(username=username, quiz_id=quiz_ins):
+                Taken.objects.filter(username=username, quiz_id=quiz_ins).update(
+                    marks_obtained=marks_obt, time_taken=time_taken, submitted=True)
 
         except:
-            Taken.objects.create(username=username, quiz_id=quiz_ins, submitted=True, marks_obtained=marks_obt, time_taken=time_taken)
+            Taken.objects.create(username=username, quiz_id=quiz_ins,
+                                 submitted=True, marks_obtained=marks_obt, time_taken=time_taken)
 
         return render(request, self.template_name, context)
 
@@ -456,7 +482,6 @@ class Profile(View):
 
         return render(request, 'users/profile.html', context)
 
-    
     def post(self, request):
         # shows the details of the quiz submitted by
         # the user in the results template
@@ -464,23 +489,26 @@ class Profile(View):
         marks_weightage = []
         u_answer = []
         correct_answer = []
-        
+
         quiz_id = request.POST['quiz_id']
         username = request.user
         question_ids = Question.objects.filter(quiz_id=quiz_id)
 
         for i in question_ids:
-            u_a = users_answer.objects.get(username=username, question_id=i.question_id)
+            u_a = users_answer.objects.get(
+                username=username, question_id=i.question_id)
             u_answer.append(u_a.answer)
             marks_weightage.append(i.marks_weightage)
-            if i.type=="MCQ":
-                correct_answer.append(MCQ_Question.objects.get(question_id=i.question_id).answer)
+            if i.type == "MCQ":
+                correct_answer.append(MCQ_Question.objects.get(
+                    question_id=i.question_id).answer)
             else:
-                correct_answer.append(FIB_Question.objects.get(question_id=i.question_id).answer)
-        
+                correct_answer.append(FIB_Question.objects.get(
+                    question_id=i.question_id).answer)
+
         marks_obt = 0
         for i in range(len(u_answer)):
-            if u_answer[i]==correct_answer[i]:
+            if u_answer[i] == correct_answer[i]:
                 marks_obt += marks_weightage[i]
 
         total_marks = sum(marks_weightage)
@@ -495,7 +523,4 @@ class Profile(View):
             'correct_answer': correct_answer,
         }
 
-        return render(request, self.template_name,context)
-            
-
-    
+        return render(request, self.template_name, context)
