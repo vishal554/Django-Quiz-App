@@ -1,4 +1,5 @@
 import json
+from django import dispatch
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models.query_utils import Q
 from django.forms.models import model_to_dict
@@ -7,6 +8,7 @@ from users.forms import UserRegisterForm
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.core.mail import send_mail
 import random
 from django.views import View
@@ -159,7 +161,7 @@ class Home(View):
 
         return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes": ongoings})
 
-
+@method_decorator(login_required, name='dispatch')
 class TakeQuiz(View):
     """
     renders the Register page to the User
@@ -355,6 +357,7 @@ def save_and_cont_later(request):
         return render(request, 'users/logout.html')
 
 
+@method_decorator(login_required, name='dispatch')
 class Results(View):
     """
     Shows the result of the quiz after the
@@ -376,9 +379,11 @@ class Results(View):
     :template:'users/results.html'
 
     """
+    
 
     template_name = 'users/results.html'
 
+ 
     def post(self, request):
         marks_weightage = []
         u_answer = []
@@ -444,6 +449,7 @@ class Results(View):
         return render(request, self.template_name, context)
 
 
+@method_decorator(login_required, name='dispatch')
 class Profile(View):
     """
     Shows the quizes submitted by the user
@@ -466,6 +472,8 @@ class Profile(View):
     :template: 'users/results.html'
 
     """
+
+
     template_name = 'users/results.html'
 
     def get(self, request):
