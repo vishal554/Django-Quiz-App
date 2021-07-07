@@ -43,7 +43,7 @@
         <input type="text" hidden="true" id="choices2" value="{{choices.choice2}}"/>
         <input type="text" hidden="true" id="choices3" value="{{choices.choice3}}"/>
         <input type="text" hidden="true" id="choices4" value="{{choices.choice4}}"/>
-        <input type="text" id="last" name="last" value="{{last}}"/>
+        <input type="text" hidden="true" id="last" name="last" value="{{last}}"/>
         <div class="container-100 border m-3 p-2">
             
             <div class="row p-4 border m-2">
@@ -53,7 +53,7 @@
                 <div class="col-6">
                     <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
                     <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
-                    <h5 id="time_remaining" class="hide" name="time_remaining" ></h5>
+                    <h5 id="time_remaining" hidden="true" class="hide" name="time_remaining" ></h5>
                 </div>
                 <div class="col-3">
                     <h5 id="timer_box"></h5>
@@ -145,7 +145,6 @@
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
             var last = $('#last').val();
-            alert(last);
             if (last == 'no'){
                 if ($('#question_type').val()=='MCQ'){
                     var ch = $('input:radio[name=btnradio]:checked').val();
@@ -167,7 +166,6 @@
                 
             }
             else{
-                alert('inside True');
                 $('#submit').click();
             }
         });

@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 import random
 from django.views import View
 from .models import *
-from json import dumps
+from django.contrib.auth.hashers import make_password
 
 
 class Register(View):
@@ -46,6 +46,7 @@ class Register(View):
             username = form.cleaned_data.get("username")
             request.session['email'] = email
             request.session['username'] = username
+
             return redirect('otp_verification')
         return render(request, self.template_name, {'form': form})
 
@@ -89,9 +90,10 @@ class OtpVerification(View):
             form_data = request.session['form_data']
             form = UserCreationForm(form_data)
             if form.is_valid():
-                print("Valid Form")
+                print("Valid Form: ", form_data)
+                password = make_password(form_data['password1'])
                 User.objects.create(
-                    username=form_data['username'], password=form_data['password1'], email=form_data['email'])
+                    username=form_data['username'], password=password, email=form_data['email'])
                 username = request.session['username']
                 messages.success(
                     request, f"Account successfully created for {username}! You can login Now")
