@@ -61,7 +61,7 @@
             </div>
 
             <div class="row">
-            <h4 id="question_box"> {{ question.question }} </h4>
+                    <h4 id="question_box">{{current}}/{{total_questions}}: {{ question.question }} </h4>
             </div>
 
             <div id="mcq_box" class="row p-4 border m-4">
@@ -106,8 +106,13 @@
     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
     crossorigin="anonymous"></script>
     <script>
+
+        
+
     
         $(document).ready(function() {
+
+
             $('#submit').show();
             $('#next').hide();
             var last = $('#last').val();
@@ -198,6 +203,8 @@
                     $('#question_id').val(question_obj.question_id);
                     $('#question_type').val(question_obj.type);
                     $('#last').val(response.last);
+                    $('#current').text(response.current);
+                    $('#total_questions').text(response.total_questions);
                     if (question_obj.type == 'MCQ'){
                         $('#fib_box').hide();
                         $('#mcq_box').show();
@@ -212,6 +219,8 @@
                         $('#label2').text(choices_obj.choice2);
                         $('#label3').text(choices_obj.choice3);
                         $('#label4').text(choices_obj.choice4);
+
+                        
                     }
                     else
                     {

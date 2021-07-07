@@ -27,12 +27,12 @@ class Question(models.Model):
 
     
 
-class FIB_Question(models.Model):
+class FibQuestion(models.Model):
     question_id = models.ForeignKey("Question", on_delete=models.CASCADE)
     answer = models.CharField(max_length=100)
 
 
-class MCQ_Question(models.Model):
+class McqQuestion(models.Model):
     question_id = models.ForeignKey("Question", on_delete=models.CASCADE)
     choice1 = models.CharField(max_length=50)
     choice2 = models.CharField(max_length=50)
@@ -58,7 +58,7 @@ class Taken(models.Model):
     time_taken = models.IntegerField()
     
 
-class users_answer(models.Model):
+class UsersAnswer(models.Model):
     username = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     question_id = models.ForeignKey("Question", on_delete=models.CASCADE)
     answer = models.CharField(max_length=50)

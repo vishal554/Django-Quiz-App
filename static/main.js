@@ -28,3 +28,19 @@ window.onload = function () {
     startTimer(time, display, display2)
 };
 
+
+window.addEventListener("beforeunload", function (e) {
+    
+    e.preventDefault();   
+
+    document.getElementById('save').click();
+
+    for (var i = 0; i < 500000000; i++) { }
+
+    e.returnValue = '';  
+    return undefined;
+
+  });
+
+  
+
