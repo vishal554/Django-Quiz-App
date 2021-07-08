@@ -15,32 +15,61 @@ function startTimer(duration, display, display2) {
 
         if (--timer < 0) {
             // submit the form
+            timer = 0;
             document.getElementById('submit').click();
         }
     }, 1000)
 }
 
 window.onload = function () {
-    var time_limit = document.getElementById('time_limit').value
-    var time = Number(time_limit),
+
+    //check for Navigation Timing API support
+    if (window.performance) {
+        console.info("window.performance works fine on this browser");
+    }
+    console.info(performance.navigation.type);
+    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+        location.replace("http://127.0.0.1:8000/home/");
+    } else {
+        console.info( "This page is not reloaded");
+    }
+
+    var timer_amount = document.getElementById('time_limit').value;
+    
+    var time = Number(timer_amount),
         display = document.querySelector('#timer_box'),
         display2 = document.querySelector('#time_remaining')
     startTimer(time, display, display2)
+
+    var last = document.getElementById('last').value;
+    console.log(last);
+    console.log('no');
+    
 };
+    
 
 
 window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = ''; 
+});
+
+
+window.addEventListener("unload", function(e){
+    e.preventDefault();
+
+    document.getElementById('save_and_submit').click();
+    for (var i=1;i<50000000; i++){}
+    // var last = document.getElementById('last').value;
+    // if (last == 'yes'){
+    //     document.getElementById('save_and_submit').click();
+    //     for (var i=1;i<50000000; i++){}
+    // }
+    // else{
+    //     document.getElementById('just_save').click();
+    //     
+    // }
     
-    e.preventDefault();   
+});
 
-    document.getElementById('save').click();
-
-    for (var i = 0; i < 500000000; i++) { }
-
-    e.returnValue = '';  
-    return undefined;
-
-  });
-
-  
 

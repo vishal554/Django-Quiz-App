@@ -15,6 +15,20 @@ from django.views import View
 from .models import *
 from django.contrib.auth.hashers import make_password
 
+def get_question_choice_set(quiz_id):
+    question_set = Question.objects.filter(quiz_id=quiz_id)
+    question_choice_set = {}
+    time_limit = 0
+    for i in question_set:
+        time_limit += i.time_weightage
+        if i.type == "MCQ":
+            question_choice_set[i] = McqQuestion.objects.get(
+                question_id=i.question_id)
+        elif i.type == "FIB":
+            question_choice_set[i] = 'FIB'
+    return question_choice_set, time_limit
+
+
 
 class Register(View):
     """
@@ -166,19 +180,6 @@ class Home(View):
         return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes": ongoings})
 
 
-def get_question_choice_set(quiz_id):
-    question_set = Question.objects.filter(quiz_id=quiz_id)
-    question_choice_set = {}
-    time_limit = 0
-    for i in question_set:
-        time_limit += i.time_weightage
-        if i.type == "MCQ":
-            question_choice_set[i] = McqQuestion.objects.get(
-                question_id=i.question_id)
-        elif i.type == "FIB":
-            question_choice_set[i] = 'FIB'
-    return question_choice_set, time_limit
-
 class TakeQuiz(View):
     """
     renders the Register page to the User
@@ -237,149 +238,6 @@ class TakeQuiz(View):
             return render(request, 'users/take_quiz.html', {'quiz_id': quiz_id, 'question': question, 'choices': choices, 'time_limit': time_limit, 'last': 'yes', 'total_questions':total_questions, 'current':current_question_number})
         
 
-def save_data(request):
-    """
-    Saves the data to the UsersAnswer Model
-
-    and sends the next question to the page
-
-    via JsonResponse.
-
-    """
-    # Get the questions and choice set
-
-    quiz_id = request.POST['quiz_id']
-    question_choice_set, time_limit = get_question_choice_set(quiz_id)
-    total_questions = len(list(question_choice_set))
-    
-    if request.method == "POST":
-        # Add the answer to the UsersAnswers model
-        username = request.user
-        question_id = request.POST['question_id']
-        answer = request.POST['choice']
-        question_instance = Question.objects.filter(
-            question_id=question_id).get()
-        UsersAnswer.objects.create(
-            username=username, question_id=question_instance, answer=answer)
-
-        # Get Attempted Questions
-        u_answers = UsersAnswer.objects.filter(username=username)
-        q_id_list = []
-        for i in u_answers:
-            q_id_list.append(str(i.question_id.question_id))
-
-        # Delete Attempted questions from the main set of questions
-        question_choice_set_copy = question_choice_set
-        for i in list(question_choice_set_copy):
-            if str(i.question_id) in q_id_list:
-                del question_choice_set[i]
-
-        # get the first Key-value pair
-        (question, choices) = next(iter(question_choice_set.items()))
-
-        current_question_number = (total_questions - len(list(question_choice_set))) + 1
-        
-        try: 
-            (question, choices) = next(iter(question_choice_set.items()))
-        except:
-            return redirect('profile')
-
-        #convert the model to Dictionary
-        question_obj = model_to_dict(question)
-        question_obj['question_id'] = question.question_id
-
-        # check if the question is the last question
-        if len(list(question_choice_set)) > 1:
-            if str(question.type) == 'MCQ':
-                choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'no', 'total_questions':total_questions, 'current':current_question_number})
-            else:
-                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'no', 'total_questions':total_questions, 'current':current_question_number})
-
-        elif len(list(question_choice_set)) == 1:
-            if str(question.type) == 'MCQ':
-                choices_obj = model_to_dict(choices)
-                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'yes','total_questions':total_questions, 'current':current_question_number})
-            else:
-                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'yes', 'total_questions':total_questions, 'current':current_question_number})
-
-        else:
-            return redirect('profile')
-
-
-def save_and_cont_later(request):
-    """
-    Saves the state so that user can login 
-
-    later and continue with the quiz.
-
-    """
-
-    if request.method == "POST":
-
-        # Getting post data
-        username = request.user
-        question_id = request.POST['question_id']
-        answer = request.POST.get('choice','')
-        time_rem = int(request.POST['time_remaining'])
-        quiz_id = request.POST['quiz_id']
-        last = request.POST.get('last', 'no')
-
-        # Add the answer to the UsersAnswer model
-        question_instance = Question.objects.filter(
-            question_id=question_id).get()
-        UsersAnswer.objects.create(
-            username=username, question_id=question_instance, answer=answer)
-
-        quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
-
-        # check if the question is the last question of the quiz.
-        # If it is then submit the quiz
-        if last == 'yes':
-            marks_weightage = []
-            u_answer = []
-            correct_answer = []
-            question_ids = Question.objects.filter(quiz_id=quiz_id)
-
-            for i in question_ids:
-                u_a = UsersAnswer.objects.get(
-                    username=username, question_id=i.question_id)
-                u_answer.append(u_a.answer)
-                marks_weightage.append(i.marks_weightage)
-                if i.type == "MCQ":
-                    correct_answer.append(McqQuestion.objects.get(
-                        question_id=i.question_id).answer)
-                else:
-                    correct_answer.append(FibQuestion.objects.get(
-                        question_id=i.question_id).answer)
-
-            marks_obt = 0
-            for i in range(len(u_answer)):
-                if u_answer[i] == correct_answer[i]:
-                    marks_obt += marks_weightage[i]
-
-            # check if the user has already saved this quiz before or not
-            try:
-                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
-                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(
-                        submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
-            except:
-                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
-                                     submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
-        else:
-
-            # check if the user has already saved this quiz before or not
-            try:
-                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
-                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(
-                        time_taken=time_rem)
-            except:
-                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
-                                     submitted=False, marks_obtained=0, time_taken=time_rem)
-
-        return render(request, 'users/logout.html')
-
-
 @method_decorator(login_required, name='dispatch')
 class Results(View):
     """
@@ -411,19 +269,46 @@ class Results(View):
         u_answer = []
         correct_answer = []
 
-        quiz_id = request.POST.get('quiz_id')
-        username = request.user
-        question_id = request.POST['question_id']
-        answer = request.POST.get('btnradio', '')
-        time_taken = request.POST['time_remaining_input']
+        try:
+            quiz_id = request.POST.get('quiz_id')
+            username = request.user
+            question_id = request.POST['question_id']
+            last = request.POST.get('last', '')
+            if request.is_ajax():
+                
+                answer = request.POST.get('choice', '')
+                time_taken = request.POST['time_remaining']
+            else:
+                answer = request.POST.get('btnradio', '')
+                time_taken = request.POST['time_remaining_input']
+        except:
+            return redirect('login')
 
+
+        
         # add the last question to the UsersAnswer Model
         question_instance = Question.objects.filter(
             question_id=question_id).get()
-        UsersAnswer.objects.create(
-            username=username, question_id=question_instance, answer=answer)
+        # check if the answer already exists
+        try:
+            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
+                UsersAnswer.objects.filter(username=username, question_id=question_instance).update(answer=answer)
+        except:
+            UsersAnswer.objects.create(username=username, question_id=question_instance, answer=answer)
+
         question_ids = Question.objects.filter(quiz_id=quiz_id)
 
+        # add answers to the questions as empty that user has not attempted
+        if last == 'no':
+            user_answers = UsersAnswer.objects.filter(username=username)
+            user_answered = []
+            for i in user_answers:
+                user_answered.append(i.question_id)
+
+            for i in question_ids:
+                if i not in user_answered:
+                    UsersAnswer.objects.create(username=username, question_id=i, answer="")
+        
         # Fetch the correct answers and also the answer user has given
         for i in question_ids:
             u_a = UsersAnswer.objects.get(
@@ -468,6 +353,9 @@ class Results(View):
             Taken.objects.create(username=username, quiz_id=quiz_ins,
                                  submitted=True, marks_obtained=marks_obt, time_taken=time_taken)
 
+        if request.is_ajax():
+            print('inside ajax')
+            return JsonResponse({})
         return render(request, 'users/results.html', context)
 
 
@@ -554,3 +442,150 @@ class Profile(View):
         }
 
         return render(request, self.template_name, context)
+
+
+def save_and_cont_later(request):
+    """
+    Saves the state so that user can login 
+
+    later and continue with the quiz.
+
+    """
+
+    if request.method == "POST":
+
+        # Getting post data
+        username = request.user
+        question_id = request.POST['question_id']
+        answer = request.POST.get('choice','')
+        time_rem = int(request.POST['time_remaining'])
+        quiz_id = request.POST['quiz_id']
+        last = request.POST.get('last', 'no')
+
+        # Add the answer to the UsersAnswer model
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        try:
+            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
+                UsersAnswer.objects.filter(username=username, question_id=question_instance).update(answer=answer)
+        except:
+            UsersAnswer.objects.create(username=username, question_id=question_instance, answer=answer)
+
+        quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
+
+        # check if the question is the last question of the quiz.
+        # If it is then submit the quiz
+        if last == 'yes':
+            marks_weightage = []
+            u_answer = []
+            correct_answer = []
+            question_ids = Question.objects.filter(quiz_id=quiz_id)
+
+            for i in question_ids:
+                u_a = UsersAnswer.objects.get(
+                    username=username, question_id=i.question_id)
+                u_answer.append(u_a.answer)
+                marks_weightage.append(i.marks_weightage)
+                if i.type == "MCQ":
+                    correct_answer.append(McqQuestion.objects.get(
+                        question_id=i.question_id).answer)
+                else:
+                    correct_answer.append(FibQuestion.objects.get(
+                        question_id=i.question_id).answer)
+
+            marks_obt = 0
+            for i in range(len(u_answer)):
+                if u_answer[i] == correct_answer[i]:
+                    marks_obt += marks_weightage[i]
+
+            # check if the user has already saved this quiz before or not
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(
+                        submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+        else:
+
+            # check if the user has already saved this quiz before or not
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(
+                        time_taken=time_rem)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=False, marks_obtained=0, time_taken=time_rem)
+
+        return render(request, 'users/logout.html')
+
+
+def save_data(request):
+    """
+    Saves the data to the UsersAnswer Model
+
+    and sends the next question to the page
+
+    via JsonResponse.
+
+    """
+    # Get the questions and choice set
+
+    quiz_id = request.POST['quiz_id']
+    question_choice_set, time_limit = get_question_choice_set(quiz_id)
+    total_questions = len(list(question_choice_set))
+    
+    if request.method == "POST":
+        # Add the answer to the UsersAnswers model
+        username = request.user
+        question_id = request.POST['question_id']
+        answer = request.POST['choice']
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        try:
+            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
+                UsersAnswer.objects.filter(username=username, question_id=question_instance).update(answer=answer)
+        except:
+            UsersAnswer.objects.create(username=username, question_id=question_instance, answer=answer)
+
+        # Get Attempted Questions
+        u_answers = UsersAnswer.objects.filter(username=username)
+        q_id_list = []
+        for i in u_answers:
+            q_id_list.append(str(i.question_id.question_id))
+
+        # Delete Attempted questions from the main set of questions
+        question_choice_set_copy = question_choice_set
+        for i in list(question_choice_set_copy):
+            if str(i.question_id) in q_id_list:
+                del question_choice_set[i]
+
+        # get the first Key-value pair
+        try: 
+            (question, choices) = next(iter(question_choice_set.items()))
+        except:
+            return redirect('profile')
+
+        current_question_number = (total_questions - len(list(question_choice_set))) + 1
+        
+        #convert the model to Dictionary
+        question_obj = model_to_dict(question)
+        question_obj['question_id'] = question.question_id
+
+        # check if the question is the last question
+        if len(list(question_choice_set)) > 1:
+            if str(question.type) == 'MCQ':
+                choices_obj = model_to_dict(choices)
+                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'no', 'total_questions':total_questions, 'current':current_question_number})
+            else:
+                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'no', 'total_questions':total_questions, 'current':current_question_number})
+
+        elif len(list(question_choice_set)) == 1:
+            if str(question.type) == 'MCQ':
+                choices_obj = model_to_dict(choices)
+                return JsonResponse({'question': question_obj, 'choices': choices_obj, 'last': 'yes','total_questions':total_questions, 'current':current_question_number})
+            else:
+                return JsonResponse({'question': question_obj, 'choices': '__none', 'last': 'yes', 'total_questions':total_questions, 'current':current_question_number})
+
+        else:
+            return redirect('profile')
