@@ -49,11 +49,10 @@
             
             <div class="row p-4 border m-2">
                 <div class="col-3">
-                    <button class="btn btn-primary" id="save" > Save </button>
+                    <button class="btn btn-primary" id="save" > Save and logout </button>
                 </div>
                 <div class="col-6">
                     <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
-                    <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
                     <h5 id="time_remaining" hidden="true" class="hide" name="time_remaining" ></h5>
                 </div>
                 <div class="col-3">
@@ -98,7 +97,6 @@
                     <button id="next" type="submit" class="btn btn-primary"> Next </button>
                     <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
                     <button id="save_and_submit" hidden="true" type="submit" class="btn btn-primary">  </button>
-                    <button id="just_save" hidden="true" type="submit" class="btn btn-primary">  </button>
                 </div>
             </div>
         </div>
@@ -115,7 +113,6 @@
         
     
         $(document).ready(function() {
-
 
             $('#submit').show();
             $('#next').hide();
@@ -141,46 +138,7 @@
             }
         });
 
-
-        $('#submit').click(function(e){
-            alert('submit clicked');
-            var time_rem = $('#time_remaining').text();
-            $('#time_remaining_input').val(time_rem);
-        });
-
-
-        $('#just_save').click(function(e){
-            var time_rem = $('#time_remaining').text();
-            let q_id = $('#quiz_id1').val();
-            let ques_id = $('#question_id').val();
-            let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            var last = $('#last').val();
-            
-            if ($('#question_type').val()=='MCQ'){
-                var ch = $('input:radio[name=btnradio]:checked').val();
-                if (ch==undefined){
-                    ch = '';
-                    }
-                }
-            else{
-                var ch = $('#fib_answer').val();
-                if (ch==undefined){
-                    ch = '';
-                }
-            }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
-            
-            $.ajax({
-            url: '{% url "save_and_cont_later" %}',
-            method: 'POST',
-            data: mydata,
-            datatype: 'json',
-            success: function(resp){
-                    location.reload();
-                }
-            });
-        });
-
+        // when the user closes the tab or refreshes the page 
         $('#save_and_submit').click(function(e){
             var time_rem = $('#time_remaining').text();
             let q_id = $('#quiz_id1').val();
@@ -213,9 +171,9 @@
             });
         });
 
+        // when the user clicks on save and logout
         $('#save').click(function(e){
             e.preventDefault();
-            alert('save clicked');
             var time_rem = $('#time_remaining').text();
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
@@ -225,16 +183,16 @@
                 if ($('#question_type').val()=='MCQ'){
                     var ch = $('input:radio[name=btnradio]:checked').val();
                     if (ch==undefined){
-                    ch = '';
-                    }
+                        ch = '';
+                        }
                     }
                 else{
                     var ch = $('#fib_answer').val();
                     if (ch==undefined){
-                    ch = '';
-                    }
+                        ch = '';
+                        }
                 }
-                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
+                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, save:'yes'};
                 
                 $.ajax({
                 url: '{% url "save_and_cont_later" %}',
@@ -252,6 +210,7 @@
             }
         });
 
+        // when the user clicks on next button and gets the next question
         $('#next').click(function(e){
             e.preventDefault();
             alert('next clicked')
@@ -325,6 +284,7 @@
                 }
             });
         });
+
   </script>
    
 

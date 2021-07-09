@@ -46,29 +46,16 @@ window.onload = function () {
     console.log('no');
     
 };
-    
-
 
 window.addEventListener("beforeunload", function (e) {
     e.preventDefault();
     e.returnValue = ''; 
 });
 
-
 window.addEventListener("unload", function(e){
     e.preventDefault();
-
     document.getElementById('save_and_submit').click();
     for (var i=1;i<50000000; i++){}
-    // var last = document.getElementById('last').value;
-    // if (last == 'yes'){
-    //     document.getElementById('save_and_submit').click();
-    //     for (var i=1;i<50000000; i++){}
-    // }
-    // else{
-    //     document.getElementById('just_save').click();
-    //     
-    // }
     
 });
 

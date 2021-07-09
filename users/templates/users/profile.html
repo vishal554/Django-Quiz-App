@@ -12,9 +12,6 @@
                 <div class="row m-2 p-1">
                     <h5>{{quiz.quiz_id.quiz_desc}}</h5>
                 </div>
-                <div class="row m-2 p-1">
-                    <h5>Marks Obtained : {{quiz.marks_obtained}}</h5>
-                </div>
 
                 <div class="row m-2 p-1">
                     <form action="{% url 'profile' %}" method="POST">
@@ -27,31 +24,6 @@
             </div>
         {% endfor %}
     </div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.js" 
-    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
-    crossorigin="anonymous"></script>
-
-<script>
-
-    {% comment %} $('#show_details').click(function(e){
-        var quiz_id = $('#quiz_id').val();
-        e.preventDefault();
-        $.ajax({
-            url:'{% url "get_data" %}',
-            method:'GET',
-            data:{quiz_id:quiz_id},
-            datatype:'json',
-            success:function(response){
-                $('#cont').show();
-
-            }
-        });
-
-    }); {% endcomment %}
-
-</script>
 
 {% endblock content %}
 
