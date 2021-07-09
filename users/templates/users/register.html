@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <script type="text/javascript">
+        function preback(){
+            window.history.forward(); 
+        }
+        setTimeout("preback()",0);
+        window.onunload = function(){null};
+    </script>
+
     <div class="container-fluid border p-5" style="max-width:max-content">
         <form method="POST" action="#">
             {% csrf_token %}

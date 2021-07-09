@@ -77,47 +77,52 @@ class OtpVerification(View):
     template_name = 'users/otpverification.html'
 
     def get(self, request):
-        sent = False
         try:
             email = request.session['email']
+            otp = request.session.get('otp','')
         except:
             return redirect('register')
-        if sent == False:
+        if otp == '':
             otp = random.randint(11111, 99999)
             request.session['otp'] = otp
             send_mail('OTP Verification',
                       f'Your OTP is: {otp}', 'vishalpanchal338@gmail.com', [email], fail_silently=False)
             messages.success(
                 request, f"OTP Successfully sent to {email}. Please check your email!")
-            sent = True
         else:
-            messages.warning(request, f'Already sent email with OTP')
+            messages.warning(request, f'Already sent email with OTP! please check your email')
 
         return render(request, self.template_name)
 
     def post(self, request):
         # check the entered OTP and redirect to respective page
         # depending on whether OTP is correct or not
-        entered_otp = request.POST["otp"]
-        otp = request.session['otp']
+        entered_otp = request.POST.get("otp",'0')
+        try:
+            otp = request.session['otp']
+        except:
+            return redirect('register')
+
         if int(entered_otp) == int(otp):
             form_data = request.session['form_data']
             form = UserCreationForm(form_data)
+            request.session.delete('otp')
+            request.session.delete('email')
+            request.session.delete('form_data')
             if form.is_valid():
-                print("Valid Form: ", form_data)
                 password = make_password(form_data['password1'])
                 User.objects.create(
                     username=form_data['username'], password=password, email=form_data['email'])
                 username = request.session['username']
+                
                 messages.success(
                     request, f"Account successfully created for {username}! You can login Now")
                 return redirect('login')
             else:
-                print("not valid form")
+                
                 messages.warning(
                     request, f"Invalid username or password. Please Register again")
                 return redirect('register')
-
         else:
             messages.error(request, "Invalid OTP! Please try again")
         return render(request, self.template_name)
