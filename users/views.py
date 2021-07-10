@@ -1,9 +1,6 @@
-import json
-from django import dispatch
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models.query_utils import Q
 from django.forms.models import model_to_dict
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import JsonResponse
 from users.forms import UserRegisterForm
 from django.shortcuts import redirect, render
 from django.contrib import messages
@@ -27,7 +24,6 @@ def get_question_choice_set(quiz_id):
         elif i.type == "FIB":
             question_choice_set[i] = 'FIB'
     return question_choice_set, time_limit
-
 
 
 class Register(View):
