@@ -142,7 +142,7 @@ class Home(View):
     def get(self, request):
         username = request.user
         if not username:
-            redirect('login') 
+            redirect('login')
         Quizes = Quiz.objects.all()
 
         ongoing_quizes = []
@@ -180,7 +180,7 @@ class Home(View):
 
         return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes": ongoings})
 
-
+ 
 class TakeQuiz(View):
     """
     renders the Register page to the User
