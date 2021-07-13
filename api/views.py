@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from api.serializers import FibQuestionSerializer, McqQuestionSerializer, QuestionSerializer, QuizSerializer, TakenSerializer, UserSerializer
-from users.models import Quiz, Taken, Question, FibQuestion, McqQuestion, UsersAnswer
+from quizapp.models import Quiz, Taken, Question, FibQuestion, McqQuestion, UsersAnswer
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
