@@ -1,8 +1,12 @@
 
 Quiz/variables.py
+*/__pycache__
+*/__pycache__/
+/migrations/
+.vscode
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+
 *.py[cod]
 *$py.class
 
