@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+
+<!-- Basic Login Form that inherits the default django login-->
     <div class="container-sm border p-5" style="max-width:500px">
         <form method="POST" action="#">
             {% csrf_token %}

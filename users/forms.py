@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django import forms
 
 class UserRegisterForm(UserCreationForm):
+    """
+    Extending the User Registration form
+    to add new Email field 
+    """
     email = forms.EmailField()
 
     class Meta:

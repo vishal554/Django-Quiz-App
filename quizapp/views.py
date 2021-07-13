@@ -1,3 +1,4 @@
+from django.core import exceptions
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
@@ -159,7 +160,7 @@ class ResultsView(View):
 
     **Template:**
 
-    :template:'users/results.html'
+    :template:'quizapp/results.html'
 
     """
 
@@ -172,13 +173,21 @@ class ResultsView(View):
             username = request.user
             question_id = request.POST['question_id']
             last = request.POST.get('last', '')
-            time_taken = request.POST['time_remaining']
+            question_type = request.POST['question_type']
+            
             if request.is_ajax():
                 answer = request.POST.get('choice', '')
+                time_taken = request.POST['time_remaining']
             else:
-                answer = request.POST.get('btnradio', '')
-        except:
+                if question_type == 'FIB':
+                    answer = request.POST.get('fib_answer', '')
+                else:
+                    answer = request.POST.get('btnradio', '')
+                time_taken = request.POST['time_remaining_input']
+        except Exception as e:
+            print(e)
             return redirect('login')
+
 
         # add the last question to the UsersAnswer Model
         question_instance = Question.objects.filter(
@@ -292,7 +301,7 @@ def save_and_cont_later(request):
         username = request.user
         question_id = request.POST['question_id']
         answer = request.POST.get('choice', '')
-        time_rem = int(request.POST['time_remaining'])
+        time_remaining = int(request.POST['time_remaining'])
         quiz_id = request.POST['quiz_id']
         last = request.POST.get('last', 'no')
 
@@ -312,48 +321,29 @@ def save_and_cont_later(request):
         # check if the question is the last question of the quiz.
         # If it is then submit the quiz
         if last == 'yes':
-            marks_weightage = []
-            users_answer = []
-            correct_answer = []
-            question_objects = Question.objects.filter(quiz_id=quiz_id)
-
-            for question in question_objects:
-                users_answer_object = UsersAnswer.objects.get(
-                    username=username, question_id=question.question_id)
-                users_answer.append(users_answer_object.answer)
-                marks_weightage.append(question.marks_weightage)
-                if question.type == "MCQ":
-                    correct_answer.append(McqQuestion.objects.get(
-                        question_id=question.question_id).answer)
-                else:
-                    correct_answer.append(FibQuestion.objects.get(
-                        question_id=question.question_id).answer)
-
-            marks_obt = 0
-            for i in range(len(users_answer)):
-                if users_answer[i] == correct_answer[i]:
-                    marks_obt += marks_weightage[i]
+        
+            context = get_data_of_quiz(quiz_id, username)
 
             # check if the user has already saved this quiz before or not
             try:
                 if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
                     Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(
-                        submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+                        submitted=True, marks_obtained=context['marks_obt'], time_taken=time_remaining)
             except:
                 Taken.objects.create(username=username, quiz_id=quiz_id_ins,
-                                     submitted=True, marks_obtained=marks_obt, time_taken=time_rem)
+                                     submitted=True, marks_obtained=context['marks_obt'], time_taken=time_remaining)
         else:
 
             # check if the user has already saved this quiz before or not
             try:
                 if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
                     Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(
-                        time_taken=time_rem)
+                        time_taken=time_remaining)
             except:
                 Taken.objects.create(username=username, quiz_id=quiz_id_ins,
-                                     submitted=False, marks_obtained=0, time_taken=time_rem)
+                                     submitted=False, marks_obtained=0, time_taken=time_remaining)
 
-        return render(request, 'quizapp/logout.html')
+        return render(request, 'users/logout.html')
 
 
 def save_data(request):

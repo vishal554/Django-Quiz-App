@@ -43,6 +43,7 @@
                 </div>
                 <div class="col-6">
                     <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
+                    <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
                     <h5 id="time_remaining" hidden="true" class="hide" name="time_remaining" ></h5>
                 </div>
                 <div class="col-3">
@@ -87,6 +88,7 @@
                     <button id="next" type="submit" class="btn btn-primary"> Next </button>
                     <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
                     <button id="save_and_submit" hidden="true" type="submit" class="btn btn-primary">  </button>
+                    
                 </div>
             </div>
         </div>
@@ -136,6 +138,7 @@
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
+            let question_type = $('#question_type').val();
             var last = $('#last').val();
             
             if ($('#question_type').val()=='MCQ'){
@@ -150,7 +153,7 @@
                     ch = '';
                 }
             }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, last:last};
+            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, last:last, question_type: question_type};
             // Do ajax post to results
             $.ajax({
             url: '{% url "results" %}',
@@ -249,27 +252,31 @@
                         }
                         else{
                             $('#choice1').hide();
+                            $('#label1').hide();
                         }
-                        if(choices_obj.choice1 != '__none'){
+                        if(choices_obj.choice2 != '__none'){
                             $('#choice2').val(choices_obj.choice2);
                             $('#label2').text(choices_obj.choice2);
                         }
                         else{
                             $('#choice2').hide();
+                            $('#label2').hide();
                         }
-                        if(choices_obj.choice1 != '__none'){
+                        if(choices_obj.choice3 != '__none'){
                             $('#choice3').val(choices_obj.choice3);
                             $('#label3').text(choices_obj.choice3);
                         }
                         else{
                             $('#choice3').hide();
+                            $('#label3').hide();
                         }
-                        if(choices_obj.choice1 != '__none'){
+                        if(choices_obj.choice4 != '__none'){
                             $('#choice4').val(choices_obj.choice4);
                             $('#label4').text(choices_obj.choice4);
                         }
                         else{
                             $('#choice4').hide();
+                            $('#label4').hide();
                         }
                         
                     }
@@ -291,6 +298,11 @@
                         console.log(error);
                 }
             });
+        });
+
+        $('#submit').click(function(e){
+            var time_rem = $('#time_remaining').text();
+            $('#time_remaining_input').val(time_rem);
         });
 
   </script>
