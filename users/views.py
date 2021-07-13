@@ -1,4 +1,4 @@
-import random
+import pyotp
 from django.views import View
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
@@ -62,7 +62,9 @@ class OtpVerificationView(View):
         except:
             return redirect('register')
         if otp == '':
-            otp = random.randint(11111, 99999)
+            base32 = pyotp.random_base32()
+            totp = pyotp.TOTP(base32)
+            otp = totp.now()
             request.session['otp'] = otp
             send_mail('OTP Verification',
                       f'Your OTP is: {otp}', 'vishalpanchal338@gmail.com', [email], fail_silently=False)
