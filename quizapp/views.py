@@ -7,7 +7,6 @@ from django.shortcuts import redirect, render
 from quizapp.utils import get_data_of_quiz, get_question_choice_set
 from quizapp.models import *
 
-
 # Create your views here.
 
 class HomeView(View):
@@ -21,7 +20,7 @@ class HomeView(View):
 
     **Template:**
 
-    :template:`users/register.html`
+    :template:`quizapp/register.html`
 
     """
 
@@ -36,7 +35,7 @@ class HomeView(View):
         taken_quizes = []
 
         if not (request.user.is_authenticated):
-            return render(request, 'users/index.html', {"Quizes": all_quizes})
+            return render(request, 'quizapp/index.html', {"Quizes": all_quizes})
 
         ongoings = Taken.objects.filter(username=username, submitted=False)
         taken_quiz_id = Taken.objects.filter(username=username, submitted=True)
@@ -63,11 +62,11 @@ class HomeView(View):
             available_quizes.append(Quiz.objects.get(quiz_id=quiz_id))
 
         # Get all the Quiz object from ongoing quiz ids
-        ongoings = []
-        for quiz_id in ongoing_quizes:
-            ongoings.append(Quiz.objects.get(quiz_id=quiz_id))
+        ongoing_quiz_objects = []
+        for quiz_id in ongoing_quiz_id:
+            ongoing_quiz_objects.append(Quiz.objects.get(quiz_id=quiz_id))
 
-        return render(request, 'users/index.html', {"Quizes": quizes, "ongoing_quizes": ongoings})
+        return render(request, 'quizapp/index.html', {"Quizes": available_quizes, "ongoing_quizes": ongoing_quiz_objects})
 
 
 class TakeQuizView(View):
@@ -110,6 +109,7 @@ class TakeQuizView(View):
                     del question_choice_set[i.question_id]
                 continuing = True
 
+        # if he is then get the time left
         if continuing:
             taken = Taken.objects.get(username=username, quiz_id=quiz_id)
             time_limit = int(taken.time_taken)
@@ -117,6 +117,7 @@ class TakeQuizView(View):
         current_question_number = (
             total_questions - len(list(question_choice_set))) + 1
 
+        # get the first question and choice from the set
         try:
             (question, choices) = next(iter(question_choice_set.items()))
         except:
@@ -133,10 +134,10 @@ class TakeQuizView(View):
 
         if len(list(question_choice_set)) > 1:
             context['last'] = 'no'
-            return render(request, 'users/take_quiz.html', context)
+            return render(request, 'quizapp/take_quiz.html', context)
         elif len(list(question_choice_set)) == 1:
             context['last'] = 'yes'
-            return render(request, 'users/take_quiz.html', context)
+            return render(request, 'quizapp/take_quiz.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -162,7 +163,7 @@ class ResultsView(View):
 
     """
 
-    template_name = 'users/results.html'
+    template_name = 'quizapp/results.html'
 
     def post(self, request):
 
@@ -195,15 +196,15 @@ class ResultsView(View):
 
         # add answers to the questions as empty that user has not attempted
         if last == 'no':
-            user_answers = UsersAnswer.objects.filter(username=username)
-            user_answered = []
-            for i in user_answers:
-                user_answered.append(i.question_id)
+            user_answers_object = UsersAnswer.objects.filter(username=username)
+            user_answered_question_id = []
+            for object in user_answers_object:
+                user_answered_question_id.append(object.question_id)
 
-            for i in question_ids:
-                if i not in user_answered:
+            for question_id in question_ids:
+                if question_id not in user_answered_question_id:
                     UsersAnswer.objects.create(
-                        username=username, question_id=i, answer="")
+                        username=username, question_id=question_id, answer="")
 
         # Fetch the correct answers and also the answer user has given
         quiz_ins = Quiz.objects.get(quiz_id=quiz_id)
@@ -221,10 +222,7 @@ class ResultsView(View):
             Taken.objects.create(username=username, quiz_id=quiz_ins,
                                  submitted=True, marks_obtained=context['marks_obtained'], time_taken=time_taken)
 
-        if request.is_ajax():
-            print('inside ajax')
-            return JsonResponse({})
-        return render(request, 'users/results.html', context)
+        return render(request, 'quizapp/results.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -251,7 +249,7 @@ class ProfileView(View):
 
     """
 
-    template_name = 'users/results.html'
+    template_name = 'quizapp/results.html'
 
     def get(self, request):
         username = request.user
@@ -265,7 +263,7 @@ class ProfileView(View):
             'quizes': quizes
         }
 
-        return render(request, 'users/profile.html', context)
+        return render(request, 'quizapp/profile.html', context)
 
     def post(self, request):
         # shows the details of the quiz submitted by
@@ -315,25 +313,25 @@ def save_and_cont_later(request):
         # If it is then submit the quiz
         if last == 'yes':
             marks_weightage = []
-            u_answer = []
+            users_answer = []
             correct_answer = []
-            question_ids = Question.objects.filter(quiz_id=quiz_id)
+            question_objects = Question.objects.filter(quiz_id=quiz_id)
 
-            for i in question_ids:
-                u_a = UsersAnswer.objects.get(
-                    username=username, question_id=i.question_id)
-                u_answer.append(u_a.answer)
-                marks_weightage.append(i.marks_weightage)
-                if i.type == "MCQ":
+            for question in question_objects:
+                users_answer_object = UsersAnswer.objects.get(
+                    username=username, question_id=question.question_id)
+                users_answer.append(users_answer_object.answer)
+                marks_weightage.append(question.marks_weightage)
+                if question.type == "MCQ":
                     correct_answer.append(McqQuestion.objects.get(
-                        question_id=i.question_id).answer)
+                        question_id=question.question_id).answer)
                 else:
                     correct_answer.append(FibQuestion.objects.get(
-                        question_id=i.question_id).answer)
+                        question_id=question.question_id).answer)
 
             marks_obt = 0
-            for i in range(len(u_answer)):
-                if u_answer[i] == correct_answer[i]:
+            for i in range(len(users_answer)):
+                if users_answer[i] == correct_answer[i]:
                     marks_obt += marks_weightage[i]
 
             # check if the user has already saved this quiz before or not
@@ -355,7 +353,7 @@ def save_and_cont_later(request):
                 Taken.objects.create(username=username, quiz_id=quiz_id_ins,
                                      submitted=False, marks_obtained=0, time_taken=time_rem)
 
-        return render(request, 'users/logout.html')
+        return render(request, 'quizapp/logout.html')
 
 
 def save_data(request):
@@ -390,16 +388,15 @@ def save_data(request):
                 username=username, question_id=question_instance, answer=answer)
 
         # Get Attempted Questions
-        u_answers = UsersAnswer.objects.filter(username=username)
-        q_id_list = []
-        for i in u_answers:
-            q_id_list.append(str(i.question_id.question_id))
+        users_answer_objects = UsersAnswer.objects.filter(username=username)
+        question_ids = []
+        for users_answer in users_answer_objects:
+            question_ids.append(str(users_answer.question_id.question_id))
 
         # Delete Attempted questions from the main set of questions
-        question_choice_set_copy = question_choice_set
-        for i in list(question_choice_set_copy):
-            if str(i.question_id) in q_id_list:
-                del question_choice_set[i]
+        for question_object in list(question_choice_set):
+            if str(question_object.question_id) in question_ids:
+                del question_choice_set[question_object]
 
         # get the first Key-value pair
         try:

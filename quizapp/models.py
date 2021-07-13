@@ -17,11 +17,15 @@ class Question(models.Model):
     marks_weightage = models.IntegerField()
     time_weightage = models.FloatField()
 
+    def __str__(self):
+        return f'{self.question} : {self.quiz_id.quiz_name}'
+
     
 class FibQuestion(models.Model):
     # Model to store the Answers of FIB Questions 
     question_id = models.ForeignKey("Question", on_delete=models.PROTECT)
     answer = models.CharField(max_length=100)
+
 
 
 class McqQuestion(models.Model):
@@ -33,6 +37,8 @@ class McqQuestion(models.Model):
     choice4 = models.CharField(max_length=50)
     answer = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f'{self.question_id.question}'
 
 class Quiz(models.Model):
     # Model for quizes
@@ -41,7 +47,7 @@ class Quiz(models.Model):
     quiz_desc = models.CharField(max_length=300)
     
     def __str__(self):
-        return f'{self.quiz_id}'
+        return f'{self.quiz_name}'
 
 
 class Taken(models.Model):
@@ -52,6 +58,8 @@ class Taken(models.Model):
     marks_obtained = models.IntegerField()
     time_taken = models.IntegerField()
     
+    def __str__(self):
+        return f'{self.username} - {self.quiz_id.quiz_name} - {self.submitted}'
 
 class UsersAnswer(models.Model):
     # Model where the User's answer will be stored
@@ -59,4 +67,6 @@ class UsersAnswer(models.Model):
     question_id = models.ForeignKey("Question", on_delete=models.PROTECT)
     answer = models.CharField(max_length=50)
 
+    def __str__(self):  
+        return f'{self.username} - {self.question_id.question} - {self.answer}'
 

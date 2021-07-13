@@ -1,4 +1,6 @@
-from users.models import FibQuestion, McqQuestion, Question, UsersAnswer
+
+from quizapp.models import FibQuestion, McqQuestion, Question, UsersAnswer
+
 
 def get_data_of_quiz(quiz_id, username):
     marks_weightage = []

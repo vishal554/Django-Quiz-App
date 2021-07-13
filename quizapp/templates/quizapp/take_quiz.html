@@ -99,7 +99,7 @@
         crossorigin="anonymous"></script>
 
     <script>
-    
+
         $(document).ready(function() {
             // By default show the submit button 
             $('#submit').show();
@@ -212,13 +212,13 @@
             if ($('#question_type').val()=='MCQ'){
                 var ch = $('input:radio[name=btnradio]:checked').val();
                 if (ch==undefined){
-                    ch = ''
+                    ch = '';
                     }
                 }
             else{
                 var ch = $('#fib_answer').val();
                 if (ch==undefined){
-                    ch = ''
+                    ch = '';
                 }
             }
             var mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
@@ -232,9 +232,7 @@
                     $('#next').show();
                     $('#submit').hide();
                     var question_obj = response.question;
-                    console.log(question_obj);
                     var choices_obj = response.choices;
-                    console.log(choices_obj);       
                     $('#question_id').val(question_obj.question_id);
                     $('#question_type').val(question_obj.type);
                     $('#last').val(response.last);
@@ -245,16 +243,34 @@
                         $('#mcq_box').show();
 
                         $('#question_box').text(question_obj.question);
-                        $('#choice1').val(choices_obj.choice1);
-                        $('#choice2').val(choices_obj.choice2);
-                        $('#choice3').val(choices_obj.choice3);
-                        $('#choice4').val(choices_obj.choice4);
-
-                        $('#label1').text(choices_obj.choice1);
-                        $('#label2').text(choices_obj.choice2);
-                        $('#label3').text(choices_obj.choice3);
-                        $('#label4').text(choices_obj.choice4);
-
+                        if(choices_obj.choice1 != '__none'){
+                            $('#choice1').val(choices_obj.choice1);
+                            $('#label1').text(choices_obj.choice1);
+                        }
+                        else{
+                            $('#choice1').hide();
+                        }
+                        if(choices_obj.choice1 != '__none'){
+                            $('#choice2').val(choices_obj.choice2);
+                            $('#label2').text(choices_obj.choice2);
+                        }
+                        else{
+                            $('#choice2').hide();
+                        }
+                        if(choices_obj.choice1 != '__none'){
+                            $('#choice3').val(choices_obj.choice3);
+                            $('#label3').text(choices_obj.choice3);
+                        }
+                        else{
+                            $('#choice3').hide();
+                        }
+                        if(choices_obj.choice1 != '__none'){
+                            $('#choice4').val(choices_obj.choice4);
+                            $('#label4').text(choices_obj.choice4);
+                        }
+                        else{
+                            $('#choice4').hide();
+                        }
                         
                     }
                     else
