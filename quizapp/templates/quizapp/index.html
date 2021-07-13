@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
-    
+
+    <!-- Shows the Home page with available and ongoing quizes -->
 
     <div class="container">
-        
+        <!-- Check if the Quizes exist or not-->
         {% if Quizes or ongoing_quizes %}
-
             <div class="row border m-3 p-2">
                 <h3> Available Quizes </h3>
+                <!-- Get Available quizes -->
                 {% for quiz in Quizes %}
                     <div class="row border p-2 m-2"> 
                         <h3 class="card-title"> {{ quiz.quiz_name }} </h3>
@@ -30,6 +30,7 @@
 
             <div class="row border m-3 p-2">
                 <h3> Ongoing Quizes </h3>
+                <!-- Get Ongoing quizes -->
                 {% for quiz in ongoing_quizes %}
                     <div class="row border p-2 m-2"> 
                         <h3 class="card-title"> {{ quiz.quiz_name }} </h3>
@@ -54,10 +55,6 @@
                 <h3 class="card-title">No Quiz Available<h3>
             </div>
         {% endif %}
-        
-
-
-        
     </div>
 {% endblock content %}
 

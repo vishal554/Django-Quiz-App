@@ -18,24 +18,14 @@
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     
     <script src="{% static 'main.js' %}" defer > </script>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-          {{message}}
-        </div>
-      {% endfor%}
-    {% endif %}
-
-
     <form method="POST" action="{% url 'results' %}">
         {% csrf_token %}
+
         <input type="text" hidden="true" id="quiz_id1" name="quiz_id" value="{{quiz_id}}"/>
         <input type="text" hidden="true" id="question_id" name="question_id" value="{{question.question_id}}"/>
         <input type="text" hidden="true" id="question_type" name="question_type" value="{{question.type}}"/>
@@ -49,7 +39,7 @@
             
             <div class="row p-4 border m-2">
                 <div class="col-3">
-                    <button class="btn btn-primary" id="save" > Save </button>
+                    <button class="btn btn-primary" id="save" > Save and logout </button>
                 </div>
                 <div class="col-6">
                     <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
@@ -98,7 +88,7 @@
                     <button id="next" type="submit" class="btn btn-primary"> Next </button>
                     <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
                     <button id="save_and_submit" hidden="true" type="submit" class="btn btn-primary">  </button>
-                    <button id="just_save" hidden="true" type="submit" class="btn btn-primary">  </button>
+                    
                 </div>
             </div>
         </div>
@@ -106,32 +96,32 @@
     
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.js" 
-    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" 
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
+        crossorigin="anonymous"></script>
+
     <script>
 
-        
-        
-    
         $(document).ready(function() {
-
-
+            // By default show the submit button 
             $('#submit').show();
             $('#next').hide();
             var last = $('#last').val();
             var q_type = $('#question_type').val();
             if (q_type == 'MCQ'){
+                // show the MCQ Box when the question type is MCQ
                 $('#fib_box').hide();
                 $('#mcq_box').show();
             }
             else
             {
+                // show the FIB Box when the question type is FIB
                 $('#fib_box').show();
                 $('#mcq_box').hide();
             }
-
-            if (last == 'yes'){
+                // If it is last question then show 
+                // the submit button else hide it
+            if (last == 'yes'){   
                 $('#next').hide();
                 $('#submit').show();
             }
@@ -141,51 +131,14 @@
             }
         });
 
-
-        $('#submit').click(function(e){
-            alert('submit clicked');
-            var time_rem = $('#time_remaining').text();
-            $('#time_remaining_input').val(time_rem);
-        });
-
-
-        $('#just_save').click(function(e){
-            var time_rem = $('#time_remaining').text();
-            let q_id = $('#quiz_id1').val();
-            let ques_id = $('#question_id').val();
-            let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            var last = $('#last').val();
-            
-            if ($('#question_type').val()=='MCQ'){
-                var ch = $('input:radio[name=btnradio]:checked').val();
-                if (ch==undefined){
-                    ch = '';
-                    }
-                }
-            else{
-                var ch = $('#fib_answer').val();
-                if (ch==undefined){
-                    ch = '';
-                }
-            }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
-            
-            $.ajax({
-            url: '{% url "save_and_cont_later" %}',
-            method: 'POST',
-            data: mydata,
-            datatype: 'json',
-            success: function(resp){
-                    location.reload();
-                }
-            });
-        });
-
+        // when the user closes the tab or refreshes the page 
+        // save the quiz and submit it with blank answers
         $('#save_and_submit').click(function(e){
             var time_rem = $('#time_remaining').text();
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
+            let question_type = $('#question_type').val();
             var last = $('#last').val();
             
             if ($('#question_type').val()=='MCQ'){
@@ -200,8 +153,8 @@
                     ch = '';
                 }
             }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, last:last};
-            
+            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, last:last, question_type: question_type};
+            // Do ajax post to results
             $.ajax({
             url: '{% url "results" %}',
             method: 'POST',
@@ -213,28 +166,30 @@
             });
         });
 
+        // when the user clicks on "save and logout"
         $('#save').click(function(e){
             e.preventDefault();
-            alert('save clicked');
             var time_rem = $('#time_remaining').text();
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
             var last = $('#last').val();
+            // If the question is last then submit the quiz
+            // else save it and logout
             if (last == 'no'){
                 if ($('#question_type').val()=='MCQ'){
                     var ch = $('input:radio[name=btnradio]:checked').val();
                     if (ch==undefined){
-                    ch = '';
-                    }
+                        ch = '';
+                        }
                     }
                 else{
                     var ch = $('#fib_answer').val();
                     if (ch==undefined){
-                    ch = '';
-                    }
+                        ch = '';
+                        }
                 }
-                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf};
+                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, save:'yes'};
                 
                 $.ajax({
                 url: '{% url "save_and_cont_later" %}',
@@ -245,29 +200,28 @@
                         top.location.href="{% url 'logout' %}"
                     }
                 });
-                
             }
             else{
                 $('#submit').click();
             }
         });
 
+        // when the user clicks on next button and gets the next question
         $('#next').click(function(e){
             e.preventDefault();
-            alert('next clicked')
             let q_id = $('#quiz_id1').val();
             let ques_id = $('#question_id').val();
             let csrf = $('input[name=csrfmiddlewaretoken]').val();
             if ($('#question_type').val()=='MCQ'){
                 var ch = $('input:radio[name=btnradio]:checked').val();
                 if (ch==undefined){
-                    ch = ''
-                }
+                    ch = '';
+                    }
                 }
             else{
                 var ch = $('#fib_answer').val();
                 if (ch==undefined){
-                    ch = ''
+                    ch = '';
                 }
             }
             var mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
@@ -281,9 +235,7 @@
                     $('#next').show();
                     $('#submit').hide();
                     var question_obj = response.question;
-                    console.log(question_obj);
                     var choices_obj = response.choices;
-                    console.log(choices_obj);       
                     $('#question_id').val(question_obj.question_id);
                     $('#question_type').val(question_obj.type);
                     $('#last').val(response.last);
@@ -294,16 +246,38 @@
                         $('#mcq_box').show();
 
                         $('#question_box').text(question_obj.question);
-                        $('#choice1').val(choices_obj.choice1);
-                        $('#choice2').val(choices_obj.choice2);
-                        $('#choice3').val(choices_obj.choice3);
-                        $('#choice4').val(choices_obj.choice4);
-
-                        $('#label1').text(choices_obj.choice1);
-                        $('#label2').text(choices_obj.choice2);
-                        $('#label3').text(choices_obj.choice3);
-                        $('#label4').text(choices_obj.choice4);
-
+                        if(choices_obj.choice1 != '__none'){
+                            $('#choice1').val(choices_obj.choice1);
+                            $('#label1').text(choices_obj.choice1);
+                        }
+                        else{
+                            $('#choice1').hide();
+                            $('#label1').hide();
+                        }
+                        if(choices_obj.choice2 != '__none'){
+                            $('#choice2').val(choices_obj.choice2);
+                            $('#label2').text(choices_obj.choice2);
+                        }
+                        else{
+                            $('#choice2').hide();
+                            $('#label2').hide();
+                        }
+                        if(choices_obj.choice3 != '__none'){
+                            $('#choice3').val(choices_obj.choice3);
+                            $('#label3').text(choices_obj.choice3);
+                        }
+                        else{
+                            $('#choice3').hide();
+                            $('#label3').hide();
+                        }
+                        if(choices_obj.choice4 != '__none'){
+                            $('#choice4').val(choices_obj.choice4);
+                            $('#label4').text(choices_obj.choice4);
+                        }
+                        else{
+                            $('#choice4').hide();
+                            $('#label4').hide();
+                        }
                         
                     }
                     else
@@ -325,12 +299,14 @@
                 }
             });
         });
+
+        $('#submit').click(function(e){
+            var time_rem = $('#time_remaining').text();
+            $('#time_remaining_input').val(time_rem);
+        });
+
   </script>
-   
-
 </body>
-
-    
 </html>
 
 

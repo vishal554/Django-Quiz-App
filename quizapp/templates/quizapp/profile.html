@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load index %}
+{% block content %}
+
+<!-- Profile Page which shows the completed Quizzes of the user -->
+
+    <div class="container">
+
+        {% for quiz in taken %}
+            <!-- Get all the taken Quizzes -->
+            <div class="row border m-2">
+                <div class="row m-2 p-1">
+                    <h4>{{quiz.quiz_id.quiz_name}}</h4>
+                </div>
+                <div class="row m-2 p-1">
+                    <h5>{{quiz.quiz_id.quiz_desc}}</h5>
+                </div>
+                <div class="row m-2 p-1">
+                    <form action="{% url 'profile' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="quiz_id" value="{{quiz.quiz_id.quiz_id}}"/>
+                        <!-- Button which redirects to the Results page to show the details of the taken Quiz-->
+                        <button id="show_details" class="btn btn-primary"> Show Details </button>
+                    </form>
+                </div> 
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}
+
