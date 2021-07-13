@@ -1,9 +1,13 @@
 
 Quiz/variables.py
-*/__pycache__
-*/__pycache__/
-/migrations/
-.vscode
+__pycache__/
+.vscode/
+Quiz/__pycache__/
+quizapp/__pycache__/
+users/__pycache__/
+quizapp/migrations/*
+users/migrations/
+
 
 # Byte-compiled / optimized / DLL files
 
