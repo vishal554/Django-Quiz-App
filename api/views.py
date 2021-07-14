@@ -1,3 +1,4 @@
+from api.utils import get_question_choice_set
 import random
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -78,12 +79,15 @@ class RegisterView(APIView):
             data['response'] = 'Success'
             request.session['email'] = serializer.data['email']
             request.session['username'] = serializer.data['username']
-            request.session['password'] = request.data['password']
+            request.session['password'] = request.data['password1']
             # token = Token.objects.get(user=user).key
             # data['token'] = token
+            print("test1")
             return Response(data)
         else:
             data = serializer.errors
+            print(serializer.errors)
+        print("test2")
         return Response(data)
 
 
@@ -301,17 +305,3 @@ class TakeQuizView(APIView):
             data['last'] = 'yes'
             return Response(data)
 
-
-def get_question_choice_set(quiz_id):
-    
-    question_set = Question.objects.filter(quiz_id=quiz_id)
-    question_choice_set = {}
-    time_limit = 0
-    for i in question_set:
-        time_limit += i.time_weightage
-        if i.type == "MCQ":
-            question_choice_set[i] = McqQuestion.objects.get(
-                question_id=i.question_id)
-        elif i.type == "FIB":
-            question_choice_set[i] = 'FIB'
-    return question_choice_set, time_limit

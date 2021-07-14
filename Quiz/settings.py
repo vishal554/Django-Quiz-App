@@ -38,10 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'users.apps.UsersConfig',
     'quizapp.apps.QuizappConfig',
-    'crispy_forms',
     'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig',
     'rest_framework',
     'rest_framework.authtoken',
 ]

@@ -8,6 +8,7 @@ users/__pycache__/
 quizapp/migrations/*
 users/migrations/
 api/migrations/
+frontend/migrations/
 
 
 # Byte-compiled / optimized / DLL files

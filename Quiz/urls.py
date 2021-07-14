@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('quizapp.urls')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('frontend/', include('frontend.urls'))
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
