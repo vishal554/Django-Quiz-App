@@ -46,8 +46,6 @@ class Quiz(models.Model):
     quiz_name = models.CharField(max_length=50)
     quiz_desc = models.CharField(max_length=300)
     
-    def __str__(self):
-        return f'{self.quiz_name}'
 
 
 class Taken(models.Model):

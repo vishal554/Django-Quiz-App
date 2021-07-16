@@ -1,0 +1,64 @@
+{% extends "frontend/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<!-- Basic Login Form that inherits the default django login-->
+    <div class="container-sm border p-5" style="max-width:500px">
+        <form>
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4 text-center">Login</legend>
+                <div class="row">
+                    Username: <input type="text" id="username" ></input>
+                </div>
+                <div class="row">
+                    Password: <input type="password" id="password" ></input>
+                </div>
+            </fieldset>
+            
+            <div class="form-group text-center">
+                <button class="btn btn-outline-info m-3" onclick="login()">Login</button>
+            </div> 
+        </form>
+
+        <div class="border-top pt-3">
+            <small class="text-muted">
+            Don't have an account? <a class="ml-2" href="register">Sign Up</a>
+            </small>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+    function login(){
+        var username = document.getElementById('username').value
+        var password = document.getElementById('password').value
+        var url = "http://127.0.0.1:8000/api/login/"
+        var data = {
+            username: username,
+            password: password
+        }
+        var options = {
+            method:"POST",
+            body: JSON.stringify(data),
+            headers:{
+                "Content-Type": "application/json"
+            }
+        }
+        fetch(url,options).then((response) => {
+                console.log(response)
+                if (!response.ok){
+                    throw Error('Error')
+                }
+                return response.json()
+            })
+            .then((json_data) => {
+                console.log(json_data)
+            })
+            .catch( error => {
+                console.log(error)
+            })
+        
+    }
+    
+    </script>
+{% endblock content %}

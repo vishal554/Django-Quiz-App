@@ -1,0 +1,54 @@
+{% extends "frontend/base.html" %}
+{% load index %}
+{% block content %}     
+
+<!-- Shows the Result of the Quiz attempted by the user after submitting -->
+    <div class="container">
+            <div class="row">
+                <div class="col border p-2">
+                    <h4> Question </h4>
+                </div>
+                <div class="col border p-2">
+                    <h4> Your answer </h4>
+                </div>
+                <div class="col border p-2">
+                    <h4> Correct answer </h4>
+                </div>
+            </div>
+        {% for question in questions %}
+            <div class="row p-2">
+                <div class="col">
+                    <h5>{{ question.question }}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{ UsersAnswer|index:forloop.counter0 }}</h5>
+                </div>
+                <div class="col">
+                    <h5>{{ correct_answer|index:forloop.counter0 }}</h5>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class='row border'></div>
+
+        <div class="row m-2 p-1">
+            <div class="col">
+                <h4> Total Marks: {{total_marks}}</h4>
+            </div>
+        </div>
+        <div class="row m-2 p-1">
+            <div class="col">
+                <h4> Marks Obtained: {{marks_obtained}}</h4>
+            </div>
+        </div>
+        <div class="row m-2 p-1">
+            <div class="col">
+                <h4> Percentage: {{percentage}} % </h4>
+            </div>
+        </div>
+        
+    </div>
+
+{% endblock content %}      
+
+

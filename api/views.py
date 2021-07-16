@@ -1,10 +1,11 @@
-from api.utils import get_question_choice_set
+from django.db.models.query import QuerySet
+from api.utils import get_data_of_quiz, get_question_choice_set
 import random
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView
 from api.serializers import FibQuestionSerializer, McqQuestionSerializer, QuestionSerializer, QuizSerializer, TakenSerializer, UserSerializer
 from quizapp.models import Quiz, Taken, Question, FibQuestion, McqQuestion, UsersAnswer
 from django.shortcuts import render
@@ -15,6 +16,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
+from django.forms.models import model_to_dict
 # Create your views here.
 
 
@@ -69,26 +71,32 @@ class HomeView(APIView):
         return Response(data)
 
 
-class RegisterView(APIView):
+class RegisterView(CreateAPIView):
     permission_classes = []
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            # user = serializer.save()
-            data['response'] = 'Success'
-            request.session['email'] = serializer.data['email']
-            request.session['username'] = serializer.data['username']
-            request.session['password'] = request.data['password1']
-            # token = Token.objects.get(user=user).key
-            # data['token'] = token
-            print("test1")
-            return Response(data)
-        else:
-            data = serializer.errors
-            print(serializer.errors)
-        print("test2")
-        return Response(data)
+    serializer_class = UserSerializer
+    authentication_classes = []
+
+
+    # def post(self, request):
+    #     serializer = UserSerializer(data=request.data)
+    #     data = {}
+    #     if serializer.is_valid():
+    #         # user = serializer.save()
+    #         data['response'] = 'Success'
+    #         request.session['email'] = serializer.data['email']
+    #         request.session['username'] = serializer.data['username']
+    #         request.session['password'] = request.data['password1']
+    #         print( request.data['password1'])
+    #         # token = Token.objects.get(user=user).key
+    #         # data['token'] = token
+    #         print("test1")
+    #         return Response(data)
+    #     else:
+    #         data['response'] = 'fail'
+    #         data = serializer.errors
+    #         print(serializer.errors)
+    #     print("test2")
+    #     return Response(data)
 
 
 class OtpVerificationView(APIView):
@@ -145,12 +153,26 @@ class OtpVerificationView(APIView):
 
 
 class ProfileView(ListAPIView):
-    queryset = Taken.objects.filter(submitted=True)
-    serializer_class = TakenSerializer
+    
+    serializer_class = QuizSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
+    def get_queryset(self):
+        quiz = []
+        taken_objects = Taken.objects.filter(submitted=True)
+        for i in taken_objects:
+            quiz.append(i.quiz_id)
+        return quiz
+
+    def post(self, request):
+        quiz_id = request.data['quiz_id']
+        username = request.user
+        context = get_data_of_quiz(quiz_id, username)
+        question = QuestionSerializer(context['questions'], many=True)
+        context['questions'] = question.data
+        return Response(context)
 
 class ResultsView(APIView):
 
@@ -304,4 +326,5 @@ class TakeQuizView(APIView):
         elif len(list(question_choice_set)) == 1:
             data['last'] = 'yes'
             return Response(data)
+
 
