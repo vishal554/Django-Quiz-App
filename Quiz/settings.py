@@ -43,7 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'quizapp.apps.QuizappConfig',
+<<<<<<< Updated upstream
     'crispy_forms',
+=======
+    'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'testing.apps.TestingConfig'
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [

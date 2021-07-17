@@ -1,0 +1,617 @@
+
+{% extends 'testing/base.html' %}
+{% load static %}
+{% block body %}
+	<body id="kt_body" class="header-fixed header-mobile-fixed header-bottom-enabled page-loading">
+		<!--begin::Main-->
+		<!--begin::Header Mobile-->
+		<div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
+			<!--begin::Logo-->
+			<a href="index.html">
+				<img alt="Logo" src="assets/media/logos/logo.png" class="max-h-30px" />
+			</a>
+			<!--end::Logo-->
+			<!--begin::Toolbar-->
+			<div class="d-flex align-items-center">
+				<button class="btn p-0 burger-icon burger-icon-left ml-4" id="kt_header_mobile_toggle">
+					<span></span>
+				</button>
+				<button class="btn p-0 ml-2" id="kt_header_mobile_topbar_toggle">
+					<span class="svg-icon svg-icon-xl">
+						<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+								<polygon points="0 0 24 0 24 24 0 24" />
+								<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+								<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+							</g>
+						</svg>
+						<!--end::Svg Icon-->
+					</span>
+				</button>
+			</div>
+			<!--end::Toolbar-->
+		</div>
+		<!--end::Header Mobile-->
+		<div class="d-flex flex-column flex-root">
+			<!--begin::Page-->
+			<div class="d-flex flex-row flex-column-fluid page">
+				<!--begin::Wrapper-->
+				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+					<!--begin::Header-->
+					<div id="kt_header" class="header flex-column header-fixed">
+						<!--begin::Top-->
+						<div class="header-top">
+							<!--begin::Container-->
+							<div class="container">
+								<!--begin::Left-->
+								<div class="d-none d-lg-flex align-items-center mr-3">
+									<!--begin::Logo-->
+									<a href="index.html" class="mr-20">
+										<img alt="Logo" src="assets/media/logos/logo.png" class="max-h-35px" />
+									</a>
+									<!--end::Logo-->
+									<!--begin::Tab Navs(for desktop mode)-->
+									<ul class="header-tabs nav align-self-end font-size-lg">
+										<!--begin::Item-->
+										<li class="nav-item">
+											<a href="company-people.html" class="nav-link py-4 px-6">People</a>
+										</li>
+										<!--end::Item-->
+										<!--begin::Item-->
+										<li class="nav-item mr-3">
+											<a href="company-task.html" class="nav-link py-4 px-6">Tasks</a>
+										</li>
+										<!--end::Item-->
+										<!--begin::Item-->
+										<li class="nav-item mr-3">
+											<a href="company-settings.html" class="nav-link py-4 px-6 active">Settings</a>
+										</li>
+										<!--end::Item-->
+									</ul>
+									<!--begin::Tab Navs-->
+								</div>
+								<!--end::Left-->
+								<!--begin::Topbar-->
+								<div class="topbar bg-primary">
+									<!--begin::Notifications-->
+									<div class="dropdown">
+										<!--begin::Toggle-->
+										<div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
+											<div class="btn btn-icon btn-hover-transparent-white btn-dropdown btn-lg mr-1 pulse pulse-white">
+												<span class="svg-icon svg-icon-xl">
+													<i class="icon-xl far fa-bell text-dark"></i>
+												</span>
+												<span class="pulse-ring"></span>
+											</div>
+										</div>
+										<!--end::Toggle-->
+										<!--begin::Dropdown-->
+										<div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
+											<form>
+												<!--begin::Header-->
+												<div class="d-flex flex-column pt-7 pb-5 bgi-size-cover bgi-no-repeat rounded-top" style="background-image: url(assets/media/misc/bg-1.jpg)">
+													<!--begin::Title-->
+													<h4 class="d-flex flex-center rounded-top">
+														<span class="text-white">User Notifications</span>
+														<span class="btn btn-text btn-success btn-sm font-weight-bold btn-font-md ml-2">23 new</span>
+													</h4>
+													<!--end::Title-->
+												</div>
+												<!--end::Header-->
+												<!--begin::Content-->
+												<!--begin::Nav-->
+												<div class="navi navi-hover scroll my-4" data-scroll="true" data-height="300" data-mobile-height="200">
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-line-chart text-success"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New report has been received</div>
+																<div class="text-muted">23 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-paper-plane text-danger"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">Finance report has been generated</div>
+																<div class="text-muted">25 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-user flaticon2-line- text-success"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New order has been received</div>
+																<div class="text-muted">2 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-pin text-primary"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New customer is registered</div>
+																<div class="text-muted">3 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-sms text-danger"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">Application has been approved</div>
+																<div class="text-muted">3 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-pie-chart-3 text-warning"></i>
+															</div>
+															<div class="navinavinavi-text">
+																<div class="font-weight-bold">New file has been uploaded</div>
+																<div class="text-muted">5 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon-pie-chart-1 text-info"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New user feedback received</div>
+																<div class="text-muted">8 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-settings text-success"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">System reboot has been successfully completed</div>
+																<div class="text-muted">12 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon-safe-shield-protection text-primary"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New order has been placed</div>
+																<div class="text-muted">15 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-notification text-primary"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">Company meeting canceled</div>
+																<div class="text-muted">19 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-fax text-success"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New report has been received</div>
+																<div class="text-muted">23 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon-download-1 text-danger"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">Finance report has been generated</div>
+																<div class="text-muted">25 hrs ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon-security text-warning"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New customer comment recieved</div>
+																<div class="text-muted">2 days ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+													<!--begin::Item-->
+													<a href="#" class="navi-item">
+														<div class="navi-link">
+															<div class="navi-icon mr-2">
+																<i class="flaticon2-analytics-1 text-success"></i>
+															</div>
+															<div class="navi-text">
+																<div class="font-weight-bold">New customer is registered</div>
+																<div class="text-muted">3 days ago</div>
+															</div>
+														</div>
+													</a>
+													<!--end::Item-->
+												</div>
+												<!--end::Nav-->
+												<!--begin::Action-->
+												<div class="d-flex flex-center pb-7">
+													<a href="notification.html" class="btn btn-light-primary font-weight-bold text-center">See All</a>
+												</div>
+												<!--end::Action-->
+												<!--end::Content-->
+											</form>
+										</div>
+										<!--end::Dropdown-->
+									</div>
+									<!--end::Notifications-->
+									<!--begin::User-->
+									<div class="topbar-item">
+										<div class="btn btn-icon btn-hover-transparent-white w-sm-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+											<div class="d-flex flex-column text-right pr-sm-3">
+												<span class="text-white opacity-50 font-weight-bold font-size-sm d-none d-sm-inline">Sean</span>
+												<span class="text-white font-weight-bolder font-size-sm d-none d-sm-inline">UX Designer</span>
+											</div>
+											<span class="symbol symbol-35">
+												<span class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">S</span>
+											</span>
+										</div>
+									</div>
+									<!--end::User-->
+								</div>
+								<!--end::Topbar-->
+							</div>
+							<!--end::Container-->
+						</div>
+						<!--end::Top-->
+						<!--begin::Bottom-->
+						<div class="header-bottom">
+							<!--begin::Container-->
+							<div class="container">
+								<!--begin::Header Menu Wrapper-->
+								<div class="header-navs header-navs-left" id="kt_header_navs">
+									<!--begin::Menu-->
+									<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+										<!--begin::Nav-->
+										<ul class="menu-nav">
+											<li class="menu-item" aria-haspopup="true">
+												<a href="company-people.html" class="menu-link">
+													<span class="menu-text">People</span>
+												</a>
+											</li>
+											<li class="menu-item" aria-haspopup="true">
+												<a href="company-task.html" class="menu-link">
+													<span class="menu-text">Task</span>
+												</a>
+											</li>
+											<li class="menu-item menu-item-active" aria-haspopup="true">
+												<a href="company-settings.html" class="menu-link">
+													<span class="menu-text">Settings</span>
+												</a>
+											</li>
+										</ul>
+										<!--end::Nav-->
+									</div>
+									<!--end::Menu-->
+								</div>
+								<!--end::Header Menu Wrapper-->
+							</div>
+							<!--end::Container-->
+						</div>
+						<!--end::Bottom-->
+					</div>
+					<!--end::Header-->
+					<!--begin::Content-->
+					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+				        <!--begin::Entry-->
+						<div class="d-flex flex-column-fluid">
+							<!--begin::Container-->
+							<div class="container">
+								<div class="row">
+									<div class="col-xl-12">
+										<!--begin::Card-->
+										<div class="card card-custom gutter-b">
+											<div class="card-header">
+												<div class="card-title">
+													<h3 class="card-title align-items-start flex-column">
+														<span class="card-label font-weight-bolder text-dark">Settings</span>
+													</h3>
+												</div>
+											</div>
+											<div class="card-body">
+												<!--begin::Form-->
+												<div class="row">
+													<div class="col-xl-8 m-auto">														
+														<form class="form mt-0" id="kt_form">
+															<!--begin::User-->
+															<div class="d-flex align-items-center">
+																<div class="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
+																	<div class="symbol-label" style="background-image:url('assets/media/users/300_13.jpg')"></div>
+																</div>
+																<div>
+																	<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Company Name</a>
+																	<div class="text-muted">Co-Founder & CTO</div>
+																</div>
+															</div>
+															<!--end::User-->
+															<hr>
+															<div class="mb-5 font-weight-bold text-dark lead">Profile Information</div>
+															<div class="row">
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Name of the Company</label>
+																		<input type="text" class="form-control form-control-lg" name="company" placeholder="Company Name" value="Cipla" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>E-mail</label>
+																		<input type="email" class="form-control form-control-lg" name="email" placeholder="Email Id" value="error@mail.com" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Password</label>
+																		<input type="password" class="form-control form-control-lg" name="password" placeholder="Password" value="Password" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Areas to focus in Nutra</label>
+																		<select name="focus" class="form-control form-control-lg">
+																			<option value="">Select</option>
+																			<option value="AF" selected="selected">Option 1</option>
+																			<option value="AX">Option 2</option>
+																			<option value="AL">Option 3</option>
+																			<option value="DZ">Option 4</option>
+																			<option value="AS">Option 5</option>
+																			<option value="AD">Option 6</option>
+																		</select>
+																	</div>
+																	<!--end::Input-->
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Phone no.</label>
+																		<input type="phone" class="form-control form-control-lg" name="phone" placeholder="Phone No" value="9967744431" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Types of Market access</label>
+																		<select name="market" class="form-control form-control-lg">
+																			<option value="">Select</option>
+																			<option value="AF">Option 1</option>
+																			<option value="AX">Option 2</option>
+																			<option value="AL">Option 3</option>
+																			<option value="DZ" selected="selected">Option 4</option>
+																			<option value="AS">Option 5</option>
+																			<option value="AD">Option 6</option>
+																		</select>
+																	</div>
+																	<!--end::Input-->
+																</div>
+																<div class="col-xl-12">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Address</label>
+																		<input type="text" class="form-control form-control-lg" name="phone" placeholder="Address" value="A-21, Park Street, Bangalore- 709901" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+															</div>
+															<hr>
+															<div class="mt-10 mb-5 font-weight-bold text-dark lead">Company  Information</div>
+															<div class="row">
+																<div class="col-xl-12">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label for="factory-equipments">About your Company</label>
+																		<textarea class="form-control form-control-lg" id="factory-equipments" rows="3"></textarea>
+																	</div>
+																	<!--end::Input-->
+																</div>
+															</div>
+															<div id="kt_repeater_2">
+																<div data-repeater-list="" class="row">
+																	<div class="col-xl-6">
+																		<div class="form-group">
+																			<!--begin::Input-->
+																			<label for="upload">Upload your company certifications here</label>
+																			<div class="input-group mb-3">
+																				<div class="custom-file">
+																					<input type="file" class="custom-file-input form-control" id="upload01">
+																					<label class="custom-file-label" for="upload01">Choose file</label>
+																				</div>
+																				<span class="form-text text-muted w-100">Maximum size: not more than 2mb</span>
+																			</div>
+																			<!--end::Input-->
+																		</div>
+																	</div>
+																	<div data-repeater-item="" class="col-xl-6">
+																		<div class="form-group">
+																			<!--begin::Input-->
+																			<label for="upload">Upload your company certifications here</label>
+																			<div class="input-group mb-3">
+																				<div class="custom-file">
+																					<input type="file" class="custom-file-input form-control" id="upload01">
+																					<label class="custom-file-label" for="upload01">Choose file</label>
+																				</div>
+																				<span class="form-text text-muted w-100">Maximum size: not more than 2mb</span>
+																			</div>
+																			<!--end::Input-->
+																		</div>
+																	</div>
+																</div>
+																<div class="form-group">
+																	<div data-repeater-create="" class="btn btn-warning">
+																		<i class="la la-plus"></i>Add more Certificates</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-xl-6">
+																	<div class="form-group">
+																		<label for="col-fdate">Date of Establishment</label>
+																		<div class="input-group date" id="kt_datepicker_2" data-target-input="nearest">
+																			<input type="text" class="form-control form-control-lg date" readonly="readonly" placeholder="Select date" />
+																			<div class="input-group-append">
+																				<span class="input-group-text">
+																					<i class="ki ki-calendar"></i>
+																				</span>
+																			</div>
+																		</div>																		
+																	</div>
+																	<!--end::Input-->
+																</div>
+																<div class="col-xl-6">
+																	<!--begin::Input-->
+																	<div class="form-group">
+																		<label>Location</label>
+																		<input type="text" class="form-control form-control-lg" name="password" placeholder="Location" value="Search" />
+																	</div>
+																	<!--end::Input-->
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-xl-12 py-5 text-center">
+																	<a href="#" class="btn btn-primary btn-lg">Save Changes</a>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<!--end::Form-->
+											</div>
+										</div>
+										<!--end::Card-->
+										
+									</div>
+								</div>
+							</div>
+							<!--end::Container-->
+						</div>
+						<!--end::Entry-->
+					</div>
+					<!--end::Content-->
+					<!--begin::Footer-->
+					<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+						<!--begin::Container-->
+						<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+							<!--begin::Copyright-->
+							<div class="text-dark order-2 order-md-1">
+								<span class="text-muted font-weight-bold">2020©</span>	<a href="http://keenthemes.com/metronic" target="_blank" class="text-dark-75 text-hover-primary">Nutrify India</a>. <span class="text-muted font-weight-bold mr-2">All Right Reserved.</span>
+							</div>
+							<!--end::Copyright-->
+							<!--begin::Nav-->
+							<div class="nav nav-dark order-1 order-md-2">
+								<a href="#" class="nav-link text-dark-75 pr-3 pl-0">Policy</a>
+								<a href="#" class="nav-link text-dark-75 px-3">Terms</a>
+							</div>
+							<!--end::Nav-->
+						</div>
+						<!--end::Container-->
+					</div>
+					<!--end::Footer-->
+				</div>
+				<!--end::Wrapper-->
+			</div>
+			<!--end::Page-->
+		</div>
+		<!--end::Main-->
+		
+		<!--begin::Scrolltop-->
+		<div id="kt_scrolltop" class="scrolltop">
+			<span class="svg-icon">
+				<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+						<polygon points="0 0 24 0 24 24 0 24" />
+						<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+						<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+					</g>
+				</svg>
+				<!--end::Svg Icon-->
+			</span>
+		</div>
+		<!--end::Scrolltop-->
+		<script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>
+		<!--begin::Global Config(global config for global JS scripts)-->
+		<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#6993FF", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#E1E9FF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };</script>
+		<!--end::Global Config-->
+		<!--begin::Global Theme Bundle(used by all pages)-->
+		<script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
+		<script src="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.js' %}"></script>
+		<script src="{% static 'assets/js/scripts.bundle.js' %}"></script>
+		<!--end::Global Theme Bundle-->
+		
+		<!--begin::Page Scripts(used by this page)-->
+		<script src="{% static 'assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js' %}"></script>
+		<script src="{% static 'assets/js/pages/crud/forms/widgets/form-repeater.js' %}"></script>
+		<!--end::Page Scripts(used by this page)-->
+{% endblock body %}
