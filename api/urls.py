@@ -8,6 +8,8 @@ from api.views import (
     OtpVerificationView,
     ProfileView,
     ResultsView,
+    SaveView,
+    SubmitView,
     TakeQuizView
 )
 
@@ -19,5 +21,7 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='apiprofile'),
     path('results/', ResultsView.as_view(), name='apiresults'),
     path('takequiz/', TakeQuizView.as_view(), name='apitakequiz'),
+    path('save/', SaveView.as_view(), name='apisave'),
+    path('submit/', SubmitView.as_view(), name='apisubmit'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

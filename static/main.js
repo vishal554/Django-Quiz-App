@@ -40,10 +40,6 @@ window.onload = function () {
         display = document.querySelector('#timer_box'),
         display2 = document.querySelector('#time_remaining')
     startTimer(time, display, display2)
-
-    var last = document.getElementById('last').value;
-    console.log(last);
-    console.log('no');
     
 };
 

@@ -1,14 +1,26 @@
 {% extends 'frontend/base.html' %}
-
 {% block content %}
     
     <h2 class="p-2"> You have been logged out </h2>
     <div class="border-top p-2">
         
         <small class="text-muted">
-            <a class="" href="{% url 'login' %}">Login Again?</a>
+            <a class="" href="http://127.0.0.1:8000/frontend/login">Login Again?</a>
         </small>
     </div>
+
+    <script type="text/javascript">
+        console.log('hello')
+        var token = sessionStorage.getItem('token')
+        if (token != null){
+            sessionStorage.removeItem('token')
+            window.location.replace('http://127.0.0.1:8000/frontend/logout')
+        }
+        
+        
+        
+    </script>
+    
     
 
 {% endblock content %}

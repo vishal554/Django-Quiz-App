@@ -16,9 +16,12 @@
             </fieldset>
             
             <div class="form-group text-center">
-                <button class="btn btn-outline-info m-3" onclick="login()">Login</button>
+                <button class="btn btn-outline-info m-3" onclick="login(event)">Login</button>
             </div> 
         </form>
+
+        <div class='container-fluid' id='container'>
+        </div>
 
         <div class="border-top pt-3">
             <small class="text-muted">
@@ -29,7 +32,8 @@
 
     <script type="text/javascript">
 
-    function login(){
+    function login(e){
+        e.preventDefault()
         var username = document.getElementById('username').value
         var password = document.getElementById('password').value
         var url = "http://127.0.0.1:8000/api/login/"
@@ -45,19 +49,25 @@
             }
         }
         fetch(url,options).then((response) => {
-                console.log(response)
-                if (!response.ok){
-                    throw Error('Error')
-                }
-                return response.json()
-            })
-            .then((json_data) => {
-                console.log(json_data)
-            })
-            .catch( error => {
-                console.log(error)
-            })
-        
+            console.log(response)
+            if (!response.ok){
+                var html = "<div class='row'>"
+                html+= `<p> Invalid username or password </p>`
+                document.querySelector("#container").insertAdjacentHTML('afterbegin', html)
+            }
+            return response.json()
+        })
+        .then((json_data) => {
+            console.log(json_data)
+            if(json_data['token'] != null){
+                sessionStorage.setItem('token', json_data['token'])
+                window.location.replace('http://127.0.0.1:8000/frontend/home')
+            }
+            
+        })
+        .catch( error => {
+            console.log(error)
+        })
     }
     
     </script>

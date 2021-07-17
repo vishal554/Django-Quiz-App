@@ -1,4 +1,5 @@
 from django.db.models.query import QuerySet
+from rest_framework import response
 from api.utils import get_data_of_quiz, get_question_choice_set
 import random
 from django.contrib.auth.models import User
@@ -20,11 +21,14 @@ from django.forms.models import model_to_dict
 # Create your views here.
 
 
-class HomeView(APIView):
+class HomeView(ListAPIView):
 
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    serializer_class = QuizSerializer
+    pagination_class = PageNumberPagination
 
+    
     def get(self, request):
         data = {}
         try:
@@ -71,32 +75,27 @@ class HomeView(APIView):
         return Response(data)
 
 
-class RegisterView(CreateAPIView):
+class RegisterView(APIView):
+
     permission_classes = []
-    serializer_class = UserSerializer
     authentication_classes = []
 
-
-    # def post(self, request):
-    #     serializer = UserSerializer(data=request.data)
-    #     data = {}
-    #     if serializer.is_valid():
-    #         # user = serializer.save()
-    #         data['response'] = 'Success'
-    #         request.session['email'] = serializer.data['email']
-    #         request.session['username'] = serializer.data['username']
-    #         request.session['password'] = request.data['password1']
-    #         print( request.data['password1'])
-    #         # token = Token.objects.get(user=user).key
-    #         # data['token'] = token
-    #         print("test1")
-    #         return Response(data)
-    #     else:
-    #         data['response'] = 'fail'
-    #         data = serializer.errors
-    #         print(serializer.errors)
-    #     print("test2")
-    #     return Response(data)
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            # user = serializer.save()
+            data['response'] = 'Success'
+            data['email'] = serializer.data['email']
+            data['username'] = serializer.data['username']
+            data['password'] = request.data['password1']
+            # token = Token.objects.get(user=user).key
+            # data['token'] = token
+            return Response(data)
+        else:
+            data['response'] = 'fail'
+            data = serializer.errors
+        return Response(data)
 
 
 class OtpVerificationView(APIView):
@@ -119,21 +118,23 @@ class OtpVerificationView(APIView):
             print('otp: ', otp)
             data['email'] = email
             data['password'] = password
-            data['username'] = username 
-            data['response'] = 'Success'
+            data['username'] = username
+            data['response'] = 'OTP sent successfully'
             return Response(data)
         else:
-            data['response'] = 'Already sent'
+            data['response'] = 'OTP Already sent to your email Id'
             return Response(data)
 
     def post(self, request):
         data = {}
         try: 
-            email = request.POST['email']
-            username = request.POST['username']
-            password = request.POST['password']
-            entered_otp = request.POST['otp']
+            email = request.data['email']
+            username = request.data['username']
+            password = request.data['password']
+            entered_otp = request.data['user_otp']
             otp = request.session['otp']
+            print('entered', entered_otp)
+            print(otp)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -161,7 +162,8 @@ class ProfileView(ListAPIView):
 
     def get_queryset(self):
         quiz = []
-        taken_objects = Taken.objects.filter(submitted=True)
+        username = self.request.user
+        taken_objects = Taken.objects.filter(username=username, submitted=True)
         for i in taken_objects:
             quiz.append(i.quiz_id)
         return quiz
@@ -174,24 +176,22 @@ class ProfileView(ListAPIView):
         context['questions'] = question.data
         return Response(context)
 
+
 class ResultsView(APIView):
 
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        marks_weightage = []
-        u_answer = []
-        correct_answer = []
 
         try:
-            quiz_id = request.POST['quiz_id']
+            quiz_id = request.data['quiz_id']
             username = request.user
-            question_id = request.POST['question_id']
-            last = request.POST['last']
+            question_id = request.data['question_id']
+            last = request.data['last']
             if request.is_ajax():
-                answer = request.POST.get('choice', '')
-                time_taken = request.POST['time_remaining']
+                answer = request.data.get('choice', '')
+                time_taken = request.data['time_remaining']
             else:
                 answer = request.POST.get('btnradio', '')
                 time_taken = request.POST['time_remaining_input']
@@ -223,36 +223,7 @@ class ResultsView(APIView):
                     UsersAnswer.objects.create(username=username, question_id=i, answer="")
         
         # Fetch the correct answers and also the answer user has given
-        for i in question_ids:
-            u_a = UsersAnswer.objects.get(
-                username=username, question_id=i.question_id)
-            u_answer.append(u_a.answer)
-            marks_weightage.append(i.marks_weightage)
-            if i.type == "MCQ":
-                correct_answer.append(McqQuestion.objects.get(
-                    question_id=i.question_id).answer)
-            else:
-                correct_answer.append(FibQuestion.objects.get(
-                    question_id=i.question_id).answer)
-
-        # calculate marks obtained and the percentage
-        marks_obt = 0
-        for i in range(len(u_answer)):
-            if u_answer[i] == correct_answer[i]:
-                marks_obt += marks_weightage[i]
-
-        total_marks = sum(marks_weightage)
-        perct = ((marks_obt/total_marks) * 100)
-
-        data = {
-            'marks_obtained': marks_obt,
-            'total_marks': total_marks,
-            'percentage': perct,
-            'questions': question_ids,
-            'UsersAnswer': u_answer,
-            'correct_answer': correct_answer,
-            'time_taken': time_taken
-        }
+        context = get_data_of_quiz(quiz_id, username)
 
         quiz_ins = Quiz.objects.get(quiz_id=quiz_id)
 
@@ -260,13 +231,13 @@ class ResultsView(APIView):
         try:
             if Taken.objects.get(username=username, quiz_id=quiz_ins):
                 Taken.objects.filter(username=username, quiz_id=quiz_ins).update(
-                    marks_obtained=marks_obt, time_taken=time_taken, submitted=True)
+                    marks_obtained=context['marks_obt'], time_taken=time_taken, submitted=True)
 
         except:
             Taken.objects.create(username=username, quiz_id=quiz_ins,
-                                 submitted=True, marks_obtained=marks_obt, time_taken=time_taken)
+                                 submitted=True, marks_obtained=context['marks_obt'], time_taken=time_taken)
 
-        return Response(data)
+        return Response(context)
 
 
 class TakeQuizView(APIView):
@@ -274,10 +245,10 @@ class TakeQuizView(APIView):
     permission_classes = [IsAuthenticated]  
     authentication_classes = [TokenAuthentication]
 
-    def get(self, request):
+    def post(self, request):
         continuing = False
         try:
-            quiz_id = request.GET['quiz_id']
+            quiz_id = request.data['quiz_id']
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -309,6 +280,7 @@ class TakeQuizView(APIView):
         try: 
             (question, choices) = next(iter(question_choice_set.items()))
         except:
+
             return Response(status=status.HTTP_307_TEMPORARY_REDIRECT)
 
         data = {
@@ -320,6 +292,12 @@ class TakeQuizView(APIView):
             'current': current_question_number
         }
 
+        question_serializer = QuestionSerializer(data['question'])
+        if data['choices'] != 'FIB':
+            mcq_serializer = McqQuestionSerializer(data['choices'])
+            data['choices'] = mcq_serializer.data
+
+        data['question'] = question_serializer.data
         if len(list(question_choice_set)) > 1:
             data['last'] = 'no'
             return Response(data)            
@@ -328,3 +306,136 @@ class TakeQuizView(APIView):
             return Response(data)
 
 
+class SaveView(APIView):
+    """
+    Saves the state so that user can login 
+
+    later and continue with the quiz.
+
+    """
+    def post(self, request):
+        data = {}
+        # Getting post data
+        try:
+            username = request.user
+            question_id = request.data['question_id']
+            answer = request.data.get('choice', '')
+            time_remaining = int(request.data['time_remaining'])
+            quiz_id = request.data['quiz_id']
+            last = request.data.get('last', 'no')
+        except:
+            data['response'] = 'Failure'
+            return Response(data)
+
+        
+        # Add the answer to the UsersAnswer model
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        try:
+            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
+                UsersAnswer.objects.filter(
+                    username=username, question_id=question_instance).update(answer=answer)
+        except:
+            UsersAnswer.objects.create(
+                username=username, question_id=question_instance, answer=answer)
+
+        quiz_id_ins = Quiz.objects.get(quiz_id=quiz_id)
+
+        # check if the question is the last question of the quiz.
+        # If it is then submit the quiz
+        if last == 'yes':
+        
+            context = get_data_of_quiz(quiz_id, username)
+
+            # check if the user has already saved this quiz before or not
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins, submitted=False).update(
+                        submitted=True, marks_obtained=context['marks_obtained'], time_taken=time_remaining)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=True, marks_obtained=context['marks_obtained'], time_taken=time_remaining)
+        else:
+
+            # check if the user has already saved this quiz before or not
+            try:
+                if Taken.objects.get(username=username, quiz_id=quiz_id_ins, submitted=False):
+                    Taken.objects.filter(username=username, quiz_id=quiz_id_ins).update(
+                        time_taken=time_remaining)
+            except:
+                Taken.objects.create(username=username, quiz_id=quiz_id_ins,
+                                     submitted=False, marks_obtained=0, time_taken=time_remaining)
+
+        
+        data['response'] = 'Success'
+        return Response(data)
+
+
+class SubmitView(APIView):
+    """
+    Submit the Quiz when the user hits
+
+    back button or closes the window 
+
+    or timer runs out
+
+    """
+    def post(self, request):
+        data = {}
+        try:
+            quiz_id = request.data['quiz_id']
+            username = request.user
+            question_id = request.data['question_id']
+            last = request.data['last']
+            answer = request.data['choice']
+            time_taken = request.data['time_remaining']
+
+        except Exception as e:
+            data['errors'] = 'errors'
+            print(e)
+            return Response(data)
+
+        # add the last question to the UsersAnswer Model
+        question_instance = Question.objects.filter(
+            question_id=question_id).get()
+        # check if the answer already exists
+        try:
+            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
+                UsersAnswer.objects.filter(
+                    username=username, question_id=question_instance).update(answer=answer)
+        except:
+            UsersAnswer.objects.create(
+                username=username, question_id=question_instance, answer=answer)
+
+        question_ids = Question.objects.filter(quiz_id=quiz_id)
+
+        # add answers to the questions as empty that user has not attempted
+        if last == 'no':
+            user_answers_object = UsersAnswer.objects.filter(username=username)
+            user_answered_question_id = []
+            for object in user_answers_object:
+                user_answered_question_id.append(object.question_id)
+
+            for question_id in question_ids:
+                if question_id not in user_answered_question_id:
+                    UsersAnswer.objects.create(
+                        username=username, question_id=question_id, answer="")
+
+        # Fetch the correct answers and also the answer user has given
+        quiz_ins = Quiz.objects.get(quiz_id=quiz_id)
+
+        # get context from the function
+        data = get_data_of_quiz(quiz_id, username)
+
+        # check if the Taken object already exists or not
+        try:
+            if Taken.objects.get(username=username, quiz_id=quiz_ins):
+                Taken.objects.filter(username=username, quiz_id=quiz_ins).update(
+                    marks_obtained=data['marks_obtained'], time_taken=time_taken, submitted=True)
+
+        except:
+            Taken.objects.create(username=username, quiz_id=quiz_ins,
+                                 submitted=True, marks_obtained=data['marks_obtained'], time_taken=time_taken)
+        data['response'] = 'success'
+        data['questions'] = ''
+        return Response(data)

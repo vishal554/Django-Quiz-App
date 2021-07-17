@@ -1,13 +1,13 @@
 {% extends "frontend/base.html" %}
 {% block content %}
 
-    <div class="container-fluid border p-5" style="max-width:max-content">
+    <div class="container-fluid border p-5 w-25" >
         <form>
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4 text-center">Sign Up</legend>
         
             <div class="row">
-                Username: <input id="username" type="text" value="username" />
+                Username: <input id="username" type="text" value="" />
             </div>
             <div class="row">
                 Email: <input id="email" type="email" ></input>
@@ -19,11 +19,12 @@
                 Confirm Password: <input type="password" id="password2" ></input>
             </div>
 
-            <h5 id="errors"> Errors: </h5>
+            <div id="container" class='container-fluid'>
+            </div>
 
             </fieldset>
             <div class="form-group text-center">
-                <button class="btn btn-outline-info m-3" onclick="register()" >Sign Up</button>
+                <button class="btn btn-outline-info m-3" onclick="register(event)" >Sign Up</button>
             </div> 
         </form>
 
@@ -44,13 +45,14 @@
         window.onunload = function(){null};
 
         // Post the data and get the response from API
-        function register(){
+        function register(e){
+            e.preventDefault()
+            document.getElementById('container').innerHTML = ''
+            
             var uname = document.getElementById('username').value
             var e = document.getElementById('email').value
             var p1 = document.getElementById('password1').value
             var p2 = document.getElementById('password2').value
-            console.log(uname)
-            console.log(e)
             
             var data = {
                 username: uname,
@@ -75,7 +77,22 @@
                     return response.json()
                 })
                 .then((json_data) => {
-                    console.log(json_data)
+                    if (json_data.response != 'Success'){
+                        var html = `<div class="row my-3">`
+                        for(const key in json_data){
+                            html += `
+                                <p class='text-danger'>${key}: ${json_data[key]}</p>
+                            `
+                        }
+                        html+= '</div>'
+                        document.querySelector("#container").insertAdjacentHTML('afterbegin', html)
+                    }
+                    else{
+                        sessionStorage.setItem("username", json_data.username)
+                        sessionStorage.setItem("email", json_data.email)
+                        sessionStorage.setItem("password", json_data.password)
+                        window.location.replace("http://127.0.0.1:8000/frontend/otpverification")
+                    }
                 })
                 .catch( error => {
                     console.log(error)

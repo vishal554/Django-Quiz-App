@@ -23,12 +23,14 @@
         <form>
             <fieldset class="form-group text-center">
                 <legend class="border-bottom mb-4 text-center">Enter OTP sent to your Email</legend>
-                <input type="text" name="otp" ></input>
+                <input type="text" id='otp' name="otp" ></input>
             </fieldset>
             <div class="form-group text-center">
-                <button class="btn btn-outline-info m-3" onclick="otpverify()">Verify</button>
+                <button class="btn btn-outline-info m-3" onclick="otpverify(event)">Verify</button>
             </div> 
         </form>
+        <div class="container-fluid" id="container">
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -40,7 +42,69 @@
         setTimeout("preback()",0);
         window.onunload = function(){null};
 
+        window.onload = function(){
+          document.getElementById('container').innerHTML = ''
+          var url = "http://127.0.0.1:8000/api/otpverification/"
+          var options = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+                }
+            }
+          fetch(url, options).then(response => response.json())
+          .then((json_data) => {
+            console.log(json_data)
+            var html = `<div class="row">
+            
+             <p> ${json_data['response']} </p>
+            
+            </div>`
 
+            document.querySelector("#container").insertAdjacentHTML('afterbegin', html)
+          })
+        }
+
+        function otpverify(e){
+          e.preventDefault()
+          document.getElementById('container').innerHTML = ''
+          var user_otp = document.getElementById('otp').value
+          var username = sessionStorage.getItem('username')
+          var email = sessionStorage.getItem('email')
+          var password = sessionStorage.getItem('password')
+          data = {
+            username: username,
+            email: email,
+            password: password,
+            user_otp: user_otp
+          }
+          url = "http://127.0.0.1:8000/api/otpverification/"
+          options = {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+                }
+            }
+
+          fetch(url, options).then((response) => {
+            return response.json()
+          })
+          .then((json_data) => {
+            console.log(json_data)
+            if (json_data['response'] != 'Success'){
+              var html = `<div class="row">
+              <p> ${json_data['response']} </p>
+              </div>`
+              document.querySelector("#container").insertAdjacentHTML('afterbegin', html)
+            }
+            else{
+              sessionStorage.setItem('username', '')
+              sessionStorage.setItem('email', '')
+              sessionStorage.setItem('password', '')
+              window.location.replace('http://127.0.0.1:8000/frontend/login')
+            }
+          })
+        }
     </script>
 
   </body>

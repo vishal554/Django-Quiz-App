@@ -15,18 +15,16 @@
     <script type="text/javascript">
 
     window.onload = function(){
-
         var url = 'http://127.0.0.1:8000/api/profile'
         var token = sessionStorage.getItem("token")
-        console.log(token)
-        {% comment %} if (token==null){
+        if (token==null){
             top.location.href="http://127.0.0.1:8000/frontend/login"
-        } {% endcomment %}
+        }
         var options = {
             method: "GET", 
             headers:{
                 "Content-Type": "application/json",
-                Authorization: "token 88a811f4fe0e031dbf7c8f865568df13cb8feb19"
+                Authorization: "token " + token
             }
         }
         fetch(url,options).then((response) => {
@@ -50,7 +48,7 @@
                             <form>
                                 <input type="hidden" id="quiz_id" value="${quiz.quiz_id}"/>
                                 <!-- Button which redirects to the Results page to show the details of the taken Quiz-->
-                                <button id="show_details" class="btn btn-primary" onclick="get_results()" > Show Details </button>
+                                <button id="${quiz.quiz_id}" class="btn btn-primary" onclick="get_results(event, this.id)" > Show Details </button>
                             </form>
                         </div> 
                     </div>
@@ -68,14 +66,15 @@
     }
 
     
-    function get_results(){
-        var quiz_id = document.getElementById('quiz_id').value
+    function get_results(e, q){
+        e.preventDefault()
+        quiz_id = q
+        //var quiz_id = document.getElementById('quiz_id').value
         var url = 'http://127.0.0.1:8000/api/profile/'
         var token = sessionStorage.getItem("token")
-        {% comment %} if (token==null){
+        if (token==null){
             top.location.href="http://127.0.0.1:8000/frontend/login"
-        } {% endcomment %}
-
+        }
         var data = {
             quiz_id:quiz_id
         }
@@ -84,7 +83,7 @@
             body: JSON.stringify(data),
             headers:{
                 "Content-Type": "application/json;charset=UTF-8",
-                Authorization: "token 88a811f4fe0e031dbf7c8f865568df13cb8feb19"
+                Authorization: "token " + token
             }
         }
 
@@ -111,8 +110,9 @@
                         </div>
                     </div>
                 `
-                for (i=0; i<json_data.questions.length; i++){
-                    `
+                for (let i = 0; i < json_data.questions.length; i++){
+                    
+                    data+= `
                     <div class="row p-2">
                         <div class="col">
                             <h5>${json_data.questions[i].question}</h5>
@@ -126,7 +126,9 @@
                     </div>
                     `
                 }
-                `<div class='row border'></div>
+                
+                data +=`
+                <div class='row border'></div>
 
                 <div class="row m-2 p-1">
                     <div class="col">
@@ -140,7 +142,7 @@
                 </div>
                 <div class="row m-2 p-1">
                     <div class="col">
-                        <h4> Percentage: ${json_data.perct} % </h4>
+                        <h4> Percentage: ${json_data.percentage} % </h4>
                     </div>
                 </div>
         

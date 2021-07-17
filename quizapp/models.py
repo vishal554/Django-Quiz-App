@@ -26,7 +26,8 @@ class FibQuestion(models.Model):
     question_id = models.ForeignKey("Question", on_delete=models.PROTECT)
     answer = models.CharField(max_length=100)
 
-
+    def __str__(self):
+        return f'{self.question_id.question}'
 
 class McqQuestion(models.Model):
     # Model to store the choices of MCQ Questions 
@@ -47,6 +48,8 @@ class Quiz(models.Model):
     quiz_desc = models.CharField(max_length=300)
     
 
+    def __str__(self):
+        return f'{self.quiz_name}'
 
 class Taken(models.Model):
     # Model which stores the quizes taken or ongoing by the user

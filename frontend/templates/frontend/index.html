@@ -5,36 +5,90 @@
   
 
     <div id="home_div" class="container">
-        <div class="row border m-3 p-2">
-            <h3> Available Quizes </h3>
-            <!-- Get Available quizes -->
-            <div class="row border p-2 m-2"> 
-                <h3 class="card-title">  </h3>
-                <h4 class="card-text">  </h4>
-                <div class="text-end">
-                    <form action="{% url 'take_quiz' %}" method="GET">
-                        <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
-                        <button class="btn btn-outline-info m-3 w-auto" type="submit"> Take Quiz </button>
-                    </form>
-                </div>
-            </div>
+    
+        <div id="quizes_div" class="row border m-3 p-2">
+            
         </div>
 
-        <div class="row border m-3 p-2">
-            <h3> Ongoing Quizes </h3>
-            <!-- Get Ongoing quizes -->
-            <div class="row border p-2 m-2"> 
-                <h3 class="card-title"> </h3>
-                <h4 class="card-text">  </h4>
-                <div class="text-end">
-                    <form action="{% url 'take_quiz' %}" method="GET">
-                        <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
-                        <button class="btn btn-outline-info m-3 w-auto" type="submit"> Take Quiz </button>
-                    </form>
-                </div>
-            </div>
+        <div id="ongoing_div" class="row border m-3 p-2">
+            
         </div>
+            
     </div>
 
+
+
+
+<script type="text/javascript">
+    window.onload = function(){
+        var url = "http://127.0.0.1:8000/api/home/"
+        var token = sessionStorage.getItem("token")
+        if (token==null){
+            window.location.replace("http://127.0.0.1:8000/frontend/login")
+        }
+        var options = {
+        method: "GET", 
+        headers:{
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "token " + token
+            }
+        }
+        fetch(url, options).then((response) => {
+            console.log(response)
+            return response.json()
+        }).then((data) => {
+            console.log(data)
+            if(data.quizes.length == 0){
+                document.querySelector("#quizes_div").insertAdjacentHTML('afterbegin', "<h2> No Quizes Available </h2>")
+            }
+            else{
+                var html = '<h3> Available Quizes </h3>'
+                for (var i=0; i<data.quizes.length; i++){
+                    html += `
+                    <!-- Get Available quizes -->
+                    <div class="row border p-2 m-2"> 
+                        <h3 class="card-title"> ${data.quizes[i].quiz_name} </h3>
+                        <h4 class="card-text"> ${data.quizes[i].quiz_desc} </h4>
+                        <div class="text-end">
+                            <form method="GET" action="takequiz">
+                                <input type="text" hidden="true" name="quiz_id" value="${data.quizes[i].quiz_id}"></input>
+                                <button class="btn btn-outline-info m-3 w-auto" type="submit" > Take Quiz </button>
+                            </form>
+                        </div>
+                    </div>
+                    `
+                }
+                document.querySelector("#quizes_div").insertAdjacentHTML('afterbegin', html)
+                
+            }
+            if(data.ongoings.length == 0){
+                  
+                document.querySelector("#ongoing_div").insertAdjacentHTML('afterbegin', "<h2> No Ongoings Available </h2>")
+            }
+            else{
+                var html = '<h3> Ongoing Quizes </h3>'
+                for (var i=0; i<data.ongoings.length; i++){
+                    html += `
+                    <!-- Get ongoing quizes -->
+                    <div class="row border p-2 m-2"> 
+                        <h3 class="card-title"> ${data.ongoings[i].quiz_name} </h3>
+                        <h4 class="card-text"> ${data.ongoings[i].quiz_desc} </h4>
+                        <div class="text-end">
+                            <form method="GET" action="takequiz">
+                                <input type="text" hidden="true" name="quiz_id" value="${data.ongoings[i].quiz_id}"></input>
+                                <button class="btn btn-outline-info m-3 w-auto" type="submit" > Take Quiz </button>
+                            </form>
+                        </div>
+                    </div>
+                    `
+                }
+                document.querySelector("#ongoing_div").insertAdjacentHTML('afterbegin', html)
+            }
+        })
+    }
+
+
+
+</script>
 
 {% endblock content %}

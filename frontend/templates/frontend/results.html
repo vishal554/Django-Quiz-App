@@ -3,51 +3,101 @@
 {% block content %}     
 
 <!-- Shows the Result of the Quiz attempted by the user after submitting -->
-    <div class="container">
-            <div class="row">
-                <div class="col border p-2">
-                    <h4> Question </h4>
-                </div>
-                <div class="col border p-2">
-                    <h4> Your answer </h4>
-                </div>
-                <div class="col border p-2">
-                    <h4> Correct answer </h4>
-                </div>
-            </div>
-        {% for question in questions %}
-            <div class="row p-2">
-                <div class="col">
-                    <h5>{{ question.question }}</h5>
-                </div>
-                <div class="col">
-                    <h5>{{ UsersAnswer|index:forloop.counter0 }}</h5>
-                </div>
-                <div class="col">
-                    <h5>{{ correct_answer|index:forloop.counter0 }}</h5>
-                </div>
-            </div>
-        {% endfor %}
+    
 
-        <div class='row border'></div>
+    <script type="text/javascript">
+    
+    function get_results(e){
+        e.preventDefault()
+        var quiz_id = document.getElementById('quiz_id').value
+        var url = 'http://127.0.0.1:8000/api/profile/'
+        var token = sessionStorage.getItem("token")
+        if (token==null){
+            window.location.replace("http://127.0.0.1:8000/frontend/login")
+        }
 
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Total Marks: {{total_marks}}</h4>
-            </div>
-        </div>
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Marks Obtained: {{marks_obtained}}</h4>
-            </div>
-        </div>
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Percentage: {{percentage}} % </h4>
-            </div>
-        </div>
+        var data = {
+            quiz_id:quiz_id
+        }
+        var options = {
+            method: "POST", 
+            body: JSON.stringify(data),
+            headers:{
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "token " + token
+            }
+        }
+
+        fetch(url,options).then((response) => {
+            if (!response.ok){
+                throw Error('Error')
+            }
+            
+            document.getElementById('container').style.display = "none"
+            return response.json()
+        })
+        .then((json_data) => {
+            console.log(json_data.UsersAnswer[0])
+            var data = `
+                    <div class="row">
+                        <div class="col border p-2">
+                            <h4> Question </h4>
+                        </div>
+                        <div class="col border p-2">
+                            <h4> Your answer </h4>
+                        </div>
+                        <div class="col border p-2">
+                            <h4> Correct answer </h4>
+                        </div>
+                    </div>
+                `
+                for (let i = 0; i < json_data.questions.length; i++){
+                    
+                    data+= `
+                    <div class="row p-2">
+                        <div class="col">
+                            <h5>${json_data.questions[i].question}</h5>
+                        </div>
+                        <div class="col">
+                            <h5>${json_data.UsersAnswer[i]}</h5>
+                        </div>
+                        <div class="col">
+                            <h5>${json_data.correct_answer[i]}</h5>
+                        </div>
+                    </div>
+                    `
+                }
+                
+                data +=`
+                <div class='row border'></div>
+
+                <div class="row m-2 p-1">
+                    <div class="col">
+                        <h4> Total Marks: ${json_data.total_marks}</h4>
+                    </div>
+                </div>
+                <div class="row m-2 p-1">
+                    <div class="col">
+                        <h4> Marks Obtained: ${json_data.marks_obtained}</h4>
+                    </div>
+                </div>
+                <div class="row m-2 p-1">
+                    <div class="col">
+                        <h4> Percentage: ${json_data.percentage} % </h4>
+                    </div>
+                </div>
         
-    </div>
+            `
+
+            document.querySelector("#container1").insertAdjacentHTML('afterbegin', data)
+            
+        })
+        .catch( error => {
+            console.log(error)
+        })
+    }
+
+    </script>
 
 {% endblock content %}      
 

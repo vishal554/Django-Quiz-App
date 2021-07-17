@@ -20,29 +20,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+{% comment %}     
+    <script src="{% static 'main.js' %}" defer > </script> {% endcomment %}
     
-    <script src="{% static 'main.js' %}" defer > </script>
+    <form id='form_tag'>
 
-    <form method="POST" action="{% url 'results' %}">
-        {% csrf_token %}
-
-        <input type="text" hidden="true" id="quiz_id1" name="quiz_id" value="{{quiz_id}}"/>
+        <input type="text" hidden="true" id="quiz_id" name="quiz_id" value="{{quiz_id}}"/>
         <input type="text" hidden="true" id="question_id" name="question_id" value="{{question.question_id}}"/>
         <input type="text" hidden="true" id="question_type" name="question_type" value="{{question.type}}"/>
-        <input type="text" hidden="true" id="question" value="{{question.question}}"/>
-        <input type="text" hidden="true" id="choices1" value="{{choices.choice1}}"/>
-        <input type="text" hidden="true" id="choices2" value="{{choices.choice2}}"/>
-        <input type="text" hidden="true" id="choices3" value="{{choices.choice3}}"/>
-        <input type="text" hidden="true" id="choices4" value="{{choices.choice4}}"/>
         <input type="text" hidden="true" id="last" name="last" value="{{last}}"/>
         <div class="container-100 border m-3 p-2">
             
             <div class="row p-4 border m-2">
                 <div class="col-3">
-                    <button class="btn btn-primary" id="save" > Save and logout </button>
+                    <button class="btn btn-primary" id="save" onclick="save_data(event, this.id)"> Save and logout </button>
                 </div>
                 <div class="col-6">
-                    <input type="hidden" class="hide" id="time_limit" value="{{ time_limit }}"/>
+                    <input type="hidden" class="hide" id="time_limit" value=""/>
                     <input type="hidden"  id="time_remaining_input" name="time_remaining_input" value=""/>
                     <h5 id="time_remaining" hidden="true" class="hide" name="time_remaining" ></h5>
                 </div>
@@ -52,30 +46,27 @@
             </div>
 
             <div class="row">
-                    <h4 id="question_box">{{current}}/{{total_questions}}: {{ question.question }} </h4>
+                    <h4 id="question_box"></h4>
             </div>
 
             <div id="mcq_box" class="row p-4 border m-4">
                 <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
-                    {% if choices.choice1 != "__none" %}
-                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
-                        <label class="btn btn-outline-primary m-2" id="label1" for="choice1">{{choices.choice1}}</label>
-                    {% endif %}
-                    
-                    {% if choices.choice2 != "__none" %}
-                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
-                        <label class="btn btn-outline-primary m-2" id="label2" for="choice2">{{choices.choice2}}</label>
-                    {% endif %}
+                
+                    <input type="radio" class="btn-check" name="btnradio" value=""  id="choice1" autocomplete="off">
+                    <label class="btn btn-outline-primary m-2" id="label1" for="choice1"></label>
+                
+                
+                    <input type="radio" class="btn-check" name="btnradio" value=""  id="choice2" autocomplete="off">
+                    <label class="btn btn-outline-primary m-2" id="label2" for="choice2"></label>
+                
 
-                    {% if choices.choice3 != "__none" %}
-                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
-                        <label class="btn btn-outline-primary m-2" id="label3" for="choice3">{{choices.choice3}}</label>
-                    {% endif %}
+                    <input type="radio" class="btn-check" name="btnradio" value="" id="choice3" autocomplete="off">
+                    <label class="btn btn-outline-primary m-2" id="label3" for="choice3"></label>
+                
 
-                    {% if choices.choice4 != "__none" %}
-                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
-                        <label class="btn btn-outline-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
-                    {% endif %}
+                    <input type="radio" class="btn-check" name="btnradio" value="" id="choice4" autocomplete="off">
+                    <label class="btn btn-outline-primary m-2" id="label4" for="choice4" ></label>
+
                 </div>
             </div>  
             <div id="fib_box" class="row p-4 border m-4">
@@ -85,9 +76,8 @@
             </div>   
             <div class="row p-2 m-2">
                 <div class="col-3">
-                    <button id="next" type="submit" class="btn btn-primary"> Next </button>
-                    <button id="submit" type="submit" class="btn btn-primary"> Submit </button>
-                    <button id="save_and_submit" hidden="true" type="submit" class="btn btn-primary">  </button>
+                    <button id="next" class="btn btn-primary" onclick="save_data(event, this.id)"> Next </button>
+                    <button id="submit" hidden="true" class="btn btn-primary" onclick="save_and_submit(event)">  </button>
                     
                 </div>
             </div>
@@ -99,9 +89,212 @@
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" 
         crossorigin="anonymous"></script>
 
-    <script>
+    <script type="text/javascript">
 
-        $(document).ready(function() {
+        function save_and_submit(e){
+            e.preventDefault()
+            var token = sessionStorage.getItem("token")
+            if (token==null){
+                top.location.href="http://127.0.0.1:8000/frontend/login"
+            }
+            var quiz_id = document.getElementById('quiz_id').value
+            var question_id = document.getElementById('question_id').value
+            var time_remaining =  document.getElementById('time_remaining').innerHTML
+            var last = document.getElementById('last').value
+            var question_type = document.getElementById('question_type').value
+            if (question_type == 'MCQ'){
+                if (document.querySelector('input[name="btnradio"]:checked') == null){
+                    choice = ''
+                }
+                else{
+                    var choice = document.querySelector('input[name="btnradio"]:checked').value
+                }
+            }
+            else{
+                var choice = document.getElementById('fib_answer').value
+                if (choice == null){
+                    choice = ''
+                }
+            }
+            data  = {
+                quiz_id: quiz_id,
+                question_id: question_id,
+                time_remaining: time_remaining,
+                last: last,
+                choice: choice
+            }
+            console.log(data)
+            
+            url = "http://127.0.0.1:8000/api/submit/"
+
+            var options = {
+            method: "POST", 
+            body: JSON.stringify(data),
+            headers:{
+                    "Content-Type": "application/json;charset=UTF-8",
+                    Authorization: "token " + token
+                }
+            }
+            fetch(url, options).then((response) => {
+                console.log(response)
+                return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+                window.location.replace("http://127.0.0.1:8000/frontend/profile")
+            })
+
+        }
+
+        window.onload = function(){
+            var token = sessionStorage.getItem("token")
+            if (token==null){
+                window.location.replace("http://127.0.0.1:8000/frontend/login")
+            }
+            let params = new URLSearchParams(location.search)
+            var quiz_id = params.get('quiz_id')
+            var url = "http://127.0.0.1:8000/api/takequiz/"
+            var options = {
+            method: "POST", 
+            body: JSON.stringify({quiz_id: quiz_id}),
+            headers:{
+                    "Content-Type": "application/json;charset=UTF-8",
+                    Authorization: "token " + token
+                }
+            }
+            fetch(url, options).then((response) => {
+                console.log(response)
+                if (!response.ok){
+                    if (response.statusText == 'Temporary Redirect'){
+                        window.location.replace("http://127.0.0.1:8000/frontend/profile")
+                    }
+                }
+                return response.json()
+            }).then((data) => {
+                console.log(data)
+                document.getElementById('quiz_id').value = data.quiz_id
+                document.getElementById('question_id').value = data.question.question_id
+                document.getElementById('question_type').value = data.question.type
+                document.getElementById('last').value = data.last
+                document.getElementById('time_limit').value = data.time_limit
+                document.getElementById('question_box').innerHTML = data.current+"/"+data.total_questions+" "+data.question.question
+                //start the timer
+                var timer_amount = document.getElementById('time_limit').value;
+                var time = Number(timer_amount),
+                display = document.querySelector('#timer_box'),
+                display2 = document.querySelector('#time_remaining')
+                startTimer(time, display, display2)
+                // display MCQ box and FIB box accordingly
+                if (data.question.type == 'MCQ'){
+                    document.getElementById('mcq_box').style.display = 'block'
+                    document.getElementById('fib_box').style.display = 'none'
+
+                    if (data.choices.choice1 != '__none'){
+                        document.getElementById('choice1').value = data.choices.choice1
+                        document.getElementById('label1').innerHTML = data.choices.choice1
+                    }
+                    else{
+                        document.getElementById('label1').style.display = 'none'
+                    }
+                    if (data.choices.choice2 != '__none'){
+                        document.getElementById('choice2').value = data.choices.choice2
+                        document.getElementById('label2').innerHTML = data.choices.choice2
+                    }
+                    else{
+                        document.getElementById('label2').style.display = 'none'
+                    }
+                    if (data.choices.choice3 != '__none'){
+                        document.getElementById('choice3').value = data.choices.choice3
+                        document.getElementById('label3').innerHTML = data.choices.choice3
+                    }
+                    else{
+                        document.getElementById('label3').style.display = 'none'
+                    }
+                    if (data.choices.choice4 != '__none'){
+                        document.getElementById('choice4').value = data.choices.choice4
+                        document.getElementById('label4').innerHTML = data.choices.choice4
+                    }
+                    else{
+                        document.getElementById('label4').style.display = 'none'
+                    }  
+                }
+                else{
+                    document.getElementById('mcq_box').style.display = 'none'
+                    document.getElementById('fib_box').style.display = 'block'
+                }
+
+                if (data.last == 'yes'){
+                    document.getElementById('next').innerHTML = 'Submit'
+                }
+                else{
+                    document.getElementById('next').value = 'next'
+                }
+                
+            })
+        }
+
+        function save_data(e, id){
+            e.preventDefault()
+            var token = sessionStorage.getItem("token")
+            if (token==null){
+                window.location.replace("http://127.0.0.1:8000/frontend/login")
+            }
+            var quiz_id = document.getElementById('quiz_id').value
+            var question_id = document.getElementById('question_id').value
+            var time_remaining = document.getElementById('time_remaining').innerHTML
+            console.log(time_remaining)
+            var last = document.getElementById('last').value
+            var question_type = document.getElementById('question_type').value
+
+            if (question_type == 'MCQ'){
+                if (document.querySelector('input[name="btnradio"]:checked') == null){
+                    choice = ''
+                }
+                else{
+                    var choice = document.querySelector('input[name="btnradio"]:checked').value
+                }
+            }
+            else{
+                var choice = document.getElementById('fib_answer').value
+                if (choice == null){
+                    choice = ''
+                }
+            }
+            data = {
+                quiz_id:quiz_id,
+                question_id:question_id,
+                time_remaining:time_remaining,
+                last:last,
+                choice
+            }
+            
+            var url = "http://127.0.0.1:8000/api/save/"
+            var options = {
+            method: "POST", 
+            body: JSON.stringify(data),
+            headers:{
+                    "Content-Type": "application/json;charset=UTF-8",
+                    Authorization: "token " + token
+                }
+            }
+            fetch(url, options).then((response) => {
+                console.log(response)
+                return response.json()
+            }).then((data) => {
+                console.log(data)
+                if(id=='next'){
+                    window.location.reload(true) 
+                }
+                if(id=='save'){
+                    window.location.replace('http://127.0.0.1:8000/frontend/logout') 
+                } 
+                
+            })
+
+
+        }
+
+        {% comment %} $(document).ready(function() {
             // By default show the submit button 
             $('#submit').show();
             $('#next').hide();
@@ -302,9 +495,32 @@
         $('#submit').click(function(e){
             var time_rem = $('#time_remaining').text();
             $('#time_remaining_input').val(time_rem);
-        });
+        }); {% endcomment %}
 
-  </script>
+
+
+
+function startTimer(duration, display, display2) {
+    var timer = duration, minutes, seconds
+    setInterval(function () {
+    minutes = parseInt(timer / 60, 10)
+    seconds = parseInt(timer % 60, 10)
+
+    minutes = minutes < 10 ? "0" + minutes : minutes
+    seconds = seconds < 10 ? "0" + seconds : seconds
+
+    display.textContent = minutes + ":" + seconds
+
+    display2.textContent = timer
+
+    if (--timer < 0) {
+        // submit the form
+        timer = 0;
+        document.getElementById('submit').click();
+    }
+    }   , 1000)
+}
+</script>
 </body>
 </html>
 
