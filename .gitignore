@@ -4,9 +4,12 @@ __pycache__/
 .vscode/
 Quiz/__pycache__/
 quizapp/__pycache__/
+testing/__pycache__/
 users/__pycache__/
 quizapp/migrations/*
 users/migrations/
+testing/migrations/
+
 
 
 # Byte-compiled / optimized / DLL files
