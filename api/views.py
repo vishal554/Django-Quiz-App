@@ -1,27 +1,36 @@
-from django.db.models.query import QuerySet
-from rest_framework import response
-from api.utils import get_data_of_quiz, get_question_choice_set
 import random
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from rest_framework.authtoken.models import Token
+from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView
-from api.serializers import FibQuestionSerializer, McqQuestionSerializer, QuestionSerializer, QuizSerializer, TakenSerializer, UserSerializer
-from quizapp.models import Quiz, Taken, Question, FibQuestion, McqQuestion, UsersAnswer
-from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from django.contrib.auth.hashers import make_password
-from rest_framework import serializers, status
-from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from django.forms.models import model_to_dict
+from rest_framework.authtoken.models import Token
+from quizapp.models import Quiz, Taken, Question, UsersAnswer
+from api.utils import get_data_of_quiz, get_question_choice_set
+from api.serializers import McqQuestionSerializer, QuestionSerializer, QuizSerializer, UserSerializer
 # Create your views here.
 
 
 class HomeView(ListAPIView):
+    """
+    Home page of the App which shows 
+
+    the available quizes and the ongoing quizes
+
+    **Permissions**
+
+    'TokenAuthentication': A unique token required by the user
+                            to access this page
+    **Response**
+
+    'data': holds the array of available quizes and ongoings
+
+    """
 
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
@@ -76,7 +85,21 @@ class HomeView(ListAPIView):
 
 
 class RegisterView(APIView):
+    """
+    Registers the User but does not add to the 
 
+    User Model yet
+
+    **Permissions**
+
+    'No permission required to access this page'
+
+    **Response**
+
+    'data': Json object which contains the response key and 
+            respective values
+
+    """
     permission_classes = []
     authentication_classes = []
 
@@ -84,13 +107,10 @@ class RegisterView(APIView):
         serializer = UserSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            # user = serializer.save()
             data['response'] = 'Success'
             data['email'] = serializer.data['email']
             data['username'] = serializer.data['username']
             data['password'] = request.data['password1']
-            # token = Token.objects.get(user=user).key
-            # data['token'] = token
             return Response(data)
         else:
             data['response'] = 'fail'
@@ -99,6 +119,23 @@ class RegisterView(APIView):
 
 
 class OtpVerificationView(APIView):
+    """
+    Sends the OTP to the user and verifies the OTP
+
+    If the OTP is correct then adds the user to
+
+    the USER model
+
+    **Permissions**
+
+    'No permission required to access this page'
+
+    **Response**
+
+    'data': Json object which contains the response key and 
+            respective values
+
+    """
     permission_classes = []
     def get(self, request):
         data = {}
@@ -154,6 +191,23 @@ class OtpVerificationView(APIView):
 
 
 class ProfileView(ListAPIView):
+
+    """
+    Shows the quizes taken by the user and
+
+    also the score and answers given by the user
+
+    **Permissions**
+
+    'TokenAuthentication': A unique token required by the user
+                            to access this page
+
+    **Response**
+
+    'data': Json object which contains the response key and 
+            respective values
+
+    """
     
     serializer_class = QuizSerializer
     authentication_classes = [TokenAuthentication]
@@ -177,71 +231,23 @@ class ProfileView(ListAPIView):
         return Response(context)
 
 
-class ResultsView(APIView):
-
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-
-    def post(self, request):
-
-        try:
-            quiz_id = request.data['quiz_id']
-            username = request.user
-            question_id = request.data['question_id']
-            last = request.data['last']
-            if request.is_ajax():
-                answer = request.data.get('choice', '')
-                time_taken = request.data['time_remaining']
-            else:
-                answer = request.POST.get('btnradio', '')
-                time_taken = request.POST['time_remaining_input']
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-        # add the last question to the UsersAnswer Model
-        question_instance = Question.objects.filter(
-            question_id=question_id).get()
-
-        # check if the answer already exists
-        try:
-            if(UsersAnswer.objects.get(username=username, question_id=question_instance)):
-                UsersAnswer.objects.filter(username=username, question_id=question_instance).update(answer=answer)
-        except:
-            UsersAnswer.objects.create(username=username, question_id=question_instance, answer=answer)
-
-        question_ids = Question.objects.filter(quiz_id=quiz_id)
-
-        # add answers to the questions as empty that user has not attempted
-        if last == 'no':
-            user_answers = UsersAnswer.objects.filter(username=username)
-            user_answered = []
-            for i in user_answers:
-                user_answered.append(i.question_id)
-
-            for i in question_ids:
-                if i not in user_answered:
-                    UsersAnswer.objects.create(username=username, question_id=i, answer="")
-        
-        # Fetch the correct answers and also the answer user has given
-        context = get_data_of_quiz(quiz_id, username)
-
-        quiz_ins = Quiz.objects.get(quiz_id=quiz_id)
-
-        # check if the Taken object already exists or not
-        try:
-            if Taken.objects.get(username=username, quiz_id=quiz_ins):
-                Taken.objects.filter(username=username, quiz_id=quiz_ins).update(
-                    marks_obtained=context['marks_obt'], time_taken=time_taken, submitted=True)
-
-        except:
-            Taken.objects.create(username=username, quiz_id=quiz_ins,
-                                 submitted=True, marks_obtained=context['marks_obt'], time_taken=time_taken)
-
-        return Response(context)
-
-
 class TakeQuizView(APIView):
+    """ 
+    Displays the question to the user along 
 
+    with the options
+
+    **Permissions**
+
+    'TokenAuthentication': A unique token required by the user
+                            to access this page
+
+    **Response**
+
+    'data': Json object which contains the Question object
+            and the respective choice model
+
+    """
     permission_classes = [IsAuthenticated]  
     authentication_classes = [TokenAuthentication]
 
@@ -312,7 +318,21 @@ class SaveView(APIView):
 
     later and continue with the quiz.
 
+    **Permissions**
+
+    'TokenAuthentication': A unique token required by the user
+                            to access this page
+
+    **Response**
+
+    'data': Json object which contains response key
+            with appropriate message
+
     """
+    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         data = {}
         # Getting post data
@@ -379,7 +399,21 @@ class SubmitView(APIView):
 
     or timer runs out
 
+    **Permissions**
+
+    'TokenAuthentication': A unique token required by the user
+                            to access this page
+
+    **Response**
+
+    'data': Json object which contains response key
+            with appropriate message
+
     """
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         data = {}
         try:

@@ -20,15 +20,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-{% comment %}     
-    <script src="{% static 'main.js' %}" defer > </script> {% endcomment %}
+
     
     <form id='form_tag'>
 
-        <input type="text" hidden="true" id="quiz_id" name="quiz_id" value="{{quiz_id}}"/>
-        <input type="text" hidden="true" id="question_id" name="question_id" value="{{question.question_id}}"/>
-        <input type="text" hidden="true" id="question_type" name="question_type" value="{{question.type}}"/>
-        <input type="text" hidden="true" id="last" name="last" value="{{last}}"/>
+        <input type="text" hidden="true" id="quiz_id" name="quiz_id" value=""/>
+        <input type="text" hidden="true" id="question_id" name="question_id" value=""/>
+        <input type="text" hidden="true" id="question_type" name="question_type" value=""/>
+        <input type="text" hidden="true" id="last" name="last" value=""/>
         <div class="container-100 border m-3 p-2">
             
             <div class="row p-4 border m-2">
@@ -91,435 +90,233 @@
 
     <script type="text/javascript">
 
-        function save_and_submit(e){
-            e.preventDefault()
-            var token = sessionStorage.getItem("token")
-            if (token==null){
-                top.location.href="http://127.0.0.1:8000/frontend/login"
+    
+    window.onload = function(){
+        var token = sessionStorage.getItem("token")
+        if (token==null){
+            window.location.replace("http://127.0.0.1:8000/frontend/login")
+        }
+        let params = new URLSearchParams(location.search)
+        var quiz_id = params.get('quiz_id')
+        var url = "http://127.0.0.1:8000/api/takequiz/"
+        var options = {
+        method: "POST", 
+        body: JSON.stringify({quiz_id: quiz_id}),
+        headers:{
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "token " + token
             }
-            var quiz_id = document.getElementById('quiz_id').value
-            var question_id = document.getElementById('question_id').value
-            var time_remaining =  document.getElementById('time_remaining').innerHTML
-            var last = document.getElementById('last').value
-            var question_type = document.getElementById('question_type').value
-            if (question_type == 'MCQ'){
-                if (document.querySelector('input[name="btnradio"]:checked') == null){
-                    choice = ''
+        }
+        fetch(url, options).then((response) => {
+            console.log(response)
+            if (!response.ok){
+                if (response.statusText == 'Temporary Redirect'){
+                    window.location.replace("http://127.0.0.1:8000/frontend/profile")
                 }
-                else{
-                    var choice = document.querySelector('input[name="btnradio"]:checked').value
-                }
             }
-            else{
-                var choice = document.getElementById('fib_answer').value
-                if (choice == null){
-                    choice = ''
-                }
-            }
-            data  = {
-                quiz_id: quiz_id,
-                question_id: question_id,
-                time_remaining: time_remaining,
-                last: last,
-                choice: choice
-            }
+            return response.json()
+        }).then((data) => {
             console.log(data)
-            
-            url = "http://127.0.0.1:8000/api/submit/"
+            document.getElementById('quiz_id').value = data.quiz_id
+            document.getElementById('question_id').value = data.question.question_id
+            document.getElementById('question_type').value = data.question.type
+            document.getElementById('last').value = data.last
+            document.getElementById('time_limit').value = data.time_limit
+            document.getElementById('question_box').innerHTML = data.current+"/"+data.total_questions+" "+data.question.question
+            //start the timer
+            var timer_amount = document.getElementById('time_limit').value;
+            var time = Number(timer_amount),
+            display = document.querySelector('#timer_box'),
+            display2 = document.querySelector('#time_remaining')
+            startTimer(time, display, display2)
+            // display MCQ box and FIB box accordingly
+            if (data.question.type == 'MCQ'){
+                document.getElementById('mcq_box').style.display = 'block'
+                document.getElementById('fib_box').style.display = 'none'
 
-            var options = {
-            method: "POST", 
-            body: JSON.stringify(data),
-            headers:{
-                    "Content-Type": "application/json;charset=UTF-8",
-                    Authorization: "token " + token
-                }
-            }
-            fetch(url, options).then((response) => {
-                console.log(response)
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                window.location.replace("http://127.0.0.1:8000/frontend/profile")
-            })
-
-        }
-
-        window.onload = function(){
-            var token = sessionStorage.getItem("token")
-            if (token==null){
-                window.location.replace("http://127.0.0.1:8000/frontend/login")
-            }
-            let params = new URLSearchParams(location.search)
-            var quiz_id = params.get('quiz_id')
-            var url = "http://127.0.0.1:8000/api/takequiz/"
-            var options = {
-            method: "POST", 
-            body: JSON.stringify({quiz_id: quiz_id}),
-            headers:{
-                    "Content-Type": "application/json;charset=UTF-8",
-                    Authorization: "token " + token
-                }
-            }
-            fetch(url, options).then((response) => {
-                console.log(response)
-                if (!response.ok){
-                    if (response.statusText == 'Temporary Redirect'){
-                        window.location.replace("http://127.0.0.1:8000/frontend/profile")
-                    }
-                }
-                return response.json()
-            }).then((data) => {
-                console.log(data)
-                document.getElementById('quiz_id').value = data.quiz_id
-                document.getElementById('question_id').value = data.question.question_id
-                document.getElementById('question_type').value = data.question.type
-                document.getElementById('last').value = data.last
-                document.getElementById('time_limit').value = data.time_limit
-                document.getElementById('question_box').innerHTML = data.current+"/"+data.total_questions+" "+data.question.question
-                //start the timer
-                var timer_amount = document.getElementById('time_limit').value;
-                var time = Number(timer_amount),
-                display = document.querySelector('#timer_box'),
-                display2 = document.querySelector('#time_remaining')
-                startTimer(time, display, display2)
-                // display MCQ box and FIB box accordingly
-                if (data.question.type == 'MCQ'){
-                    document.getElementById('mcq_box').style.display = 'block'
-                    document.getElementById('fib_box').style.display = 'none'
-
-                    if (data.choices.choice1 != '__none'){
-                        document.getElementById('choice1').value = data.choices.choice1
-                        document.getElementById('label1').innerHTML = data.choices.choice1
-                    }
-                    else{
-                        document.getElementById('label1').style.display = 'none'
-                    }
-                    if (data.choices.choice2 != '__none'){
-                        document.getElementById('choice2').value = data.choices.choice2
-                        document.getElementById('label2').innerHTML = data.choices.choice2
-                    }
-                    else{
-                        document.getElementById('label2').style.display = 'none'
-                    }
-                    if (data.choices.choice3 != '__none'){
-                        document.getElementById('choice3').value = data.choices.choice3
-                        document.getElementById('label3').innerHTML = data.choices.choice3
-                    }
-                    else{
-                        document.getElementById('label3').style.display = 'none'
-                    }
-                    if (data.choices.choice4 != '__none'){
-                        document.getElementById('choice4').value = data.choices.choice4
-                        document.getElementById('label4').innerHTML = data.choices.choice4
-                    }
-                    else{
-                        document.getElementById('label4').style.display = 'none'
-                    }  
+                if (data.choices.choice1 != '__none'){
+                    document.getElementById('choice1').value = data.choices.choice1
+                    document.getElementById('label1').innerHTML = data.choices.choice1
                 }
                 else{
-                    document.getElementById('mcq_box').style.display = 'none'
-                    document.getElementById('fib_box').style.display = 'block'
+                    document.getElementById('label1').style.display = 'none'
                 }
-
-                if (data.last == 'yes'){
-                    document.getElementById('next').innerHTML = 'Submit'
-                }
-                else{
-                    document.getElementById('next').value = 'next'
-                }
-                
-            })
-        }
-
-        function save_data(e, id){
-            e.preventDefault()
-            var token = sessionStorage.getItem("token")
-            if (token==null){
-                window.location.replace("http://127.0.0.1:8000/frontend/login")
-            }
-            var quiz_id = document.getElementById('quiz_id').value
-            var question_id = document.getElementById('question_id').value
-            var time_remaining = document.getElementById('time_remaining').innerHTML
-            console.log(time_remaining)
-            var last = document.getElementById('last').value
-            var question_type = document.getElementById('question_type').value
-
-            if (question_type == 'MCQ'){
-                if (document.querySelector('input[name="btnradio"]:checked') == null){
-                    choice = ''
+                if (data.choices.choice2 != '__none'){
+                    document.getElementById('choice2').value = data.choices.choice2
+                    document.getElementById('label2').innerHTML = data.choices.choice2
                 }
                 else{
-                    var choice = document.querySelector('input[name="btnradio"]:checked').value
+                    document.getElementById('label2').style.display = 'none'
                 }
-            }
-            else{
-                var choice = document.getElementById('fib_answer').value
-                if (choice == null){
-                    choice = ''
+                if (data.choices.choice3 != '__none'){
+                    document.getElementById('choice3').value = data.choices.choice3
+                    document.getElementById('label3').innerHTML = data.choices.choice3
                 }
-            }
-            data = {
-                quiz_id:quiz_id,
-                question_id:question_id,
-                time_remaining:time_remaining,
-                last:last,
-                choice
-            }
-            
-            var url = "http://127.0.0.1:8000/api/save/"
-            var options = {
-            method: "POST", 
-            body: JSON.stringify(data),
-            headers:{
-                    "Content-Type": "application/json;charset=UTF-8",
-                    Authorization: "token " + token
-                }
-            }
-            fetch(url, options).then((response) => {
-                console.log(response)
-                return response.json()
-            }).then((data) => {
-                console.log(data)
-                if(id=='next'){
-                    window.location.reload(true) 
-                }
-                if(id=='save'){
-                    window.location.replace('http://127.0.0.1:8000/frontend/logout') 
-                } 
-                
-            })
-
-
-        }
-
-        {% comment %} $(document).ready(function() {
-            // By default show the submit button 
-            $('#submit').show();
-            $('#next').hide();
-            var last = $('#last').val();
-            var q_type = $('#question_type').val();
-            if (q_type == 'MCQ'){
-                // show the MCQ Box when the question type is MCQ
-                $('#fib_box').hide();
-                $('#mcq_box').show();
-            }
-            else
-            {
-                // show the FIB Box when the question type is FIB
-                $('#fib_box').show();
-                $('#mcq_box').hide();
-            }
-                // If it is last question then show 
-                // the submit button else hide it
-            if (last == 'yes'){   
-                $('#next').hide();
-                $('#submit').show();
-            }
-            else{
-                $('#next').show();
-                $('#submit').hide();
-            }
-        });
-
-        // when the user closes the tab or refreshes the page 
-        // save the quiz and submit it with blank answers
-        $('#save_and_submit').click(function(e){
-            var time_rem = $('#time_remaining').text();
-            let q_id = $('#quiz_id1').val();
-            let ques_id = $('#question_id').val();
-            let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            let question_type = $('#question_type').val();
-            var last = $('#last').val();
-            
-            if ($('#question_type').val()=='MCQ'){
-                var ch = $('input:radio[name=btnradio]:checked').val();
-                if (ch==undefined){
-                    ch = '';
-                    }
-                }
-            else{
-                var ch = $('#fib_answer').val();
-                if (ch==undefined){
-                    ch = '';
-                }
-            }
-            var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, last:last, question_type: question_type};
-            // Do ajax post to results
-            $.ajax({
-            url: '{% url "results" %}',
-            method: 'POST',
-            data: mydata,
-            datatype: 'json',
-            success: function(resp){
-                    top.location.href = "{% url 'home' %}";
-                }
-            });
-        });
-
-        // when the user clicks on "save and logout"
-        $('#save').click(function(e){
-            e.preventDefault();
-            var time_rem = $('#time_remaining').text();
-            let q_id = $('#quiz_id1').val();
-            let ques_id = $('#question_id').val();
-            let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            var last = $('#last').val();
-            // If the question is last then submit the quiz
-            // else save it and logout
-            if (last == 'no'){
-                if ($('#question_type').val()=='MCQ'){
-                    var ch = $('input:radio[name=btnradio]:checked').val();
-                    if (ch==undefined){
-                        ch = '';
-                        }
-                    }
                 else{
-                    var ch = $('#fib_answer').val();
-                    if (ch==undefined){
-                        ch = '';
-                        }
+                    document.getElementById('label3').style.display = 'none'
                 }
-                var mydata = {quiz_id:q_id, question_id:ques_id, choice:ch, time_remaining:time_rem, csrfmiddlewaretoken:csrf, save:'yes'};
-                
-                $.ajax({
-                url: '{% url "save_and_cont_later" %}',
-                method: 'POST',
-                data: mydata,
-                datatype: 'json',
-                success: function(resp){
-                        top.location.href="{% url 'logout' %}"
-                    }
-                });
+                if (data.choices.choice4 != '__none'){
+                    document.getElementById('choice4').value = data.choices.choice4
+                    document.getElementById('label4').innerHTML = data.choices.choice4
+                }
+                else{
+                    document.getElementById('label4').style.display = 'none'
+                }  
             }
             else{
-                $('#submit').click();
+                document.getElementById('mcq_box').style.display = 'none'
+                document.getElementById('fib_box').style.display = 'block'
             }
-        });
 
-        // when the user clicks on next button and gets the next question
-        $('#next').click(function(e){
-            e.preventDefault();
-            let q_id = $('#quiz_id1').val();
-            let ques_id = $('#question_id').val();
-            let csrf = $('input[name=csrfmiddlewaretoken]').val();
-            if ($('#question_type').val()=='MCQ'){
-                var ch = $('input:radio[name=btnradio]:checked').val();
-                if (ch==undefined){
-                    ch = '';
-                    }
-                }
-            else{
-                var ch = $('#fib_answer').val();
-                if (ch==undefined){
-                    ch = '';
-                }
+            if (data.last == 'yes'){
+                document.getElementById('next').innerHTML = 'Submit'
             }
-            var mydata = {quiz_id: q_id, question_id: ques_id, choice:ch, csrfmiddlewaretoken:csrf};
+            else{
+                document.getElementById('next').value = 'next'
+            }
             
-            $.ajax({
-            url: '{% url "save_data" %}',
-            method: 'POST',
-            data: mydata,
-            datatype: 'json',
-                success: function(response){
-                    $('#next').show();
-                    $('#submit').hide();
-                    var question_obj = response.question;
-                    var choices_obj = response.choices;
-                    $('#question_id').val(question_obj.question_id);
-                    $('#question_type').val(question_obj.type);
-                    $('#last').val(response.last);
-                    $('#current').text(response.current);
-                    $('#total_questions').text(response.total_questions);
-                    if (question_obj.type == 'MCQ'){
-                        $('#fib_box').hide();
-                        $('#mcq_box').show();
-
-                        $('#question_box').text(question_obj.question);
-                        if(choices_obj.choice1 != '__none'){
-                            $('#choice1').val(choices_obj.choice1);
-                            $('#label1').text(choices_obj.choice1);
-                        }
-                        else{
-                            $('#choice1').hide();
-                            $('#label1').hide();
-                        }
-                        if(choices_obj.choice2 != '__none'){
-                            $('#choice2').val(choices_obj.choice2);
-                            $('#label2').text(choices_obj.choice2);
-                        }
-                        else{
-                            $('#choice2').hide();
-                            $('#label2').hide();
-                        }
-                        if(choices_obj.choice3 != '__none'){
-                            $('#choice3').val(choices_obj.choice3);
-                            $('#label3').text(choices_obj.choice3);
-                        }
-                        else{
-                            $('#choice3').hide();
-                            $('#label3').hide();
-                        }
-                        if(choices_obj.choice4 != '__none'){
-                            $('#choice4').val(choices_obj.choice4);
-                            $('#label4').text(choices_obj.choice4);
-                        }
-                        else{
-                            $('#choice4').hide();
-                            $('#label4').hide();
-                        }
-                        
-                    }
-                    else
-                    {
-                        $('#fib_box').show();
-                        $('#mcq_box').hide();
-                        $('#question_box').text(question_obj.question);
-                    }
-
-                    if (response.last === 'yes'){
-                        $('#next').hide();
-                        $('#submit').show();
-                    }
-                    
-                },
-                error: function(xhr, error){
-                        console.log(xhr); 
-                        console.log(error);
-                }
-            });
-        });
-
-        $('#submit').click(function(e){
-            var time_rem = $('#time_remaining').text();
-            $('#time_remaining_input').val(time_rem);
-        }); {% endcomment %}
-
-
-
-
-function startTimer(duration, display, display2) {
-    var timer = duration, minutes, seconds
-    setInterval(function () {
-    minutes = parseInt(timer / 60, 10)
-    seconds = parseInt(timer % 60, 10)
-
-    minutes = minutes < 10 ? "0" + minutes : minutes
-    seconds = seconds < 10 ? "0" + seconds : seconds
-
-    display.textContent = minutes + ":" + seconds
-
-    display2.textContent = timer
-
-    if (--timer < 0) {
-        // submit the form
-        timer = 0;
-        document.getElementById('submit').click();
+        })
     }
-    }   , 1000)
-}
+
+    function save_and_submit(e){
+        e.preventDefault()
+        sessionStorage.removeItem('time_limit')
+        if (token==null){
+            top.location.href="http://127.0.0.1:8000/frontend/login"
+        }
+        var quiz_id = document.getElementById('quiz_id').value
+        var question_id = document.getElementById('question_id').value
+        var time_remaining =  document.getElementById('time_remaining').innerHTML
+        var last = document.getElementById('last').value
+        var question_type = document.getElementById('question_type').value
+        if (question_type == 'MCQ'){
+            if (document.querySelector('input[name="btnradio"]:checked') == null){
+                choice = ''
+            }
+            else{
+                var choice = document.querySelector('input[name="btnradio"]:checked').value
+            }
+        }
+        else{
+            var choice = document.getElementById('fib_answer').value
+            if (choice == null){
+                choice = ''
+            }
+        }
+        data  = {
+            quiz_id: quiz_id,
+            question_id: question_id,
+            time_remaining: time_remaining,
+            last: last,
+            choice: choice
+        }
+        console.log(data)
+        
+        url = "http://127.0.0.1:8000/api/submit/"
+
+        var options = {
+        method: "POST", 
+        body: JSON.stringify(data),
+        headers:{
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "token " + token
+            }
+        }
+        fetch(url, options).then((response) => {
+            console.log(response)
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+            window.location.replace("http://127.0.0.1:8000/frontend/profile")
+        })
+
+    }
+
+    function save_data(e, id){
+        e.preventDefault()
+        var token = sessionStorage.getItem("token")
+        if (token==null){
+            window.location.replace("http://127.0.0.1:8000/frontend/login")
+        }
+        var quiz_id = document.getElementById('quiz_id').value
+        var question_id = document.getElementById('question_id').value
+        var time_remaining = document.getElementById('time_remaining').innerHTML
+        console.log(time_remaining)
+        var last = document.getElementById('last').value
+        var question_type = document.getElementById('question_type').value
+
+        if (question_type == 'MCQ'){
+            if (document.querySelector('input[name="btnradio"]:checked') == null){
+                choice = ''
+            }
+            else{
+                var choice = document.querySelector('input[name="btnradio"]:checked').value
+            }
+        }
+        else{
+            var choice = document.getElementById('fib_answer').value
+            if (choice == null){
+                choice = ''
+            }
+        }
+        data = {
+            quiz_id:quiz_id,
+            question_id:question_id,
+            time_remaining:time_remaining,
+            last:last,
+            choice
+        }
+        
+        var url = "http://127.0.0.1:8000/api/save/"
+        var options = {
+        method: "POST", 
+        body: JSON.stringify(data),
+        headers:{
+                "Content-Type": "application/json;charset=UTF-8",
+                Authorization: "token " + token
+            }
+        }
+        fetch(url, options).then((response) => {
+            console.log(response)
+            return response.json()
+        }).then((data) => {
+            console.log(data)
+            if(id=='next'){
+                window.location.reload(true) 
+            }
+            if(id=='save'){
+                window.location.replace('http://127.0.0.1:8000/frontend/logout') 
+            } 
+            
+        })
+
+
+    }
+
+    function startTimer(duration, display, display2) {
+        var timer = duration, minutes, seconds
+        setInterval(function () {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10)
+
+        minutes = minutes < 10 ? "0" + minutes : minutes
+        seconds = seconds < 10 ? "0" + seconds : seconds
+
+        display.textContent = minutes + ":" + seconds
+
+        display2.textContent = timer
+
+        if (--timer < 0) {
+            // submit the form
+            timer = 0;
+            document.getElementById('submit').click();
+        }
+        }   , 1000)
+    }
+
+    
+
 </script>
 </body>
 </html>
