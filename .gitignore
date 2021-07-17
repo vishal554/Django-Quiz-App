@@ -4,11 +4,14 @@ __pycache__/
 .vscode/
 Quiz/__pycache__/
 quizapp/__pycache__/
+api/__pycache__/
+frontend/__pycache__/
 testing/__pycache__/
 users/__pycache__/
 quizapp/migrations/*
 users/migrations/
 testing/migrations/
+
 
 
 
