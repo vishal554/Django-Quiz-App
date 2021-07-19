@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'sphinxdoc'
 ]
 
 REST_FRAMEWORK = {

@@ -12,12 +12,12 @@ class Question(models.Model):
 
     **Fields**
 
-    'question_id': A unique UUID for each question
-    'quiz_id': A foreign Key of the QUIZ model
-    'question': The question text
-    'type': The type of the question (Multiple choice or fill in the blanks)
-    'marks_weightage': The marks this question holds
-    'time_weightage': The time in seconds required to answer this question
+    `question_id`: A unique UUID for each question
+    `quiz_id`: A foreign Key of the QUIZ model
+    `question`: The question text
+    `type`: The type of the question (Multiple choice or fill in the blanks)
+    `marks_weightage`: The marks this question holds
+    `time_weightage`: The time in seconds required to answer this question
 
     """
     # Model to store the questions
