@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92">
+  <g id="ConnectorRequest" transform="translate(0.036 -0.035)">
+    <circle id="Ellipse_286" data-name="Ellipse 286" cx="46" cy="46" r="46" transform="translate(-0.036 0.035)" fill="#fff"/>
+    <g id="Group_707" data-name="Group 707" transform="translate(18.037 17.783)">
+      <g id="Group_706" data-name="Group 706" transform="translate(21.751)">
+        <path id="Path_538" data-name="Path 538" d="M-2473.08,67.216h-23.239a4.337,4.337,0,0,0-4.337,4.337v30.894a1.5,1.5,0,0,0,.829,1.341,1.5,1.5,0,0,0,1.571-.141l6.025-4.519h19.151a4.337,4.337,0,0,0,4.336-4.337V71.553A4.337,4.337,0,0,0-2473.08,67.216Z" transform="translate(2500.652 -67.216)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        <line id="Line_68" data-name="Line 68" x2="21.204" transform="translate(5.44 7.291)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        <line id="Line_69" data-name="Line 69" x2="21.204" transform="translate(5.44 15.053)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        <line id="Line_70" data-name="Line 70" x2="15.475" transform="translate(5.44 22.815)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      </g>
+      <path id="Path_539" data-name="Path 539" d="M-2516.05,88.3a21.226,21.226,0,0,1,9.192-8.508" transform="translate(2524.925 -69.276)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      <path id="Path_540" data-name="Path 540" d="M-2502.5,124.21a21.06,21.06,0,0,1-9.535-4.729,21.127,21.127,0,0,1-6.777-11.328" transform="translate(2525.378 -73.921)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      <path id="Path_541" data-name="Path 541" d="M-2471.91,110.511a21.2,21.2,0,0,1-9.078,11.438" transform="translate(2519.181 -74.307)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      <circle id="Ellipse_287" data-name="Ellipse 287" cx="7.272" cy="7.272" r="7.272" transform="translate(0 19.026)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      <circle id="Ellipse_288" data-name="Ellipse 288" cx="7.272" cy="7.272" r="7.272" transform="translate(23.164 42.811)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    </g>
+  </g>
+</svg>

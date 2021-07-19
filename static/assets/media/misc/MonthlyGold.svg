@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="93" height="92" viewBox="0 0 93 92">
+  <g id="MonthlyGold" transform="translate(-0.291 -0.035)">
+    <ellipse id="Ellipse_289" data-name="Ellipse 289" cx="46.5" cy="46" rx="46.5" ry="46" transform="translate(0.291 0.035)" fill="#fff"/>
+    <g id="Group_709" data-name="Group 709" transform="translate(19.903 20.115)">
+      <g id="Polygon_1" data-name="Polygon 1">
+        <path id="Path_542" data-name="Path 542" d="M-2329.78,125.806l-6.894-1.8-.1-.026-.1.026-6.894,1.8-5.069-5.007-.073-.071-.1-.027-6.871-1.887-1.887-6.87-.027-.1-.072-.073-5.006-5.069,1.8-6.894.025-.1-.025-.1-1.8-6.894,5.006-5.068.072-.073.027-.1,1.887-6.869,6.871-1.888.1-.026.073-.072,5.069-5.007,6.894,1.8.1.026.1-.026,6.894-1.8,5.069,5.007.073.072.1.026,6.871,1.888,1.886,6.869.028.1.072.073,5,5.068-1.8,6.894-.026.1.026.1,1.8,6.894-5,5.069-.072.073-.028.1-1.886,6.87-6.871,1.887-.1.027-.073.071Z" transform="translate(2362.862 -73.618)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      </g>
+      <path id="Path_543" data-name="Path 543" d="M-2332.5,98.571h6.373l-.052,7.468a6.135,6.135,0,0,1-.556.836,12.112,12.112,0,0,1-8.833,3.834h0a12.173,12.173,0,0,1-12.138-12.139h0a12.173,12.173,0,0,1,12.138-12.138h0a12.119,12.119,0,0,1,9.087,4.112" transform="translate(2363.015 -73.489)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    </g>
+  </g>
+</svg>

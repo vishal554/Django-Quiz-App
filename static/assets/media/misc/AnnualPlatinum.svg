@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="93" height="92" viewBox="0 0 93 92">
+  <g id="AnnualPlatinum" transform="translate(-0.389 -0.035)">
+    <ellipse id="Ellipse_290" data-name="Ellipse 290" cx="46.5" cy="46" rx="46.5" ry="46" transform="translate(0.389 0.035)" fill="#fff"/>
+    <g id="Group_711" data-name="Group 711" transform="translate(19.406 19.259)">
+      <g id="Polygon_1" data-name="Polygon 1">
+        <path id="Path_544" data-name="Path 544" d="M-2178.3,127.517l-7.119-1.86-.1-.027-.1.027-7.119,1.86-5.236-5.171-.074-.073-.1-.028-7.1-1.949-1.949-7.1-.028-.1-.074-.075-5.17-5.236,1.859-7.12.028-.1-.028-.1-1.859-7.12,5.17-5.235.074-.075.028-.1,1.949-7.1,7.1-1.95.1-.027.074-.074,5.235-5.171,7.12,1.86.1.027.1-.027,7.119-1.86,5.236,5.171.075.074.1.027,7.1,1.95,1.948,7.1.028.1.074.075,5.17,5.235-1.86,7.12-.026.1.026.1,1.86,7.12-5.17,5.236-.074.075-.028.1-1.948,7.1-7.1,1.949-.1.028-.075.073Z" transform="translate(2212.474 -73.618)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      </g>
+    </g>
+    <g id="Group_712" data-name="Group 712" transform="translate(42.843 37.885)">
+      <path id="Path_545" data-name="Path 545" d="M-2190.05,107.177V89h7.063a4.688,4.688,0,0,1,4.675,4.674h0a4.688,4.688,0,0,1-4.675,4.674h-7.063" transform="translate(2190.05 -89)" fill="none" stroke="#61383f" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+    </g>
+  </g>
+</svg>
