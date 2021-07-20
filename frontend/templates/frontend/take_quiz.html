@@ -89,6 +89,15 @@
         crossorigin="anonymous"></script>
 
     <script type="text/javascript">
+{% comment %} 
+
+    window.addEventListener("unload", function(e){
+        e.preventDefault();
+        if()
+        document.getElementById('submit').click()
+        for (var i=1;i<50000000; i++){}
+        
+    });  {% endcomment %}
 
     
     window.onload = function(){
@@ -181,9 +190,11 @@
     function save_and_submit(e){
         e.preventDefault()
         sessionStorage.removeItem('time_limit')
+        var token = sessionStorage.getItem("token")
         if (token==null){
             top.location.href="http://127.0.0.1:8000/frontend/login"
         }
+        
         var quiz_id = document.getElementById('quiz_id').value
         var question_id = document.getElementById('question_id').value
         var time_remaining =  document.getElementById('time_remaining').innerHTML
@@ -235,6 +246,7 @@
 
     function save_data(e, id){
         e.preventDefault()
+        sessionStorage.removeItem('time_limit')
         var token = sessionStorage.getItem("token")
         if (token==null){
             window.location.replace("http://127.0.0.1:8000/frontend/login")
@@ -295,7 +307,16 @@
     }
 
     function startTimer(duration, display, display2) {
-        var timer = duration, minutes, seconds
+        var time = sessionStorage.getItem('time_limit')
+        var minutes, seconds
+        if (time==null){
+            var timer = duration
+        }
+    
+        else{
+            var timer = time
+        }
+        
         setInterval(function () {
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10)
@@ -306,14 +327,16 @@
         display.textContent = minutes + ":" + seconds
 
         display2.textContent = timer
+        sessionStorage.setItem('time_limit',timer)
 
         if (--timer < 0) {
             // submit the form
             timer = 0;
             document.getElementById('submit').click();
-        }
+            }
         }   , 1000)
     }
+
 
     
 
