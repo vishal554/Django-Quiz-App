@@ -108,7 +108,7 @@ class RegisterView(APIView):
         data = {}
         if serializer.is_valid():
             data['response'] = 'Success'
-            data['email'] = serializer.data['email']
+            request.session['email'] = serializer.data['email']
             data['username'] = serializer.data['username']
             data['password'] = request.data['password1']
             return Response(data)
@@ -141,8 +141,6 @@ class OtpVerificationView(APIView):
         data = {}
         try:
             email = request.session['email']
-            password = request.session['password']
-            username = request.session['username']
             otp = request.session.get('otp','')
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -153,9 +151,6 @@ class OtpVerificationView(APIView):
                         f'Your OTP is: {otp}', 'vishalpanchal338@gmail.com', [email], fail_silently=False)
             request.session['otp'] = otp
             print('otp: ', otp)
-            data['email'] = email
-            data['password'] = password
-            data['username'] = username
             data['response'] = 'OTP sent successfully'
             return Response(data)
         else:

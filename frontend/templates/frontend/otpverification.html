@@ -23,7 +23,7 @@
         <form>
             <fieldset class="form-group text-center">
                 <legend class="border-bottom mb-4 text-center">Enter OTP sent to your Email</legend>
-                <input type="text" id='otp' name="otp" ></input>
+                <input type="text" id='otp' name="otp" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"></input>
             </fieldset>
             <div class="form-group text-center">
                 <button class="btn btn-outline-info m-3" onclick="otpverify(event)">Verify</button>
@@ -67,7 +67,12 @@
         function otpverify(e){
           e.preventDefault()
           document.getElementById('container').innerHTML = ''
+          
           var user_otp = document.getElementById('otp').value
+          if(user_otp == ''){
+            document.getElementById('container').innerHTML = 'OTP cannot be empty!'
+            return 
+          }
           var username = sessionStorage.getItem('username')
           var email = sessionStorage.getItem('email')
           var password = sessionStorage.getItem('password')
@@ -98,9 +103,9 @@
               document.querySelector("#container").insertAdjacentHTML('afterbegin', html)
             }
             else{
-              sessionStorage.setItem('username', '')
-              sessionStorage.setItem('email', '')
-              sessionStorage.setItem('password', '')
+              sessionStorage.removeItem('username')
+              sessionStorage.removeItem('email')
+              sessionStorage.removeItem('password')
               window.location.replace('http://127.0.0.1:8000/frontend/login')
             }
           })
