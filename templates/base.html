@@ -14,7 +14,6 @@
     <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
-		<link href="{% static 'assets/css/custom-style.css' %}" rel="stylesheet" type="text/css" />
 
     
     <title>Quiz App</title>
@@ -49,41 +48,60 @@
     {% block scripts %}
     
     {% endblock scripts %}
-    
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Quiz App</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="nav nav-light-success nav-pills">
-            <li class="nav-item ">
-              <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
-            </li>
-          </ul>
+<div class="d-flex flex-column flex-root">
+  <!--begin::Page-->
+  <div class="d-flex flex-row flex-column-fluid page">
+    <!--begin::Wrapper-->
+    <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+      <!--begin::Header-->
+      <div id="kt_header" class="header flex-column header-fixed" style="" kt-hidden-height="145">
+        <!--begin::Top-->
+        <div class="header-top">
+          <!--begin::Container-->
+          <div class="container">
+            <!--begin::Left-->
+            <div class="d-none d-lg-flex align-items-center mr-3">
+              <a href="#" class="mr-20">
+                <img alt="Logo" src="{% static 'assets/media/misc/logo.png' %}" class="max-h-35px">
+              </a>
+              
+              <ul class="header-tabs nav align-self-end font-size-lg">
+                <li class="nav-item ">
+                  <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+                </li>
+              </ul>
+            </div>
 
-          <ul class="nav nav-light-success nav-pills navbar-right">
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Register</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
-            </li>
-          {% endif %}
-          </ul>
-        
+            <div class="topbar">
+              <ul class="header-tabs nav align-self-end font-size-lg">
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'register' %}">Register</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+              {% endif %}
+              </ul>
+            </div>
+          </div>
         </div>
+        <!--End::Top-->
       </div>
-    </nav>
+      <!--End::Header-->
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </div>
+</div>
+    
     
     
     {% if messages %}
@@ -94,7 +112,7 @@
       {% endfor%}
     {% endif %}
 
-    {% block content %}{% endblock content %}
+    
 
   </body>
 </html>

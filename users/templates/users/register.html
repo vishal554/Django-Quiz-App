@@ -11,9 +11,7 @@
         window.onunload = function(){null};
     </script>
 
-<!-- Basic Login Form that inherits the default django login-->
-<div class="d-flex flex-column flex-root">
-    <!--begin::Login-->
+    <!--begin::Signup-->
     <div class="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white">
         <!--begin::Content-->
         <div class="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
@@ -31,36 +29,64 @@
                         </div>
                         <!--End::Title-->
                         
-                        <!--begin::Form group-->
-                        <div class="form-group">
-                            <label class="font-size-h6 font-weight-bolder text-dark">Username</label>
-                            <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="text" name="username" autocomplete="off" />
-                        </div>
-                        <!--end::Form group-->
-                        <!--begin::Form group-->
-                        <div class="form-group">
-                            <label class="font-size-h6 font-weight-bolder text-dark">Email</label>
-                            <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="email" name="email" autocomplete="off" />
-                        </div>
-                        <!--end::Form group-->
-                        <!--begin::Form group-->
-                        <div class="form-group">
-                            <div class="d-flex justify-content-between mt-n5">
-                                <label class="font-size-h6 font-weight-bolder text-dark pt-5">Password</label>
-                            </div>
-                            <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="password" name="password" autocomplete="off" />
-                        </div>
-                        <!--end::Form group-->
-                        <!--begin::Form group-->
-                        <div class="form-group">
-                            <div class="d-flex justify-content-between mt-n5">
-                                <label class="font-size-h6 font-weight-bolder text-dark pt-5">Retype Password</label>
-                            </div>
-                            <input class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" type="password" name="password2" autocomplete="off" />
-                        </div>
-                        <!--end::Form group-->
-                        <!--begin::Action-->
+                        <div id="div_id_username" class="form-group"> 
+                            <label for="id_username" class=" requiredField">
+                                Username<span class="asteriskField">*</span>
+                            </label> 
+                            <div class=""> 
+                                <input type="text" name="username" value="" maxlength="150" autofocus class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" required id="id_username"> 
+                                <p id="error_1_id_username" class="invalid-feedback"><strong>A user with that username already exists.</strong>
+                                </p><small id="hint_id_username" class="form-text text-muted">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small> 
+                            </div> 
+                        </div> 
 
+                        <div id="div_id_email" class="form-group"> 
+                            <label for="id_email" class=" requiredField">
+                                Email<span class="asteriskField">*</span> 
+                            </label> 
+                            <div class=""> 
+                                <input type="email" name="email" class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" required id="id_email"> 
+                                <p id="error_1_id_email" class="invalid-feedback"><strong>This field is required.</strong></p> 
+                            </div> 
+                        </div> 
+                        
+                        <div id="div_id_password1" class="form-group"> 
+                            <label for="id_password1" class=" requiredField">
+                                Password<span class="asteriskField">*</span> 
+                            </label>
+                            <div class=""> 
+                                <input type="password" name="password1" autocomplete="new-password" class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" required id="id_password1"> 
+                                <p id="error_1_id_password1" class="invalid-feedback"><strong>This field is required.</strong></p> 
+                                <small id="hint_id_password1" class="form-text text-muted">
+                                <ul>
+                                    <li>Your password can’t be too similar to your other personal information.</li>
+                                    <li>Your password must contain at least 8 characters.</li>
+                                    <li>Your password can’t be a commonly used password.</li>
+                                    <li>Your password can’t be entirely numeric.</li>
+                                </ul>
+                                </small> 
+                            </div> 
+                        </div> 
+                        
+                        <div id="div_id_password2" class="form-group"> 
+                            <label for="id_password2" class=" requiredField">
+                            Password confirmation<span class="asteriskField">*</span> 
+                            </label> 
+                            <div class=""> 
+                                <input type="password" name="password2" autocomplete="new-password" class="form-control form-control-solid h-auto py-6 px-6 rounded-lg" required id="id_password2"> 
+                                <p id="error_1_id_password2" class="invalid-feedback"><strong>This field is required.</strong>
+                                </p><small id="hint_id_password2" class="form-text text-muted">Enter the same password as before, for verification.</small> 
+                            </div> 
+                        </div>
+
+   
+                        <div class="form-group">
+                            {% if form_errors %}
+                                {{form_errors}}
+                            {% endif %}
+                        </div>
+
+                        <!--begin::Action-->
                         <div class="form-group d-flex flex-wrap justify-content-between align-items-center mt-2">
                             <button type='submit' class="btn btn-primary font-weight-bold px-9 py-4 my-3">Sign Up</button>
                             <div class="my-3 mr-2">
@@ -73,7 +99,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
            

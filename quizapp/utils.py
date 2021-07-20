@@ -1,4 +1,5 @@
 
+from django.http import response
 from quizapp.models import FibQuestion, McqQuestion, Question, UsersAnswer
 
 
@@ -20,14 +21,20 @@ def get_data_of_quiz(quiz_id, username):
         else:
             correct_answer.append(FibQuestion.objects.get(
                 question_id=question.question_id).answer)
-
+    result = []
     marks_obt = 0
     for i in range(len(user_answer)):
         if user_answer[i] == correct_answer[i]:
+            result.append(True)
             marks_obt += marks_weightage[i]
+        else:
+            result.append(False)
+        
 
     total_marks = sum(marks_weightage)
     perct = ((marks_obt/total_marks) * 100)
+    perct = round(perct,2)
+
 
     context = {
         'marks_obtained': marks_obt,
@@ -36,6 +43,7 @@ def get_data_of_quiz(quiz_id, username):
         'questions': question_objects,
         'UsersAnswer': user_answer,
         'correct_answer': correct_answer,
+        'result': result
     }
 
     return context

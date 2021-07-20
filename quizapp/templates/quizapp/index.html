@@ -4,57 +4,98 @@
 
     <!-- Shows the Home page with available and ongoing quizes -->
 
-    <div class="container">
-        <!-- Check if the Quizes exist or not-->
-        {% if Quizes or ongoing_quizes %}
-            <div class="row border m-3 p-2">
-                <h3> Available Quizes </h3>
-                <!-- Get Available quizes -->
-                {% for quiz in Quizes %}
-                    <div class="row border p-2 m-2"> 
-                        <h3 class="card-title"> {{ quiz.quiz_name }} </h3>
-                        <h4 class="card-text"> {{ quiz.quiz_desc }} </h4>
-                        <div class="text-end">
-                            {% if user.is_authenticated %}
-                                <form action="{% url 'take_quiz' %}" method="GET">
-                                    <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
-                                    <button class="btn btn-outline-info m-3 w-auto" type="submit"> Take Quiz </button>
-                                </form>
-                            {% else %}
-                                <button class="btn btn-outline-info m-3 w-auto disabled" > Take Quiz </button>
-                            {% endif %}
+    <div class="d-flex flex-column flex-lg-row flex-column-fluid bg-white">
+        <div class='flex-row-fluid justify-content-top position-relative overflow-hidden p-7'>
+                <!-- Check if the Quizes exist or not-->
+                {% if Quizes or ongoing_quizes %}
+                    {% if Quizes %}
+                        <div class="d-flex justify-content-center">
+                            <h3> Available Quizzes </h3>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                        {% for quiz in Quizes %}
+                            <div class="card card-custom bg-primary my-3 mx-20">
 
-            <div class="row border m-3 p-2">
-                <h3> Ongoing Quizes </h3>
-                <!-- Get Ongoing quizes -->
-                {% for quiz in ongoing_quizes %}
-                    <div class="row border p-2 m-2"> 
-                        <h3 class="card-title"> {{ quiz.quiz_name }} </h3>
-                        <h4 class="card-text"> {{ quiz.quiz_desc }} </h4>
-                        <div class="text-end">
-                            {% if user.is_authenticated %}
-                                <form action="{% url 'take_quiz' %}" method="GET">
+                                <div class="card-header border-0">
+                                    <div class="card-title">
+                                        <span class="card-icon">
+                                            <i class="flaticon2-chat-1 text-white"></i>
+                                        </span>
+                                        <h3 class="card-label text-white">
+                                            {{ quiz.quiz_name }} 
+                                        </h3>
+                                    </div>
                                     
-                                    <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
-                                    <button class="btn btn-outline-info m-3 w-auto" type="submit"> Take Quiz </button>
-                                </form>
-                            {% else %}
-                                <button class="btn btn-outline-info m-3 w-auto disabled" > Take Quiz </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+                                    <div class="card-toolbar">
+                                        {% if user.is_authenticated %}
+                                            <form action="{% url 'take_quiz' %}" method="GET">
+                                                <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
+                                                <button class="btn btn-sm btn-white" type="submit"><i class="flaticon2-cube"></i> Take Quiz </button>
+                                            </form>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-white disabled" ><i class="flaticon2-cube"></i> Take Quiz </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
 
-        {% else %}
-            <div class="row">
-                <h3 class="card-title">No Quiz Available<h3>
-            </div>
-        {% endif %}
+                                <div class="separator separator-solid separator-white opacity-20"></div>
+
+                                <div class="card-body text-white">
+                                    {{quiz.quiz_desc}}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- Get Ongoing quizes -->
+                    {% if ongoing_quizes %}
+                        <div class="d-flex justify-content-center">
+                            <h3> Ongoing Quizzes </h3>
+                        </div>
+
+                        {% for quiz in ongoing_quizes %}
+                            <div class="card card-custom bg-primary my-3 mx-20">   
+
+                                <div class="card-header border-0">
+                                    <div class="card-title">
+                                        <span class="card-icon">
+                                            <i class="flaticon2-chat-1 text-white"></i>
+                                        </span>
+                                        <h3 class="card-label text-white">
+                                            {{ quiz.quiz_name }} 
+                                        </h3>
+                                    </div>
+                                    
+                                    <div class="card-toolbar">
+                                        {% if user.is_authenticated %}
+                                            <form action="{% url 'take_quiz' %}" method="GET">
+                                                <input type="text" hidden="true" name="quiz_id" value="{{ quiz.quiz_id }}"></input>
+                                                <button class="btn btn-sm btn-white" type="submit"><i class="flaticon2-cube"></i> Take Quiz </button>
+                                            </form>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-white disabled" ><i class="flaticon2-cube"></i> Take Quiz </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="separator separator-solid separator-white opacity-20"></div>
+
+                                <div class="card-body text-white">
+                                    {{quiz.quiz_desc}}
+                                </div>
+                            
+                            </div>
+                        {% endfor %}
+
+                    {% endif %}
+                        
+                        
+                {% else %}
+                    <div class="row">
+                        <h3 class="card-title">No Quiz Available<h3>
+                    </div>
+                {% endif %}
+        </div>
     </div>
 {% endblock content %}
 

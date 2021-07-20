@@ -3,30 +3,56 @@
 {% block content %}
 
 <!-- Profile Page which shows the completed Quizzes of the user -->
-
-    <div class="container">
-
-        {% for quiz in taken %}
-            <!-- Get all the taken Quizzes -->
-            <div class="row border m-2">
-                <div class="row m-2 p-1">
-                    <h4>{{quiz.quiz_id.quiz_name}}</h4>
+ <div class="d-flex flex-column flex-lg-row flex-column-fluid bg-white">
+    <div class='flex-row-fluid justify-content-top position-relative overflow-hidden p-7'>
+        {% if taken %}  
+            <div class="d-flex justify-content-center">
+                <div cass="container">
+                    <h3> Your completed quizes </h3>
                 </div>
-                <div class="row m-2 p-1">
-                    <h5>{{quiz.quiz_id.quiz_desc}}</h5>
-                </div>
-                <div class="row m-2 p-1">
-                    <form action="{% url 'profile' %}" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="quiz_id" value="{{quiz.quiz_id.quiz_id}}"/>
-                        <!-- Button which redirects to the Results page to show the details of the taken Quiz-->
-                        <button id="show_details" class="btn btn-primary"> Show Details </button>
-                    </form>
-                </div> 
-
             </div>
-        {% endfor %}
+             {% for quiz in taken %}
+                <div class="card card-custom bg-primary my-4 mx-20">
+                    <div class="card-header border-0">
+                        <div class="card-title">
+                            <span class="card-icon">
+                                <i class="flaticon2-chat-1 text-white"></i>
+                            </span>
+                            <h3 class="card-label text-white">
+                                {{ quiz.quiz_id.quiz_name }} 
+                            </h3>
+                        </div>
+                        
+                        <div class="card-toolbar">
+                            <form action="{% url 'profile' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="quiz_id" value="{{quiz.quiz_id.quiz_id}}"/>
+                                <!-- Button which redirects to the Results page to show the details of the taken Quiz-->
+                                <button class="btn btn-sm btn-white" type='submit'><i class="flaticon2-cube"></i> Show Details </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="separator separator-solid separator-white opacity-20"></div>
+
+                    <div class="card-body text-white">
+                        {{quiz.quiz_id.quiz_desc}}
+                    </div>
+                </div>
+            {% endfor %}
+        
+        {% else %}
+            <div class="d-flex flex-column-fluid">
+                <div class="container">
+                    <p> You have not completed any Quizes </p>
+                </div>
+            </div>
+        {% endif %}
+       
+
     </div>
+</div>
+
 
 {% endblock content %}
 

@@ -31,17 +31,16 @@ class RegisterView(View):
 
     def post(self, request):
         # check if the form is valid or not
-        # if it is then send OTP
         form = UserRegisterForm(request.POST)
         if form.is_valid():
+            print('valid form')
             request.session['form_data'] = form.cleaned_data
             email = form.cleaned_data.get("email")
             username = form.cleaned_data.get("username")
             request.session['email'] = email
             request.session['username'] = username
-
             return redirect('otp_verification')
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form_errors': form.errors})
 
 
 class OtpVerificationView(View):

@@ -1,53 +1,70 @@
 {% extends "base.html" %}
 {% load index %}
 {% block content %}     
+{% load static %}
 
 <!-- Shows the Result of the Quiz attempted by the user after submitting -->
-    <div class="container">
-            <div class="row">
-                <div class="col border p-2">
-                    <h4> Question </h4>
-                </div>
-                <div class="col border p-2">
-                    <h4> Your answer </h4>
-                </div>
-                <div class="col border p-2">
-                    <h4> Correct answer </h4>
-                </div>
-            </div>
-        {% for question in questions %}
-            <div class="row p-2">
-                <div class="col">
-                    <h5>{{ question.question }}</h5>
-                </div>
-                <div class="col">
-                    <h5>{{ UsersAnswer|index:forloop.counter0 }}</h5>
-                </div>
-                <div class="col">
-                    <h5>{{ correct_answer|index:forloop.counter0 }}</h5>
-                </div>
-            </div>
-        {% endfor %}
 
-        <div class='row border'></div>
+<div class="d-flex flex-column flex-lg-row flex-column-fluid bg-white">
+    <div class='flex-row-fluid justify-content-top position-relative overflow-hidden p-7'>
+        <div class="container table-responsive my-5">
+            <table class="table table-borderless table-vertical-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="w-200px" colspan='2'>Question</th>
+                        <th class="">Your answer</th>
+                        <th class="">Correct answer</th>
+                        <th class="">Marks</th>
+                        <th class="">Result</th>
+                    </tr>
+                </thead>
 
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Total Marks: {{total_marks}}</h4>
-            </div>
+                <tbody>
+                    {% for question in questions %}
+                        <tr> 
+                            <td colspan='2'>{{ question.question }}</td>
+                            <td>{{ UsersAnswer|index:forloop.counter0 }}</td>
+                            <td>{{ correct_answer|index:forloop.counter0 }}</td>
+                            <td> {{ question.marks_weightage}} </td>
+                            {% if result|index:forloop.counter0 %} 
+                                <td> <img alt="correct" src="{% static 'assets/media/misc/correct.png' %}" class="max-h-20px"> </td>
+                            {% else %}
+                                <td> <img alt="Incorrect" src="{% static 'assets/media/misc/wrong.png' %}" class="max-h-20px"> </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Marks Obtained: {{marks_obtained}}</h4>
-            </div>
+
+        <div class="container table-responsive w-500px my-5">
+            <table class="table table-borderless table-vertical-center">
+                <thead class="thead-light">
+                    <tr class="">
+                        <th class="text-center text-dark" colspan='2'> Summary </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr> 
+                        <td colspan='1'> Marks obtained </td>
+                        <td colspan='1'> {{marks_obtained}} </td>
+                    </tr>
+                    <tr> 
+                        <td colspan='1'> Total Marks </td>
+                        <td colspan='1'> {{total_marks}} </td>
+                    </tr>
+                    <tr> 
+                        <td colspan='1'> Percentage </td>
+                        <td colspan='1'> {{percentage}} % </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="row m-2 p-1">
-            <div class="col">
-                <h4> Percentage: {{percentage}} % </h4>
-            </div>
-        </div>
-        
     </div>
+</div>
+
+       
 
 {% endblock content %}      
 
