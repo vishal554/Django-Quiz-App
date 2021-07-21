@@ -96,13 +96,7 @@
         <!--End::Top-->
       </div>
       <!--End::Header-->
-      {% block content %}
-      {% endblock content %}
-    </div>
-  </div>
-</div>
-    
-    
+      
     
     {% if messages %}
       {% for message in messages %}
@@ -112,6 +106,13 @@
       {% endfor%}
     {% endif %}
 
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </div>
+</div>
+    
+    
     
 
   </body>

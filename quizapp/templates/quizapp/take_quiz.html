@@ -62,23 +62,31 @@
                         <div id="mcq_box" class="">
                             <div class="btn-group-vertical col-4" role="group" aria-label="Basic radio toggle button group">
                                 {% if choices.choice1 != "__none" %}
-                                    <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
-                                    <label class="btn btn-outline-primary m-2" id="label1" for="choice1">{{choices.choice1}}</label>
+                                    <div class="justify-content-start">
+                                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice1}}"  id="choice1" autocomplete="off">
+                                        <label class="btn btn-light-primary m-2" id="label1" for="choice1">{{choices.choice1}}</label>
+                                    </div>
                                 {% endif %}
                                 
                                 {% if choices.choice2 != "__none" %}
-                                    <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
-                                    <label class="btn btn-outline-primary m-2" id="label2" for="choice2">{{choices.choice2}}</label>
+                                    <div class="justify-content-start">
+                                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice2}}"  id="choice2" autocomplete="off">
+                                        <label class="btn btn-light-primary m-2" id="label2" for="choice2">{{choices.choice2}}</label>
+                                    </div>
                                 {% endif %}
 
                                 {% if choices.choice3 != "__none" %}
-                                    <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
-                                    <label class="btn btn-outline-primary m-2" id="label3" for="choice3">{{choices.choice3}}</label>
+                                    <div class="justify-content-start">
+                                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice3}}" id="choice3" autocomplete="off">
+                                        <label class="btn btn-light-primary m-2" id="label3" for="choice3">{{choices.choice3}}</label>
+                                    </div>
                                 {% endif %}
 
                                 {% if choices.choice4 != "__none" %}
-                                    <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
-                                    <label class="btn btn-outline-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
+                                    <div class="justify-content-start">
+                                        <input type="radio" class="btn-check" name="btnradio" value="{{choices.choice4}}" id="choice4" autocomplete="off">
+                                        <label class="btn btn-light-primary m-2" id="label4" for="choice4" >{{choices.choice4}}</label>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>  

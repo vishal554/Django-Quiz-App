@@ -73,7 +73,7 @@ class OtpVerificationView(View):
             messages.warning(
                 request, f'Already sent email with OTP! please check your email')
 
-        return render(request, self.template_name)
+        return render(request, self.template_name, {'email': email})
 
     def post(self, request):
         # check the entered OTP and redirect to respective page
@@ -81,6 +81,7 @@ class OtpVerificationView(View):
         entered_otp = request.POST.get("otp", '0')
         try:
             otp = request.session['otp']
+            email = request.session['email']
         except:
             return redirect('register')
 
@@ -105,6 +106,6 @@ class OtpVerificationView(View):
                     request, f"Invalid username or password. Please Register again")
                 return redirect('register')
         else:
-            messages.error(request, "Invalid OTP! Please try again")
-        return render(request, self.template_name)
+            messages.warning(request, "Invalid OTP! Please try again")
+        return render(request, self.template_name, {'email': email})
 

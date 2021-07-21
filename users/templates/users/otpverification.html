@@ -1,14 +1,20 @@
-
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<!--begin::Fonts-->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+		<!--end::Fonts-->
+		{% block customcss %}
+        {% endblock customcss %}
+    <!-- Metronics CSS -->
+        <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    
     <title>Quiz App</title>
   </head> 
   <body>
@@ -27,6 +33,8 @@
         }
         setTimeout("preback()",0);
         window.onunload = function(){null};
+
+
     </script>
 
     {% if messages %}
@@ -36,19 +44,29 @@
         </div>
       {% endfor%}
     {% endif %}
-
-    <div class="container-fluid border p-5" style="max-width:max-content">
-        <form method="POST" action="#">
-            {% csrf_token %}
-            <fieldset class="form-group text-center">
-                <legend class="border-bottom mb-4 text-center">Enter OTP sent to your Email - {{ email }}</legend>
-                <input type="text" name="otp" ></input>
-            </fieldset>
-            <div class="form-group text-center">
-                <button class="btn btn-outline-info m-3" type="submit">Verify</button>
-            </div> 
-        </form>
+<div class="d-flex flex-column flex-row flex-root"> 
+  <div class="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white">
+    <!--begin::Content-->
+    <div class="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+      <!--begin::Content body-->
+      <div class="d-flex flex-column-fluid flex-center">
+        <div class="login-form ">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <fieldset class="form-group text-center">
+                  <legend class="h-auto p-3 m-3">Enter OTP sent to your Email - {{ email }}</legend>
+                  <div class="container w-200px">
+                      <input type="text" class="form-control font-size-h3 text-center form-control-solid h-auto py-6 px-6 rounded-lg" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" name="otp" ></input>  
+                  </div>
+                </fieldset>
+                <div class="form-group text-center">
+                    <button class="btn btn-light-primary font-weight-bold" type="submit">Verify</button>
+                </div> 
+            </form>
+        </div>
+      </div>
     </div>
-
+  </div>
+</div>
   </body>
 </html>
