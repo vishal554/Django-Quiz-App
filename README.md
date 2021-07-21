@@ -1,6 +1,6 @@
 # Django-Quiz-App
 
-##Note: Make a variables.py file under the project folder (in the same directory as settings.py) and assign password of your gmail to the variable "GMAIL_PASSWORD"
+## Note: Make a variables.py file under the project folder (in the same directory as settings.py) and assign password of your gmail to the variable "GMAIL_PASSWORD"
 
 ## Current features:
 
