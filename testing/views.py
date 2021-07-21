@@ -17,8 +17,8 @@ def company_people(request):
 def company_settings(request):
     return render(request, 'testing/company-settings.html')
 
-def company_task1(request):
-    return render(request, 'testing/company-task-detail.html')
-
-def company_task2(request):
+def company_task(request):
     return render(request, 'testing/company-task.html')
+
+def company_task_detail(request):
+    return render(request, 'testing/company-task-detail.html')

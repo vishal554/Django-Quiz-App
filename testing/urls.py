@@ -8,7 +8,7 @@ urlpatterns = [
     path("signup", company_signup, name="company_signup"),
     path("people", company_people, name="company_people"),
     path("settings", company_settings, name="company_settings"),
-    path("task1", company_task1, name="company_task1"),
-    path("task2", company_task2, name="company_task1"),
+    path("task", company_task, name="company_task"),
+    path("task_detail", company_task_detail, name="company_task_detail"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

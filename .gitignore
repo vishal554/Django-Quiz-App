@@ -2,6 +2,7 @@ Quiz/variables.py
 __pycache__
 *.pyc
 db.sqlite3
-migrations/*
+migrations
 !migrations/__init__.py
 *.vscode
+.env
