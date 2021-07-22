@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-
 {% load static %}
+
 <html lang="en">
+
+	{% block head %}
+	
 	<!--begin::Head-->
 	<head><base href="">
 		<meta charset="utf-8" />
@@ -12,9 +15,11 @@
 		<!--begin::Fonts-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
 		<!--end::Fonts-->
-		<!--begin::Page Vendors Styles(used by this page)-->
-		<link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
-		<!--end::Page Vendors Styles-->
+
+		{% block custom_css %}
+		
+		{% endblock custom_css %}
+
 		<!--begin::Global Theme Styles(used by all pages)-->
 		<link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
@@ -27,8 +32,12 @@
 	</head>
 	<!--end::Head-->
 
+	{% endblock head %}
+	
+	{% block body %}
+	
 	<!--begin::Body-->
-	<body id="kt_body" class="header-fixed header-mobile-fixed header-bottom-enabled page-loading">
+	<body id="kt_body" class="header-fixed page-loading">
 		<!--begin::Main-->
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
@@ -75,11 +84,11 @@
 									</a>
 									<!--end::Logo-->
 									{% block header_top %}
+
 									{% endblock header_top %}
 								</div>
 								<!--end::Left-->
 
-								
 								<!--begin::Topbar-->
 								<div class="topbar bg-primary">
 									<!--begin::Notifications-->
@@ -320,9 +329,6 @@
 						</div>
 						<!--end::Top-->
 
-						{% block header_bottom %}
-						{% endblock header_bottom %}
-
 					</div>
 					<!--end::Header-->
 
@@ -384,7 +390,11 @@
 		<script src="{% static  'assets/plugins/custom/prismjs/prismjs.bundle.js' %}"></script>
 		<script src="{% static  'assets/js/scripts.bundle.js' %}"></script>
 		<!--end::Global Theme Bundle-->
+		{% block custom_js %}
+		{% endblock custom_js %}
 		
 	</body>
+
+	{% endblock body %}
 
 </html>

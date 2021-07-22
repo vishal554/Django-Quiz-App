@@ -1,210 +1,219 @@
 {% extends 'testing/base.html' %}
 {% load static %}
 
+{% block custom_css %}
+	<!--begin::Page Vendors Styles(used by this page)-->
+	<link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+	<!--end::Page Vendors Styles-->
+{% endblock custom_css %}
 
-		{% block content %}
-		
-		<!--begin::Content-->
-		<div class="content d-flex flex-column flex-column-fluid pt-0" id="kt_content">
-			<!--begin::Subheader-->
-			<div class="subheader py-2 py-lg-6 subheader-transparent" id="kt_subheader">
-				<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-					<!--begin::Info-->
-					<div class="d-flex align-items-center flex-wrap mr-1">
-						<!--begin::Page Heading-->
-						<div class="d-flex align-items-baseline flex-wrap mr-5">
-							<!--begin::Breadcrumb-->
-							<ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-								<li class="breadcrumb-item">
-									<a href="" class="text-muted">Tasks</a>
-								</li>
-								<li class="breadcrumb-item">
-									<a href="" class="text-muted">Task- A</a>
-								</li>
-								<li class="breadcrumb-item">
-									Sun Pharmaceuticals
-								</li>
-							</ul>
-							<!--end::Breadcrumb-->
-						</div>
-						<!--end::Page Heading-->
+{% block content %}
+	
+	<!--begin::Content-->
+	<div class="content d-flex flex-column flex-column-fluid pt-0" id="kt_content">
+		<!--begin::Subheader-->
+		<div class="subheader py-2 py-lg-6 subheader-transparent" id="kt_subheader">
+			<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+				<!--begin::Info-->
+				<div class="d-flex align-items-center flex-wrap mr-1">
+					<!--begin::Page Heading-->
+					<div class="d-flex align-items-baseline flex-wrap mr-5">
+						<!--begin::Breadcrumb-->
+						<ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
+							<li class="breadcrumb-item">
+								<a href="" class="text-muted">Tasks</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="" class="text-muted">Task- A</a>
+							</li>
+							<li class="breadcrumb-item">
+								Sun Pharmaceuticals
+							</li>
+						</ul>
+						<!--end::Breadcrumb-->
 					</div>
-					<!--end::Info-->
-					<!--begin::Toolbar-->
-					<div class="d-flex align-items-center">
-						<!--begin::Actions-->
-						<a href="#" class="btn btn-icon btn-white btn-hover-danger btn-sm mx-3" title="Block Lead">
-							<i class="icon-xl la la-user-slash text-danger"></i>
-						</a>
-						<a href="#" class="btn btn-icon btn-white btn-hover-primary btn-sm" title="Access Lead">
-							<i class="icon-xl la la-user text-primary"></i>
-						</a>
-						<!--end::Actions-->
-					</div>
-					<!--end::Toolbar-->
+					<!--end::Page Heading-->
 				</div>
+				<!--end::Info-->
+				<!--begin::Toolbar-->
+				<div class="d-flex align-items-center">
+					<!--begin::Actions-->
+					<a href="#" class="btn btn-icon btn-white btn-hover-danger btn-sm mx-3" title="Block Lead">
+						<i class="icon-xl la la-user-slash text-danger"></i>
+					</a>
+					<a href="#" class="btn btn-icon btn-white btn-hover-primary btn-sm" title="Access Lead">
+						<i class="icon-xl la la-user text-primary"></i>
+					</a>
+					<!--end::Actions-->
+				</div>
+				<!--end::Toolbar-->
 			</div>
-			<!--end::Subheader-->
-			<!--begin::Entry-->
-			<div class="d-flex flex-column-fluid">
-				<!--begin::Container-->
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-6">
-							<!--begin::Card-->
-							<div class="card card-custom card-stretch example example-compact" id="kt_page_stretched_card">
-								<div class="card-header">
-									<div class="card-title">
-										<h3 class="card-label">Sun Pharmaceuticals</h3>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="card-scroll">
-										<p>Sun Pharmaceutical Industries Limited (d/b/a Sun Pharma) is an Indian multinational pharmaceutical company headquartered in Mumbai, Maharashtra, that manufactures and sells pharmaceutical formulations and active pharmaceutical ingredients (APIs) primarily in India and the United States. The company offers formulations in various therapeutic areas, such as cardiology, psychiatry, neurology, gastroenterology and diabetology
-										</p>
-
-										<hr class="mt-7 mb-7">
-										<h5>Certification</h5>
-										<div class="row example text-center mt-5 w-100">
-											<div class="col-md-4 mb-2">
-												<div class="example-preview mb-3 p-2">
-													<a href="" data-toggle="modal" data-target="#certificate-01"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
-												</div>
-												<p>Factory Certificate</p>
-											</div>
-											<div class="col-md-4 mb-2">
-												<div class="example-preview mb-3 p-2">
-													<a href="" data-toggle="modal" data-target="#certificate-02"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
-												</div>
-												<p>Lab Certificate</p>
-											</div>
-											<div class="col-md-4 mb-2">
-												<div class="example-preview mb-3 p-2">
-													<a href="" data-toggle="modal" data-target="#certificate-03"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
-												</div>
-												<p>WHO Certificate</p>
-											</div>
-										</div>
-
-										<hr class="mt-3 mb-7">
-										<h5>Address & Contact Informations</h5>
-										<div class="row example mt-5 w-100">
-											<div class="col-md-6 mb-2">
-												<p><span class="d-block small font-weight-bold text-muted">Address</span>307, Crescent Towers, Jogeshwari, Off Link Road, Veera Desai Industrial Estate, Andheri West, Mumbai, Maharashtra</p>
-											</div>
-											<div class="col-md-6 mb-2">
-												<p><span class="d-block small font-weight-bold text-muted">Email</span> info@sunpharmaceuticals.com</p>
-												<p><span class="d-block small font-weight-bold text-muted">Phone</span> +91 99677 44431</p>
-											</div>
-										</div>
-
-										<hr class="mt-3 mb-7">
-										<h5>Areas to focus in Nutra</h5>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus, augue vel dapibus convallis, nulla arcu mattis tellus, imperdiet tempus ex lectus in nisl. Vestibulum ac semper libero, a fermentum tortor. Nam et est interdum, aliquam ex eu, molestie nibh.</p>
-										
-										<hr class="mt-3 mb-7">
-										<h5>Types of Market access</h5>
-										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus, augue vel dapibus convallis, nulla arcu mattis tellus, imperdiet tempus ex lectus in nisl. Vestibulum ac semper libero, a fermentum tortor. Nam et est interdum, aliquam ex eu, molestie nibh. Sed consequat dapibus dignissim.</p>
-									</div>
+		</div>
+		<!--end::Subheader-->
+		<!--begin::Entry-->
+		<div class="d-flex flex-column-fluid">
+			<!--begin::Container-->
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6">
+						<!--begin::Card-->
+						<div class="card card-custom card-stretch example example-compact" id="kt_page_stretched_card">
+							<div class="card-header">
+								<div class="card-title">
+									<h3 class="card-label">Sun Pharmaceuticals</h3>
 								</div>
 							</div>
-							<!--end::Card-->
-						</div>
-						<div class="col-lg-6">
-							<!--begin::Card-->
-							<div class="card card-custom supplier-connet my-auto">
-								<div class="card-body text-white p-15 text-center">
-									<h2>Connect with the Company!</h2>
-									<p class="lead">You are just one step away, to start a conversation with the company by clicking on connect now.</p>
-									<p class="my-7"><a href="chat.html" class="btn btn-lg btn-white btn-pill"><i class="fas fa-link"></i> Connect Now</a></p>
-									<p class="lead">Or</p>
-									<p class="lead">By clicking on two icons you can either access the lead or block to remove from the search list</p>
+							<div class="card-body">
+								<div class="card-scroll">
+									<p>Sun Pharmaceutical Industries Limited (d/b/a Sun Pharma) is an Indian multinational pharmaceutical company headquartered in Mumbai, Maharashtra, that manufactures and sells pharmaceutical formulations and active pharmaceutical ingredients (APIs) primarily in India and the United States. The company offers formulations in various therapeutic areas, such as cardiology, psychiatry, neurology, gastroenterology and diabetology
+									</p>
+
+									<hr class="mt-7 mb-7">
+									<h5>Certification</h5>
+									<div class="row example text-center mt-5 w-100">
+										<div class="col-md-4 mb-2">
+											<div class="example-preview mb-3 p-2">
+												<a href="" data-toggle="modal" data-target="#certificate-01"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
+											</div>
+											<p>Factory Certificate</p>
+										</div>
+										<div class="col-md-4 mb-2">
+											<div class="example-preview mb-3 p-2">
+												<a href="" data-toggle="modal" data-target="#certificate-02"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
+											</div>
+											<p>Lab Certificate</p>
+										</div>
+										<div class="col-md-4 mb-2">
+											<div class="example-preview mb-3 p-2">
+												<a href="" data-toggle="modal" data-target="#certificate-03"><img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid"></a>
+											</div>
+											<p>WHO Certificate</p>
+										</div>
+									</div>
+
+									<hr class="mt-3 mb-7">
+									<h5>Address & Contact Informations</h5>
+									<div class="row example mt-5 w-100">
+										<div class="col-md-6 mb-2">
+											<p><span class="d-block small font-weight-bold text-muted">Address</span>307, Crescent Towers, Jogeshwari, Off Link Road, Veera Desai Industrial Estate, Andheri West, Mumbai, Maharashtra</p>
+										</div>
+										<div class="col-md-6 mb-2">
+											<p><span class="d-block small font-weight-bold text-muted">Email</span> info@sunpharmaceuticals.com</p>
+											<p><span class="d-block small font-weight-bold text-muted">Phone</span> +91 99677 44431</p>
+										</div>
+									</div>
+
+									<hr class="mt-3 mb-7">
+									<h5>Areas to focus in Nutra</h5>
+									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus, augue vel dapibus convallis, nulla arcu mattis tellus, imperdiet tempus ex lectus in nisl. Vestibulum ac semper libero, a fermentum tortor. Nam et est interdum, aliquam ex eu, molestie nibh.</p>
+									
+									<hr class="mt-3 mb-7">
+									<h5>Types of Market access</h5>
+									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus, augue vel dapibus convallis, nulla arcu mattis tellus, imperdiet tempus ex lectus in nisl. Vestibulum ac semper libero, a fermentum tortor. Nam et est interdum, aliquam ex eu, molestie nibh. Sed consequat dapibus dignissim.</p>
 								</div>
 							</div>
-							<!--end::Card-->
 						</div>
+						<!--end::Card-->
+					</div>
+					<div class="col-lg-6">
+						<!--begin::Card-->
+						<div class="card card-custom supplier-connet my-auto">
+							<div class="card-body text-white p-15 text-center">
+								<h2>Connect with the Company!</h2>
+								<p class="lead">You are just one step away, to start a conversation with the company by clicking on connect now.</p>
+								<p class="my-7"><a href="chat.html" class="btn btn-lg btn-white btn-pill"><i class="fas fa-link"></i> Connect Now</a></p>
+								<p class="lead">Or</p>
+								<p class="lead">By clicking on two icons you can either access the lead or block to remove from the search list</p>
+							</div>
+						</div>
+						<!--end::Card-->
 					</div>
 				</div>
-				<!--end::Container-->
 			</div>
-			<!--end::Entry-->
+			<!--end::Container-->
 		</div>
-		<!--end::Content-->
-		
+		<!--end::Entry-->
+	</div>
+	<!--end::Content-->
+	
 
-		<!-- Modal Start -->
-		<div class="modal fade" id="close-task" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeLg" aria-hidden="true">
-		    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-		    	<div class="modal-content">
-		            <div class="modal-body text-center">
-		            	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		                    <i aria-hidden="true" class="ki ki-close"></i>
-		                </button>
-		            	<h2 class="mt-10">Are you Sure want to Remove the Notification?</h2>
-		            	<p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-		            	<div class="mt-7 mb-7">
-		            		<button type="button" class="btn btn-light-primary btn-lg mr-5 font-weight-bold" data-dismiss="modal" aria-label="Close">Cancel</button>
-		                	<button type="button" class="btn btn-primary btn-lg font-weight-bold">Remove</button>
-		            	</div>
-	            	</div>
-		        </div>
-		    </div>
+	<!-- Modal Start -->
+	<div class="modal fade" id="close-task" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeLg" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-body text-center">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i aria-hidden="true" class="ki ki-close"></i>
+					</button>
+					<h2 class="mt-10">Are you Sure want to Remove the Notification?</h2>
+					<p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+					<div class="mt-7 mb-7">
+						<button type="button" class="btn btn-light-primary btn-lg mr-5 font-weight-bold" data-dismiss="modal" aria-label="Close">Cancel</button>
+						<button type="button" class="btn btn-primary btn-lg font-weight-bold">Remove</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<!-- Modal End -->
+	</div>
+	<!-- Modal End -->
 
-		<!-- Modal Certificate 01-->
-        <div class="modal fade" id="certificate-01" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Factory Certificate</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i aria-hidden="true" class="ki ki-close"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal End -->
+	<!-- Modal Certificate 01-->
+	<div class="modal fade" id="certificate-01" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Factory Certificate</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i aria-hidden="true" class="ki ki-close"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal End -->
 
-        <!-- Modal Certificate 02-->
-        <div class="modal fade" id="certificate-02" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Lab Certificate</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i aria-hidden="true" class="ki ki-close"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal End -->
+	<!-- Modal Certificate 02-->
+	<div class="modal fade" id="certificate-02" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Lab Certificate</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i aria-hidden="true" class="ki ki-close"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal End -->
 
-        <!-- Modal Certificate 03-->
-        <div class="modal fade" id="certificate-03" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">WHO Certificate</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i aria-hidden="true" class="ki ki-close"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal End -->
-		
+	<!-- Modal Certificate 03-->
+	<div class="modal fade" id="certificate-03" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">WHO Certificate</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i aria-hidden="true" class="ki ki-close"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					<img src="{% static 'assets/media/misc/certificate.jpg' %}" class="img-fluid">
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal End -->
+	
 
-	{% endblock content %}
+{% endblock content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
