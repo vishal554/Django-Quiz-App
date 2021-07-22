@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
 
@@ -9,6 +10,14 @@
         }
         setTimeout("preback()",0);
         window.onunload = function(){null};
+
+        window.onload = function(){
+            var current = document.getElementsByClassName('active')[0]
+            current.className = current.className.replace(' active', '')
+            var register = document.getElementById('register_nav')
+            register.className += ' active'
+        }
+
     </script>
 
     <!--begin::Signup-->
@@ -24,7 +33,7 @@
                         {% csrf_token %}
                         <!--begin::Title-->
                         <div class="pb-10 pt-lg-0 pt-5 text-center">									
-                            <img src="assets/media/logos/logo.png" class="max-h-75px mb-5" alt="" />
+                            <img src="{% static 'assets/media/logos/logo.png' %} " class="max-h-75px mb-5" alt="" />
                             <h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">Quiz App Register</h3>
                         </div>
                         <!--End::Title-->

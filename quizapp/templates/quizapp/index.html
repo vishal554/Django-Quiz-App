@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
     <!-- Shows the Home page with available and ongoing quizes -->
-
     <div class="d-flex flex-column flex-lg-row flex-column-fluid bg-white">
         <div class='flex-row-fluid justify-content-top position-relative overflow-hidden p-7'>
                 <!-- Check if the Quizes exist or not-->
@@ -97,5 +95,16 @@
                 {% endif %}
         </div>
     </div>
+    
+<script type="text/javascript">
+    window.onload = function(){
+        var current = document.getElementsByClassName('active')[0]
+        current.className = current.className.replace(' active', '')
+        var home = document.getElementById('home_nav')
+        home.className += ' active'
+    }
+</script>
+
 {% endblock content %}
+
 
